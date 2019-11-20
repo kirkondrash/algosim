@@ -1,0 +1,13 @@
+java8: true
+swaggerDocketConfig: true
+hideGenerationTimestamp: true
+
+artifactId: algosim-executor-server
+artifactVersion: 0.0.1
+groupId: hse.algosim.executor
+
+basePackage: hse.algosim.executor.server
+apiPackage: hse.algosim.executor.server.api
+invokerPackage: hse.algosim.executor.server.api
+modelPackage: hse.algosim.executor.server.model
+configPackage: hse.algosim.executor.server.config

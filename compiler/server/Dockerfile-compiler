@@ -1,0 +1,7 @@
+FROM algosim-base AS compiler-builder
+WORKDIR /app/server
+COPY . /app/server
+RUN mvn package
+
+FROM algosim-dist AS compiler-dist
+COPY --from=compiler-builder /app/server/target/algosim-compiler-server-0.0.1.jar  /app/app.jar

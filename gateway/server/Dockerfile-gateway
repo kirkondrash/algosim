@@ -1,0 +1,7 @@
+FROM algosim-base AS gateway-builder
+WORKDIR /app/server
+COPY . /app/server
+RUN mvn package
+
+FROM algosim-dist AS gateway-dist
+COPY --from=gateway-builder /app/server/target/algosim-gateway-server-0.0.1.jar  /app/app.jar

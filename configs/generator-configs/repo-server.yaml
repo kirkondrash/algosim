@@ -1,0 +1,13 @@
+java8: true
+swaggerDocketConfig: true
+hideGenerationTimestamp: true
+
+artifactId: algosim-repo-server
+artifactVersion: 0.0.1
+groupId: hse.algosim.repo
+
+basePackage: hse.algosim.repo.server
+apiPackage: hse.algosim.repo.server.api
+invokerPackage: hse.algosim.repo.server.api
+modelPackage: hse.algosim.repo.server.model
+configPackage: hse.algosim.repo.server.config

@@ -1,0 +1,69 @@
+version: '3.7'
+
+services:
+   repo:
+     build:
+       context: repo/server
+       dockerfile: Dockerfile-repo
+       target: repo-dist
+     volumes:
+       - ./configs/envoy-configs/repo-envoy.yaml:/etc/envoy-config.yaml
+     networks:
+       envoymesh:
+        aliases:
+          - repo
+     expose:
+       - "8000"
+     environment:
+       - SERVICE_NAME=repo
+   compiler:
+     build:
+       context: compiler/server
+       dockerfile: Dockerfile-compiler
+       target: compiler-dist
+     volumes:
+       - ./configs/envoy-configs/compiler-envoy.yaml:/etc/envoy-config.yaml
+     networks:
+       envoymesh:
+        aliases:
+          - compiler
+     expose:
+       - "8000"
+     environment:
+       - SERVICE_NAME=compiler
+   executor:
+     build:
+       context: executor/server
+       dockerfile: Dockerfile-executor
+       target: executor-dist
+     volumes:
+       - ./configs/envoy-configs/executor-envoy.yaml:/etc/envoy-config.yaml
+     networks:
+       envoymesh:
+        aliases:
+          - executor
+     expose:
+       - "8000"
+     environment:
+       - SERVICE_NAME=executor
+   gateway:
+     depends_on:
+       - repo
+     build:
+       context: gateway/server
+       dockerfile: Dockerfile-gateway
+       target: gateway-dist
+     volumes:
+       - ./configs/envoy-configs/gateway-envoy.yaml:/etc/envoy-config.yaml
+     networks:
+       - envoymesh
+     expose:
+       - "8000"
+       - "8001"
+     ports:
+       - "8000:8000"
+       - "8001:8001"
+     environment:
+       - SERVICE_NAME=gateway
+networks:
+  envoymesh: {}
