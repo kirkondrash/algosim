@@ -2,21 +2,21 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class CurrentPrice {
-    private int currentPrice = 0;
-    private int previousPrice = 0;
+    private double currentPrice = 0;
+    private double previousPrice = 0;
 
     public CurrentPrice() {}
 
-    public int get() {
+    public double get() {
         return currentPrice;
     }
 
-    public void set(int currentPrice) {
+    public void set(double currentPrice) {
         previousPrice = this.currentPrice;
         this.currentPrice = currentPrice;
     }
 
-    public int getPrev() {
+    public double getPrev() {
         return previousPrice;
     }
 }

@@ -3,8 +3,8 @@ import java.util.List;
 
 public abstract class Order {
     int lot;
-    int openingPrice = 0;
-    int closingPrice = 0;
+    double openingPrice = 0;
+    double closingPrice = 0;
 
 
     public int getLot() {
@@ -15,17 +15,17 @@ public abstract class Order {
         this.lot = lot;
     }
 
-    public int getOpeningPrice() {
+    public double getOpeningPrice() {
         return openingPrice;
     }
 
-    public void setOpeningPrice(int openingPrice) {
+    public void setOpeningPrice(double openingPrice) {
         this.openingPrice = openingPrice;
     }
 
-    public int getClosingPrice() { return closingPrice; }
+    public double getClosingPrice() { return closingPrice; }
 
-    public void setClosingPrice(int closingPrice) {
+    public void setClosingPrice(double closingPrice) {
         this.closingPrice = closingPrice;
     }
 

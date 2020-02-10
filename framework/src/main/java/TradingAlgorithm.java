@@ -1,4 +1,4 @@
 public interface TradingAlgorithm {
-    void receiveTick(int pips) throws TradingLogicException;
+    void receiveTick(double pips) throws TradingLogicException;
     void evaluateResult();
 }

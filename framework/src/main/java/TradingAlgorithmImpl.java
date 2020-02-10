@@ -12,14 +12,14 @@ public class TradingAlgorithmImpl implements TradingAlgorithm {
         ordersBase = injector.getInstance(SimulationOrdersDAO.class);
     }
 
-    public void receiveTick(int pips) throws TradingLogicException {
+    public void receiveTick(double pips) throws TradingLogicException {
         currentPrice.set(pips);
         System.out.println(pips);
         SimulationOrder o1 = injector.getInstance(SimulationOrder.class)
                 .lot(10)
                 .buyNow()
-                .stopLoss(pips-5)
-                .makeProfit(pips+10);
+                .stopLoss(pips-0.1)
+                .makeProfit(pips+0.05);
         System.out.println(o1);
         ordersBase.put(o1);
         ordersBase.executeOrders();
@@ -27,7 +27,7 @@ public class TradingAlgorithmImpl implements TradingAlgorithm {
 
     @Override
     public void evaluateResult() {
-        System.out.println(String.format("Total WL: %d", ordersBase.evaluateResult()));
+        System.out.println(String.format("Total WL: %f", ordersBase.evaluateResult()));
     }
 
 }

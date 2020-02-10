@@ -4,20 +4,23 @@ import java.util.Random;
 
 public class Simulation {
     public static void main(String[] args) {
-        List<Integer> quotes = new ArrayList();
-        Random r = new Random();
-        for (int i = 0; i < 5; i++) {
-            quotes.add(r.nextInt(50));
-        }
+        QuotesDAO eurusd = new QuotesDAO(
+                "EUR",
+                "RUB",
+                "2020",
+                "01",
+                "20");
         final TradingAlgorithm tradingAlgorithm = new TradingAlgorithmImpl();
-        for (Integer quote : quotes) {
+        eurusd.getTicks().forEach( quote -> {
             try {
                 tradingAlgorithm.receiveTick(quote);
             } catch (TradingLogicException e) {
                 e.printStackTrace();
             }
-        }
+        });
         tradingAlgorithm.evaluateResult();
+
+        eurusd.getWindow(0,0,10).forEach(System.out::println);
 
     }
 }

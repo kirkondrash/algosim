@@ -11,7 +11,7 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
     private Type type;
     @Inject
     private CurrentPrice currentPrice;
-    List<Integer> autoClosingPrices = new ArrayList<>();
+    List<Double> autoClosingPrices = new ArrayList<>();
 
     public SimulationOrder(){
         state = State.WAIT;
@@ -33,11 +33,11 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
         this.type = type;
     }
 
-    public List<Integer> getAutoClosingPrices() {
+    public List<Double> getAutoClosingPrices() {
         return autoClosingPrices;
     }
 
-    public void setAutoClosingPrices(List<Integer> autoClosingPrices) {
+    public void setAutoClosingPrices(List<Double> autoClosingPrices) {
         this.autoClosingPrices = autoClosingPrices;
     }
 
@@ -58,7 +58,7 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
         return this;
     }
 
-    public SimulationOrder buyStop(int pips) throws TradingLogicException {
+    public SimulationOrder buyStop(double pips) throws TradingLogicException {
         if (pips <= currentPrice.get())
             throw new TradingLogicException(String.format(
                     "Wrong move! BuyStop level [%d] has to be higher than current[%d]!",
@@ -69,7 +69,7 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
         return this;
     }
 
-    public SimulationOrder sellStop(int pips) throws TradingLogicException {
+    public SimulationOrder sellStop(double pips) throws TradingLogicException {
         if (pips >= currentPrice.get())
             throw new TradingLogicException(String.format(
                     "Wrong move! SellStop level [%d] has to be lower than current[%d]!",
@@ -80,7 +80,7 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
         return this;
     }
 
-    public SimulationOrder buyLimit(int pips) throws TradingLogicException {
+    public SimulationOrder buyLimit(double pips) throws TradingLogicException {
         if (pips >= currentPrice.get())
             throw new TradingLogicException(String.format(
                     "Wrong move! BuyLimit level [%d] has to be lower than current[%d]!",
@@ -91,7 +91,7 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
         return this;
     }
 
-    public SimulationOrder sellLimit(int pips) throws TradingLogicException {
+    public SimulationOrder sellLimit(double pips) throws TradingLogicException {
         if (pips <= currentPrice.get())
             throw new TradingLogicException(String.format(
                     "Wrong move! SellLimit level [%d] has to be higher than current[%d]!",
@@ -102,7 +102,7 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
         return this;
     }
 
-    public SimulationOrder stopLoss(int pips) throws TradingLogicException {
+    public SimulationOrder stopLoss(double pips) throws TradingLogicException {
         switch (type){
             case BUY:
                 if (pips >= openingPrice)
@@ -126,7 +126,7 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
         return this;
     }
 
-    public SimulationOrder makeProfit(int pips) throws TradingLogicException {
+    public SimulationOrder makeProfit(double pips) throws TradingLogicException {
         switch (type){
             case BUY:
                 if (pips <= openingPrice)

@@ -41,16 +41,16 @@ public class SimulationOrdersDAO {
         orderList.add(order);
     }
 
-    public int evaluateResult(){
-        int res = orderList.parallelStream().filter(order -> order.getState().equals(SimulationOrder.State.CLOSED)).reduce(
-                0,
+    public double evaluateResult(){
+        double res = orderList.parallelStream().filter(order -> order.getState().equals(SimulationOrder.State.CLOSED)).reduce(
+                0.0,
                 (acc,order) -> {
-                    int delta = (order.getClosingPrice() - order.getOpeningPrice())*order.getLot();
+                    double delta = (order.getClosingPrice() - order.getOpeningPrice())*order.getLot();
                     if (order.getType()== SimulationOrder.Type.SELL)
                         delta*= -1;
                     return acc+delta;
                     },
-                Integer::sum);
+                Double::sum);
         return res;
     }
 
