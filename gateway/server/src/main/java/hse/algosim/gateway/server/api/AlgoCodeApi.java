@@ -36,14 +36,25 @@ public interface AlgoCodeApi {
         return Optional.empty();
     }
 
-    @ApiOperation(value = "", nickname = "getAlgorithmCode", notes = "Gets code loaded by user, assigns the UUID to it. The code will later be compiled and executed", response = UUID.class, tags={  })
+    @ApiOperation(value = "", nickname = "getAlgorithmCode", notes = "Gets code loaded by user, assigns the UUID to it. The code will later be compiled and executed", response = Map.class, tags={  })
     @ApiResponses(value = { 
-        @ApiResponse(code = 201, message = "Source code was uploaded successfully", response = UUID.class) })
+        @ApiResponse(code = 201, message = "Source code was uploaded successfully", response = Map.class) })
     @RequestMapping(value = "/algoCode",
         produces = { "application/json" }, 
         consumes = { "multipart/form-data" },
         method = RequestMethod.POST)
-    default ResponseEntity<UUID> getAlgorithmCode(@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile code) {
+    default ResponseEntity<Map<String,String>> getAlgorithmCode(@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile code) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+    @ApiOperation(value = "", nickname = "getTop", notes = "Gets some 10 algos ids and first line of files", response = Map.class, tags={  })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Map.class) })
+    @RequestMapping(value = "/getTop",
+            produces = { "application/json" },
+            method = RequestMethod.GET)
+    default ResponseEntity<Map<String,String>> getTop() {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

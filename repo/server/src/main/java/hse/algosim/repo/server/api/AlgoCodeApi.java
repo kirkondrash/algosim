@@ -72,4 +72,15 @@ public interface AlgoCodeApi {
 
     }
 
+    @ApiOperation(value = "", nickname = "getTopCode", notes = "Returns some 10 algos ids", response = Map.class, tags={  })
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "OK", response = Map.class) })
+    @RequestMapping(value = "/getTopCode",
+            produces = { "application/json" },
+            method = RequestMethod.GET)
+    default ResponseEntity<Map<String,Object>> getTop() {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
 }

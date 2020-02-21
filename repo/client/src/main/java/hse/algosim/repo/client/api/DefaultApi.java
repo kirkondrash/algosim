@@ -28,6 +28,7 @@ import java.io.IOException;
 
 
 import java.io.File;
+import hse.algosim.repo.client.model.IdArray;
 import hse.algosim.repo.client.model.SrcMeta;
 import hse.algosim.repo.client.model.SrcStatus;
 import java.util.UUID;
@@ -1078,6 +1079,107 @@ public class DefaultApi {
 
         okhttp3.Call localVarCall = findAlgorithmStatusValidateBeforeCall(id, _callback);
         Type localVarReturnType = new TypeToken<SrcStatus>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+        return localVarCall;
+    }
+    /**
+     * Build call for getTopCode
+     * @param _callback Callback for upload/download progress
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Source code </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call getTopCodeCall(final ApiCallback _callback) throws ApiException {
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/getTopCode";
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarCookieParams = new HashMap<String, String>();
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        final String[] localVarAccepts = {
+            "application/json"
+        };
+        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {
+            
+        };
+        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        String[] localVarAuthNames = new String[] {  };
+        return localVarApiClient.buildCall(localVarPath, "GET", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private okhttp3.Call getTopCodeValidateBeforeCall(final ApiCallback _callback) throws ApiException {
+        
+
+        okhttp3.Call localVarCall = getTopCodeCall(_callback);
+        return localVarCall;
+
+    }
+
+    /**
+     * 
+     * Returns some 10 algos ids
+     * @return IdArray
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Source code </td><td>  -  </td></tr>
+     </table>
+     */
+    public IdArray getTopCode() throws ApiException {
+        ApiResponse<IdArray> localVarResp = getTopCodeWithHttpInfo();
+        return localVarResp.getData();
+    }
+
+    /**
+     * 
+     * Returns some 10 algos ids
+     * @return ApiResponse&lt;IdArray&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Source code </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<IdArray> getTopCodeWithHttpInfo() throws ApiException {
+        okhttp3.Call localVarCall = getTopCodeValidateBeforeCall(null);
+        Type localVarReturnType = new TypeToken<IdArray>(){}.getType();
+        return localVarApiClient.execute(localVarCall, localVarReturnType);
+    }
+
+    /**
+     *  (asynchronously)
+     * Returns some 10 algos ids
+     * @param _callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Source code </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call getTopCodeAsync(final ApiCallback<IdArray> _callback) throws ApiException {
+
+        okhttp3.Call localVarCall = getTopCodeValidateBeforeCall(_callback);
+        Type localVarReturnType = new TypeToken<IdArray>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }

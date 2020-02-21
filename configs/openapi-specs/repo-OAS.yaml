@@ -13,6 +13,17 @@ servers:
   - url: http://localhost:8080/api
          
 paths:
+  /getTopCode:
+    get:
+      description: Returns some 10 algos ids
+      operationId: getTopCode
+      responses:
+        '200':
+          description: Source code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdArray'
   /algoCode/{id}:
     post:
       description: Uploads the algorithm sources based on UUID supplied 
@@ -265,6 +276,14 @@ paths:
           description: Status not found for this UUID
 components:
   schemas:
+    IdArray:
+      type: object
+      properties:
+        id:
+          type: array
+          items: 
+            type: string
+
     SrcCode:
       type: object
       properties:

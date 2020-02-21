@@ -13,6 +13,7 @@ Method | HTTP request | Description
 [**findAlgorithmJar**](DefaultApi.md#findAlgorithmJar) | **GET** /algoJar/{id} | 
 [**findAlgorithmMeta**](DefaultApi.md#findAlgorithmMeta) | **GET** /algoMeta/{id} | 
 [**findAlgorithmStatus**](DefaultApi.md#findAlgorithmStatus) | **GET** /algoStatus/{id} | 
+[**getTopCode**](DefaultApi.md#getTopCode) | **GET** /getTopCode | 
 [**uploadAlgorithmCode**](DefaultApi.md#uploadAlgorithmCode) | **POST** /algoCode/{id} | 
 [**uploadAlgorithmJar**](DefaultApi.md#uploadAlgorithmJar) | **POST** /algoJar/{id} | 
 [**uploadAlgorithmMeta**](DefaultApi.md#uploadAlgorithmMeta) | **POST** /algoMeta/{id} | 
@@ -582,6 +583,64 @@ No authorization required
 |-------------|-------------|------------------|
 **200** | algorithm starus |  -  |
 **404** | Status not found for this UUID |  -  |
+
+<a name="getTopCode"></a>
+# **getTopCode**
+> IdArray getTopCode()
+
+
+
+Returns some 10 algos ids
+
+### Example
+```java
+// Import classes:
+import hse.algosim.repo.client.api.ApiClient;
+import hse.algosim.repo.client.api.ApiException;
+import hse.algosim.repo.client.api.Configuration;
+import hse.algosim.repo.client.api.models.*;
+import hse.algosim.repo.client.api.DefaultApi;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://localhost:8080/api");
+
+    DefaultApi apiInstance = new DefaultApi(defaultClient);
+    try {
+      IdArray result = apiInstance.getTopCode();
+      System.out.println(result);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling DefaultApi#getTopCode");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+This endpoint does not need any parameter.
+
+### Return type
+
+[**IdArray**](IdArray.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: Not defined
+ - **Accept**: application/json
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Source code |  -  |
 
 <a name="uploadAlgorithmCode"></a>
 # **uploadAlgorithmCode**
