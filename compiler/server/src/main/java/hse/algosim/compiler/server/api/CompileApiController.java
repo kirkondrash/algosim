@@ -19,6 +19,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
@@ -42,7 +43,7 @@ public class CompileApiController implements CompileApi {
 
     @Override
     public ResponseEntity<Void> compileAlgorithm(@PathVariable("id") UUID id) {
-        ApiClient defaultClient = new ApiClient().setBasePath("http://localhost:8081/api");
+        ApiClient defaultClient = new ApiClient().setBasePath("http://localhost:8000/repo/api");
         DefaultApi apiInstance = new DefaultApi(defaultClient);
         try (ZipInputStream zipIn =
                      new ZipInputStream(new FileInputStream(apiInstance.findAlgorithmCode(id)))) {
@@ -61,8 +62,12 @@ public class CompileApiController implements CompileApi {
             request.setGoals( Arrays.asList( "clean", "package", "-P package-target") );
             request.setBaseDirectory(p.toFile());
             Invoker invoker = new DefaultInvoker();
-            invoker.setMavenHome(new File("/usr/local/Cellar/maven/3.5.3"));
+            invoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));
             invoker.execute( request );
+            Files.walk(p)
+                    .sorted(Comparator.reverseOrder()) //delete file in dir before dir itself
+                    .map(Path::toFile)
+                    .forEach(File::delete);
 
         } catch (ApiException | IOException | MavenInvocationException e) {
             e.printStackTrace();

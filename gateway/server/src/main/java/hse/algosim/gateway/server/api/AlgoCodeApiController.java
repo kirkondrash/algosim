@@ -41,7 +41,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
 
     @Override
     public ResponseEntity<Map<String,String>> getAlgorithmCode(@Valid MultipartFile code) {
-        ApiClient defaultClient = new ApiClient().setBasePath("http://localhost:8081/api");
+        ApiClient defaultClient = new ApiClient().setBasePath("http://localhost:8000/repo/api");
         DefaultApi apiInstance = new DefaultApi(defaultClient);
         UUID id = UUID.randomUUID(); // UUID | UUID of algorithm to fetch
         SrcMeta srcMeta = new SrcMeta(); // SrcStatus | Status to be uploaded
