@@ -29,6 +29,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     public AlgoCodeApiController(NativeWebRequest request) {
         this.request = request;
         ids = new HashMap<>();
+        new File("files/").mkdirs();
     }
 
     @Override
@@ -41,7 +42,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
         System.out.println("Sending file!");
         Resource r = new PathResource(ids.get(id.toString()));
         HttpHeaders hp = new HttpHeaders();
-        hp.add("Content-Disposition","attachment; filename=example.txt");
+        hp.add("Content-Disposition","attachment; filename="+id.toString());
         hp.add("Content-Type","application/octet-stream");
         return new ResponseEntity<>(r, hp, HttpStatus.OK);
     }
@@ -52,7 +53,6 @@ public class AlgoCodeApiController implements AlgoCodeApi {
         System.out.println(id.toString());
         try {
             File receivedFile = new File("files/"+id).getAbsoluteFile();
-            Files.createDirectories(receivedFile.toPath().getParent());
             ids.put(id.toString(),receivedFile.getAbsolutePath());
             code.transferTo(receivedFile);
         } catch (IOException e) {

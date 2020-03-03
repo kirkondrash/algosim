@@ -41,13 +41,12 @@ public class AlgoCodeApiController implements AlgoCodeApi {
 
     @Override
     public ResponseEntity<Map<String,String>> getAlgorithmCode(@Valid MultipartFile code) {
-        ApiClient defaultClient = new ApiClient().setBasePath("http://localhost:8000/repo/api");
+        ApiClient defaultClient = new ApiClient().setBasePath("http://localhost:8081/api");
         DefaultApi apiInstance = new DefaultApi(defaultClient);
         UUID id = UUID.randomUUID(); // UUID | UUID of algorithm to fetch
         SrcMeta srcMeta = new SrcMeta(); // SrcStatus | Status to be uploaded
         try {
-            Path p = Files.createTempFile("code",".tmp");
-            File f = p.toFile();
+            File f = new File(id.toString()).getAbsoluteFile();
             code.transferTo(f);
             System.out.println("uploading file");
             apiInstance.uploadAlgorithmCode(id,f);
@@ -59,7 +58,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
 //            System.out.println("getting meta");
 //            SrcMeta receivedMeta = apiInstance.findAlgorithmMeta(id);
 //            System.out.println(receivedMeta.getAuthor()+receivedMeta.getDescription());
-            Files.delete(p);
+            f.delete();
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#changeAlgorithmStatus");
             System.err.println("Status code: " + e.getCode());
