@@ -23,6 +23,7 @@ services:
        target: compiler-dist
      volumes:
        - ./configs/envoy-configs/compiler-envoy.yaml:/etc/envoy-config.yaml
+       - ./framework:/framework
      networks:
        envoymesh:
         aliases:

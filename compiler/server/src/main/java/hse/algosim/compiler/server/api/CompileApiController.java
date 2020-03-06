@@ -45,31 +45,15 @@ public class CompileApiController implements CompileApi {
     public ResponseEntity<Void> compileAlgorithm(@PathVariable("id") UUID id) {
         ApiClient defaultClient = new ApiClient().setBasePath("http://localhost:8000/repo/api");
         DefaultApi apiInstance = new DefaultApi(defaultClient);
-        try (ZipInputStream zipIn =
-                     new ZipInputStream(new FileInputStream(apiInstance.findAlgorithmCode(id)))) {
-            Path p = Paths.get(id.toString()).toAbsolutePath();
-            for (ZipEntry ze; (ze = zipIn.getNextEntry()) != null; ) {
-                Path resolvedPath = p.resolve(ze.getName());
-                if (ze.isDirectory()) {
-                    Files.createDirectories(resolvedPath);
-                } else {
-                    Files.createDirectories(resolvedPath.getParent());
-                    Files.copy(zipIn, resolvedPath);
-                }
-            }
-
+        try {
+            apiInstance.findAlgorithmCode(id).renameTo(new File("/framework/src/main/java/TradingAlgorithmImpl.java"));
             InvocationRequest request = new DefaultInvocationRequest();
             request.setGoals( Arrays.asList( "clean", "package", "-P package-target") );
-            request.setBaseDirectory(p.toFile());
+            request.setBaseDirectory(new File("/framework"));
             Invoker invoker = new DefaultInvoker();
             invoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));
             invoker.execute( request );
-            Files.walk(p)
-                    .sorted(Comparator.reverseOrder()) //delete file in dir before dir itself
-                    .map(Path::toFile)
-                    .forEach(File::delete);
-
-        } catch (ApiException | IOException | MavenInvocationException e) {
+        } catch (ApiException | MavenInvocationException e) {
             e.printStackTrace();
         }
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
