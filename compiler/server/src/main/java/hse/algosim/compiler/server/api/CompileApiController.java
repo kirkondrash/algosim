@@ -11,17 +11,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
+import java.util.logging.FileHandler;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -42,20 +37,38 @@ public class CompileApiController implements CompileApi {
     }
 
     @Override
-    public ResponseEntity<Void> compileAlgorithm(@PathVariable("id") UUID id) {
+    public ResponseEntity<Map<String,String>> compileAlgorithm(@PathVariable("id") UUID id) {
         ApiClient defaultClient = new ApiClient().setBasePath("http://localhost:8000/repo/api");
         DefaultApi apiInstance = new DefaultApi(defaultClient);
+        StringWriter stringWriter = new StringWriter();
         try {
             apiInstance.findAlgorithmCode(id).renameTo(new File("/framework/src/main/java/TradingAlgorithmImpl.java"));
+
+            Invoker invoker = new DefaultInvoker();
+            invoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));
+
             InvocationRequest request = new DefaultInvocationRequest();
             request.setGoals( Arrays.asList( "clean", "package", "-P package-target") );
             request.setBaseDirectory(new File("/framework"));
-            Invoker invoker = new DefaultInvoker();
-            invoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));
-            invoker.execute( request );
-        } catch (ApiException | MavenInvocationException e) {
-            e.printStackTrace();
+
+            InvocationOutputHandler ioh = new InvocationOutputHandler() {
+                @Override
+                public void consumeLine(String s) throws IOException {
+                    stringWriter.write(s+System.lineSeparator());
+                }
+            };
+            request.setOutputHandler(ioh);
+            request.setErrorHandler(ioh);
+
+            InvocationResult res = invoker.execute( request );
+            if (res.getExecutionException()!=null){
+                res.getExecutionException().printStackTrace(new PrintWriter(stringWriter));
+            }
+        } catch (MavenInvocationException | ApiException e) {
+            e.printStackTrace(new PrintWriter(stringWriter));
         }
-        return new ResponseEntity<>(HttpStatus.ACCEPTED);
+        Map<String,String> res = new HashMap<>();
+        res.put("result",stringWriter.toString());
+        return new ResponseEntity<>(res,HttpStatus.ACCEPTED);
     }
 }
