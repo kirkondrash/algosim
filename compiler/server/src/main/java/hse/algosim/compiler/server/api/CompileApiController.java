@@ -15,6 +15,7 @@ import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.*;
 import java.util.logging.FileHandler;
 import java.util.zip.ZipEntry;
@@ -42,7 +43,10 @@ public class CompileApiController implements CompileApi {
         DefaultApi apiInstance = new DefaultApi(defaultClient);
         StringWriter stringWriter = new StringWriter();
         try {
-            apiInstance.findAlgorithmCode(id).renameTo(new File("/framework/src/main/java/TradingAlgorithmImpl.java"));
+            Files.move(
+                    apiInstance.findAlgorithmCode(id).toPath(),
+                    Paths.get("/framework/src/main/java/TradingAlgorithmImpl.java"),
+                    StandardCopyOption.REPLACE_EXISTING);
 
             Invoker invoker = new DefaultInvoker();
             invoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));
@@ -51,12 +55,7 @@ public class CompileApiController implements CompileApi {
             request.setGoals( Arrays.asList( "clean", "package", "-P package-target") );
             request.setBaseDirectory(new File("/framework"));
 
-            InvocationOutputHandler ioh = new InvocationOutputHandler() {
-                @Override
-                public void consumeLine(String s) throws IOException {
-                    stringWriter.write(s+System.lineSeparator());
-                }
-            };
+            InvocationOutputHandler ioh = s -> stringWriter.write(s+System.lineSeparator());
             request.setOutputHandler(ioh);
             request.setErrorHandler(ioh);
 
@@ -66,6 +65,8 @@ public class CompileApiController implements CompileApi {
             }
         } catch (MavenInvocationException | ApiException e) {
             e.printStackTrace(new PrintWriter(stringWriter));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         Map<String,String> res = new HashMap<>();
         res.put("result",stringWriter.toString());
