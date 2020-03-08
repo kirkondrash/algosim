@@ -51,12 +51,14 @@ public class CompileApiController implements CompileApi {
         ApiClient defaultClient = new ApiClient().setBasePath("http://localhost:8000/repo/api");
         RepoApi apiInstance = new RepoApi(defaultClient);
 
-        File srcCode;
         try {
             apiInstance.replaceAlgorithmStatus(
                     id,
                     new SrcStatus().status(StatusEnum.COMPILING));
-            srcCode = apiInstance.getAlgorithmCode(id);
+            Files.move(
+                    apiInstance.getAlgorithmCode(id).toPath(),
+                    Paths.get("/framework/src/main/java/TradingAlgorithmImpl.java"),
+                    StandardCopyOption.REPLACE_EXISTING);
         } catch (ApiException e) {
             e.printStackTrace();
             HttpHeaders httpHeaders = new HttpHeaders();
@@ -64,17 +66,14 @@ public class CompileApiController implements CompileApi {
             return new ResponseEntity<>(
                     httpHeaders,
                     HttpStatus.valueOf(e.getCode()));
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
         CompletableFuture<Void> compilation = CompletableFuture.runAsync(()->{
             StringWriter stringWriter = new StringWriter();
             StatusEnum status = StatusEnum.COMPILATION_FAILED;
             try{
-                Files.move(
-                        srcCode.toPath(),
-                        Paths.get("/framework/src/main/java/TradingAlgorithmImpl.java"),
-                        StandardCopyOption.REPLACE_EXISTING);
-
                 InvocationRequest mavenInvocationRequest = new DefaultInvocationRequest();
                 mavenInvocationRequest.setGoals( Arrays.asList( "clean", "package", "-P package-target") );
                 mavenInvocationRequest.setBaseDirectory(new File("/framework"));
@@ -92,16 +91,18 @@ public class CompileApiController implements CompileApi {
                         res.getExecutionException().printStackTrace(new PrintWriter(stringWriter));
                     }
                 }
-            } catch (MavenInvocationException  | IOException e) {
+            } catch (MavenInvocationException e) {
                 e.printStackTrace(new PrintWriter(stringWriter));
             } finally {
+                SrcStatus srcStatus = new SrcStatus().status(status).errorTrace(stringWriter.toString());
                 try {
                     if (status.compareTo(StatusEnum.SUCCESSFULLY_COMPILED)==0) {
                         apiInstance.uploadAlgorithmJar(id,new File("/framework/target/algosim-framework-0.0.1.jar"));
+                        srcStatus.setErrorTrace(null);
                     }
                     apiInstance.replaceAlgorithmStatus(
                             id,
-                            new SrcStatus().status(status));
+                            srcStatus);
                 } catch (ApiException e) {
                     e.printStackTrace();
                 }

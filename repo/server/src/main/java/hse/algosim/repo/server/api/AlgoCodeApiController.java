@@ -31,6 +31,8 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     @org.springframework.beans.factory.annotation.Autowired
     public AlgoCodeApiController(NativeWebRequest request) {
         this.request = request;
+        ids = new HashMap<>();
+        new File("files/").mkdirs();
     }
 
     @Override
@@ -53,7 +55,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
         System.out.println("Received file!");
         System.out.println(id.toString());
         try {
-            File receivedFile = new File("files/"+id).getAbsoluteFile();
+            File receivedFile = new File("files/"+id.toString()).getAbsoluteFile();
             ids.put(id.toString(),receivedFile.getAbsolutePath());
             code.transferTo(receivedFile);
         } catch (IOException e) {

@@ -79,7 +79,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     public ResponseEntity<Map<String,String>> getTop(){
         Map<String,String> res = new HashMap<>();
         ApiClient defaultClient = new ApiClient().setBasePath("http://localhost:8000/repo/api");
-        DefaultApi apiInstance = new DefaultApi(defaultClient);
+        RepoApi apiInstance = new RepoApi(defaultClient);
         try {
             IdArray ids = apiInstance.getTopCode();
             ids.getId().forEach( id -> {
