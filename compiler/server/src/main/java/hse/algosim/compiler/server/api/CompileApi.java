@@ -41,9 +41,8 @@ public interface CompileApi {
         @ApiResponse(code = 200, message = "Successfully compiled"),
         @ApiResponse(code = 404, message = "Source code not found for this UUID") })
     @RequestMapping(value = "/compile/{id}",
-            produces = { "application/json" },
             method = RequestMethod.POST)
-    default ResponseEntity<Map<String,String>> compileAlgorithm(@ApiParam(value = "UUID of algorithm to fetch",required=true) @PathVariable("id") UUID id) {
+    default ResponseEntity<Void> compileAlgorithm(@ApiParam(value = "UUID of algorithm to fetch",required=true) @PathVariable("id") UUID id) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
