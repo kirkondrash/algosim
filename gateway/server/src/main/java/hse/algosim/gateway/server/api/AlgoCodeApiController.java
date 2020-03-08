@@ -2,10 +2,11 @@ package hse.algosim.gateway.server.api;
 
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
-import hse.algosim.repo.client.api.DefaultApi;
+import hse.algosim.repo.client.api.RepoApi;
 import hse.algosim.repo.client.model.IdArray;
 import hse.algosim.repo.client.model.SrcMeta;
 import hse.algosim.repo.client.model.SrcStatus;
+import hse.algosim.repo.client.model.SrcStatus.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -42,7 +43,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     @Override
     public ResponseEntity<Map<String,String>> getAlgorithmCode(@Valid MultipartFile code) {
         ApiClient defaultClient = new ApiClient().setBasePath("http://localhost:8000/repo/api");
-        DefaultApi apiInstance = new DefaultApi(defaultClient);
+        RepoApi apiInstance = new RepoApi(defaultClient);
         UUID id = UUID.randomUUID(); // UUID | UUID of algorithm to fetch
         SrcMeta srcMeta = new SrcMeta(); // SrcStatus | Status to be uploaded
         try {
@@ -50,6 +51,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
             code.transferTo(f);
             System.out.println("uploading file");
             apiInstance.uploadAlgorithmCode(id,f);
+            apiInstance.uploadAlgorithmStatus(id, new SrcStatus().status(StatusEnum.SCHEDULED_FOR_COMPILATION));
 //            System.out.println("uploading meta");
 //            apiInstance.uploadAlgorithmMeta(id,new SrcMeta().author("mark").description("hi"));
 //            System.out.println("getting file");
@@ -82,7 +84,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
             IdArray ids = apiInstance.getTopCode();
             ids.getId().forEach( id -> {
                 try {
-                    File receivedFile = apiInstance.findAlgorithmCode(UUID.fromString(id));
+                    File receivedFile = apiInstance.getAlgorithmCode(UUID.fromString(id));
                     String firstLine = Files.readAllLines(receivedFile.toPath()).get(0);
                     System.out.println(firstLine);
                     res.put(id,firstLine);

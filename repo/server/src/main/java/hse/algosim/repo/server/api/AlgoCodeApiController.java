@@ -1,5 +1,6 @@
 package hse.algosim.repo.server.api;
 
+import hse.algosim.repo.server.model.IdArray;
 import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -13,10 +14,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("${openapi.algosimRepo.base-path:/api}")
@@ -28,8 +31,6 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     @org.springframework.beans.factory.annotation.Autowired
     public AlgoCodeApiController(NativeWebRequest request) {
         this.request = request;
-        ids = new HashMap<>();
-        new File("files/").mkdirs();
     }
 
     @Override
@@ -38,7 +39,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     }
 
     @Override
-    public ResponseEntity<Resource> findAlgorithmCode(@PathVariable("id") UUID id) {
+    public ResponseEntity<Resource> getAlgorithmCode(@PathVariable("id") UUID id) {
         System.out.println("Sending file!");
         Resource r = new PathResource(ids.get(id.toString()));
         HttpHeaders hp = new HttpHeaders();
@@ -62,10 +63,12 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     }
 
     @Override
-    public ResponseEntity<Map<String,Object>> getTop() {
-        Map<String,Object> res = new HashMap<>();
-        res.put("id",ids.keySet().stream().limit(10).toArray());
+    public ResponseEntity<IdArray> getTopCode() {
+        IdArray res = new IdArray().id(
+                ids.keySet()
+                        .stream()
+                        .limit(10)
+                        .collect(Collectors.toList()));
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
-
 }

@@ -2,8 +2,9 @@ package hse.algosim.compiler.server.api;
 
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
-import hse.algosim.repo.client.api.DefaultApi;
+import hse.algosim.repo.client.api.RepoApi;
 import hse.algosim.repo.client.model.SrcStatus;
+import hse.algosim.repo.client.model.SrcStatus.StatusEnum;
 import org.apache.maven.shared.invoker.*;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -48,16 +49,14 @@ public class CompileApiController implements CompileApi {
     @Override
     public ResponseEntity<Void> compileAlgorithm(@PathVariable("id") UUID id) {
         ApiClient defaultClient = new ApiClient().setBasePath("http://localhost:8000/repo/api");
-        DefaultApi apiInstance = new DefaultApi(defaultClient);
+        RepoApi apiInstance = new RepoApi(defaultClient);
 
         File srcCode;
-        SrcStatus srcStatus;
         try {
-            srcStatus = apiInstance.findAlgorithmStatus(id);
-            apiInstance.changeAlgorithmStatus(
+            apiInstance.replaceAlgorithmStatus(
                     id,
-                    srcStatus.status("COMPILING"));
-            srcCode = apiInstance.findAlgorithmCode(id);
+                    new SrcStatus().status(StatusEnum.COMPILING));
+            srcCode = apiInstance.getAlgorithmCode(id);
         } catch (ApiException e) {
             e.printStackTrace();
             HttpHeaders httpHeaders = new HttpHeaders();
@@ -69,7 +68,7 @@ public class CompileApiController implements CompileApi {
 
         CompletableFuture<Void> compilation = CompletableFuture.runAsync(()->{
             StringWriter stringWriter = new StringWriter();
-            String status = "COMPILATION FAILED";
+            StatusEnum status = StatusEnum.COMPILATION_FAILED;
             try{
                 Files.move(
                         srcCode.toPath(),
@@ -86,7 +85,7 @@ public class CompileApiController implements CompileApi {
 
                 InvocationResult res = mavenInvoker.execute( mavenInvocationRequest );
                 if (res.getExitCode() == 0){
-                    status = "SUCCESSFULLY COMPILED";
+                    status = StatusEnum.SUCCESSFULLY_COMPILED;
                 }
                 else {
                     if (res.getExecutionException()!=null){
@@ -97,12 +96,12 @@ public class CompileApiController implements CompileApi {
                 e.printStackTrace(new PrintWriter(stringWriter));
             } finally {
                 try {
-                    if (status == "SUCCESSFULLY COMPILED") {
+                    if (status.compareTo(StatusEnum.SUCCESSFULLY_COMPILED)==0) {
                         apiInstance.uploadAlgorithmJar(id,new File("/framework/target/algosim-framework-0.0.1.jar"));
                     }
-                    apiInstance.changeAlgorithmStatus(
+                    apiInstance.replaceAlgorithmStatus(
                             id,
-                            srcStatus.status(status));
+                            new SrcStatus().status(status));
                 } catch (ApiException e) {
                     e.printStackTrace();
                 }

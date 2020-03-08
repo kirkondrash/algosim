@@ -13,7 +13,6 @@
 
 package hse.algosim.repo.client.api;
 
-import hse.algosim.repo.client.api.ApiException;
 import java.io.File;
 import hse.algosim.repo.client.model.SrcMeta;
 import hse.algosim.repo.client.model.SrcStatus;
@@ -21,33 +20,28 @@ import java.util.UUID;
 import org.junit.Test;
 import org.junit.Ignore;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * API tests for DefaultApi
  */
 @Ignore
-public class DefaultApiTest {
+public class RepoApiTest {
 
-    private final DefaultApi api = new DefaultApi();
+    private final RepoApi api = new RepoApi();
 
     
     /**
      * 
      *
-     * Changes the algorithm status and/or benchmarks
+     * Replaces the algorithm status and/or benchmarks
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
-    public void changeAlgorithmStatusTest() throws ApiException {
+    public void replaceAlgorithmStatusTest() throws ApiException {
         UUID id = null;
         SrcStatus srcStatus = null;
-        api.changeAlgorithmStatus(id, srcStatus);
+        api.replaceAlgorithmStatus(id, srcStatus);
 
         // TODO: test validations
     }
@@ -125,9 +119,9 @@ public class DefaultApiTest {
      *          if the Api call fails
      */
     @Test
-    public void findAlgorithmCodeTest() throws ApiException {
+    public void getAlgorithmCodeTest() throws ApiException {
         UUID id = null;
-        File response = api.findAlgorithmCode(id);
+        File response = api.getAlgorithmCode(id);
 
         // TODO: test validations
     }
@@ -141,9 +135,9 @@ public class DefaultApiTest {
      *          if the Api call fails
      */
     @Test
-    public void findAlgorithmJarTest() throws ApiException {
+    public void getAlgorithmJarTest() throws ApiException {
         UUID id = null;
-        File response = api.findAlgorithmJar(id);
+        File response = api.getAlgorithmJar(id);
 
         // TODO: test validations
     }
@@ -157,9 +151,9 @@ public class DefaultApiTest {
      *          if the Api call fails
      */
     @Test
-    public void findAlgorithmMetaTest() throws ApiException {
+    public void getAlgorithmMetaTest() throws ApiException {
         UUID id = null;
-        SrcMeta response = api.findAlgorithmMeta(id);
+        SrcMeta response = api.getAlgorithmMeta(id);
 
         // TODO: test validations
     }
@@ -173,9 +167,9 @@ public class DefaultApiTest {
      *          if the Api call fails
      */
     @Test
-    public void findAlgorithmStatusTest() throws ApiException {
+    public void getAlgorithmStatusTest() throws ApiException {
         UUID id = null;
-        SrcStatus response = api.findAlgorithmStatus(id);
+        SrcStatus response = api.getAlgorithmStatus(id);
 
         // TODO: test validations
     }

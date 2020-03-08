@@ -25,7 +25,7 @@ public class OpenAPIDocumentationConfig {
     ApiInfo apiInfo() {
         return new ApiInfoBuilder()
             .title("Algosim repo")
-            .description("A repo service for collab project of HSE and Deutsche Bank aiming to improve trading algorithms testing. Service linked to:   - the db for algorithm description, source code and benchmarks   - nexus for the artifacts    ")
+            .description("A repo service for collab project of HSE and Deutsche Bank aiming to improve trading algorithms testing. For now, just stores in folders sources and artifacts. Meta and statuses are stored in-memory. ")
             .license("")
             .licenseUrl("http://unlicense.org")
             .termsOfServiceUrl("")
