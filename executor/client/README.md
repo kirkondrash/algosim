@@ -76,14 +76,14 @@ import hse.algosim.executor.client.api.ApiClient;
 import hse.algosim.executor.client.api.ApiException;
 import hse.algosim.executor.client.api.Configuration;
 import hse.algosim.executor.client.api.models.*;
-import hse.algosim.executor.client.api.DefaultApi;
+import hse.algosim.executor.client.api.ExecutorApiClientInstance;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
+    ExecutorApiClientInstance apiInstance = new ExecutorApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm to fetch
     try {
       apiInstance.executeAlgorithm(id);

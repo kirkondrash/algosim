@@ -2,7 +2,7 @@ package hse.algosim.compiler.server.api;
 
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
-import hse.algosim.repo.client.api.RepoApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;
 import hse.algosim.repo.client.model.SrcStatus;
 import hse.algosim.repo.client.model.SrcStatus.StatusEnum;
 import org.apache.maven.shared.invoker.*;
@@ -32,6 +32,7 @@ public class CompileApiController implements CompileApi {
 
     private final NativeWebRequest request;
     private Invoker mavenInvoker;
+    private RepoApiClientInstance repoApiClient;
 
 
     @org.springframework.beans.factory.annotation.Autowired
@@ -39,6 +40,7 @@ public class CompileApiController implements CompileApi {
         this.request = request;
         mavenInvoker = new DefaultInvoker();
         mavenInvoker.setMavenHome(new File(System.getenv("MAVEN_HOME")));
+        repoApiClient = new RepoApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/repo/api"));
     }
 
     @Override
@@ -48,15 +50,12 @@ public class CompileApiController implements CompileApi {
 
     @Override
     public ResponseEntity<Void> compileAlgorithm(@PathVariable("id") UUID id) {
-        ApiClient defaultClient = new ApiClient().setBasePath("http://localhost:8000/repo/api");
-        RepoApi apiInstance = new RepoApi(defaultClient);
-
         try {
-            apiInstance.replaceAlgorithmStatus(
+            repoApiClient.replaceAlgorithmStatus(
                     id,
                     new SrcStatus().status(StatusEnum.COMPILING));
             Files.move(
-                    apiInstance.getAlgorithmCode(id).toPath(),
+                    repoApiClient.getAlgorithmCode(id).toPath(),
                     Paths.get("/framework/src/main/java/TradingAlgorithmImpl.java"),
                     StandardCopyOption.REPLACE_EXISTING);
         } catch (ApiException e) {
@@ -97,10 +96,10 @@ public class CompileApiController implements CompileApi {
                 SrcStatus srcStatus = new SrcStatus().status(status).errorTrace(stringWriter.toString());
                 try {
                     if (status.compareTo(StatusEnum.SUCCESSFULLY_COMPILED)==0) {
-                        apiInstance.uploadAlgorithmJar(id,new File("/framework/target/algosim-framework-0.0.1.jar"));
+                        repoApiClient.uploadAlgorithmJar(id,new File("/framework/target/algosim-framework-0.0.1.jar"));
                         srcStatus.setErrorTrace(null);
                     }
-                    apiInstance.replaceAlgorithmStatus(
+                    repoApiClient.replaceAlgorithmStatus(
                             id,
                             srcStatus);
                 } catch (ApiException e) {

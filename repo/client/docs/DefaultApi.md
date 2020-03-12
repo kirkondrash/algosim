@@ -37,14 +37,14 @@ Deletes algorithm source
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.RepoApi;import hse.algosim.repo.client.api.models.*;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm to delete
     try {
       apiInstance.deleteAlgorithmCode(id);
@@ -98,14 +98,14 @@ deletes the algorithm jar based on the UUID supplied
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.RepoApi;import hse.algosim.repo.client.api.models.*;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm to delete
     try {
       apiInstance.deleteAlgorithmJar(id);
@@ -160,14 +160,14 @@ import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
 import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.RepoApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm which metadata will be deleted
     try {
       apiInstance.deleteAlgorithmMeta(id);
@@ -221,14 +221,14 @@ Returns an algorithm status
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.RepoApi;import hse.algosim.repo.client.api.models.*;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm which status will be deleted
     try {
       apiInstance.deleteAlgorithmStatus(id);
@@ -282,14 +282,14 @@ Returns algorithm source
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.RepoApi;import hse.algosim.repo.client.api.models.*;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm to fetch
     try {
       File result = apiInstance.getAlgorithmCode(id);
@@ -345,14 +345,14 @@ import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
 import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.RepoApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm which jar will be fetched
     try {
       File result = apiInstance.getAlgorithmJar(id);
@@ -407,14 +407,14 @@ Returns algorithm metadata
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.RepoApi;import hse.algosim.repo.client.api.models.*;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm which metadata is fetched
     try {
       SrcMeta result = apiInstance.getAlgorithmMeta(id);
@@ -469,14 +469,14 @@ Returns an algorithm status
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.RepoApi;import hse.algosim.repo.client.api.models.*;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm which status will be fetched
     try {
       SrcStatus result = apiInstance.getAlgorithmStatus(id);
@@ -531,15 +531,14 @@ Returns some 10 algos ids
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.RepoApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     try {
       IdArray result = apiInstance.getTopCode();
       System.out.println(result);
@@ -589,15 +588,14 @@ Replaces the algorithm source
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.RepoApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm to replace
     File code = new File("/path/to/file"); // File | 
     try {
@@ -652,15 +650,14 @@ Replaces algorithm artifact
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.RepoApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm which jar is uploaded
     File jar = new File("/path/to/file"); // File | 
     try {
@@ -716,14 +713,14 @@ Replaces algorithm metadata like description or author
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.RepoApi;import hse.algosim.repo.client.api.models.*;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm which metadata is replaced
     SrcMeta srcMeta = new SrcMeta(); // SrcMeta | Metadata to be uploaded
     try {
@@ -780,14 +777,14 @@ import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
 import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.RepoApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm which status will be replaced
     SrcStatus srcStatus = new SrcStatus(); // SrcStatus | Status to be uploaded
     try {
@@ -843,14 +840,14 @@ Uploads the algorithm source
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.RepoApi;import hse.algosim.repo.client.api.models.*;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm to upload
     File code = new File("/path/to/file"); // File | 
     try {
@@ -905,14 +902,14 @@ Uploads algorithm artifact
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.RepoApi;import hse.algosim.repo.client.api.models.*;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm which jar is uploaded
     File jar = new File("/path/to/file"); // File | 
     try {
@@ -968,14 +965,14 @@ Upoads algorithm metadata like description or author
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.RepoApi;import hse.algosim.repo.client.api.models.*;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm which metadata is uploaded
     SrcMeta srcMeta = new SrcMeta(); // SrcMeta | Metadata to be uploaded
     try {
@@ -1031,15 +1028,14 @@ Uploads the algorithm status and/or benchmarks
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.RepoApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    RepoApi apiInstance = new RepoApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm which status will be uploaded
     SrcStatus srcStatus = new SrcStatus(); // SrcStatus | Status to be uploaded
     try {

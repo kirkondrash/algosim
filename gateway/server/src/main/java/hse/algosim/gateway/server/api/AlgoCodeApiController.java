@@ -1,12 +1,12 @@
 package hse.algosim.gateway.server.api;
 
-import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
-import hse.algosim.repo.client.api.RepoApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;
 import hse.algosim.repo.client.model.IdArray;
-import hse.algosim.repo.client.model.SrcMeta;
 import hse.algosim.repo.client.model.SrcStatus;
-import hse.algosim.repo.client.model.SrcStatus.*;
+import hse.algosim.repo.client.model.SrcStatus.StatusEnum;
+import hse.algosim.compiler.client.api.CompilerApiClientInstance;
+import hse.algosim.executor.client.api.ExecutorApiClientInstance;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -18,21 +18,27 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 @Controller
 @RequestMapping("${openapi.algosimGateway.base-path:/api}")
 public class AlgoCodeApiController implements AlgoCodeApi {
 
     private final NativeWebRequest request;
+    private RepoApiClientInstance repoApiClient;
+    private CompilerApiClientInstance compilerApiClient;
+    private ExecutorApiClientInstance executorApiClient;
 
     @org.springframework.beans.factory.annotation.Autowired
     public AlgoCodeApiController(NativeWebRequest request) {
         this.request = request;
+        repoApiClient = new RepoApiClientInstance(new hse.algosim.repo.client.api.ApiClient().setBasePath("http://localhost:8000/repo/api"));
+        compilerApiClient = new CompilerApiClientInstance(new hse.algosim.compiler.client.api.ApiClient().setBasePath("http://localhost:8000/compiler/api"));
+        executorApiClient = new ExecutorApiClientInstance(new hse.algosim.executor.client.api.ApiClient().setBasePath("http://localhost:8000/executor/api"));
     }
 
     @Override
@@ -42,34 +48,41 @@ public class AlgoCodeApiController implements AlgoCodeApi {
 
     @Override
     public ResponseEntity<Map<String,String>> getAlgorithmCode(@Valid MultipartFile code) {
-        ApiClient defaultClient = new ApiClient().setBasePath("http://localhost:8000/repo/api");
-        RepoApi apiInstance = new RepoApi(defaultClient);
         UUID id = UUID.randomUUID(); // UUID | UUID of algorithm to fetch
-        SrcMeta srcMeta = new SrcMeta(); // SrcStatus | Status to be uploaded
+        File f = new File(id.toString()).getAbsoluteFile();
         try {
-            File f = new File(id.toString()).getAbsoluteFile();
             code.transferTo(f);
-            System.out.println("uploading file");
-            apiInstance.uploadAlgorithmCode(id,f);
-            apiInstance.uploadAlgorithmStatus(id, new SrcStatus().status(StatusEnum.SCHEDULED_FOR_COMPILATION));
-//            System.out.println("uploading meta");
-//            apiInstance.uploadAlgorithmMeta(id,new SrcMeta().author("mark").description("hi"));
-//            System.out.println("getting file");
-//            File receivedFile = apiInstance.findAlgorithmCode(id);
-//            System.out.println(new String(Files.readAllBytes(receivedFile.toPath())));
-//            System.out.println("getting meta");
-//            SrcMeta receivedMeta = apiInstance.findAlgorithmMeta(id);
-//            System.out.println(receivedMeta.getAuthor()+receivedMeta.getDescription());
+            System.out.println("Starting demo scenario for id "+id.toString());
+            repoApiClient.uploadAlgorithmCode(id,f);
+            repoApiClient.uploadAlgorithmStatus(id, new SrcStatus().status(StatusEnum.SCHEDULED_FOR_COMPILATION));
             f.delete();
-        } catch (ApiException e) {
-            System.err.println("Exception when calling DefaultApi#changeAlgorithmStatus");
-            System.err.println("Status code: " + e.getCode());
-            System.err.println("Reason: " + e.getResponseBody());
-            System.err.println("Response headers: " + e.getResponseHeaders());
-            e.printStackTrace();
-        } catch (IOException e) {
+        } catch (IOException | ApiException e) {
             e.printStackTrace();
         }
+
+        CompletableFuture<Void> demo = CompletableFuture.runAsync(()-> {
+            try {
+                compilerApiClient.compileAlgorithm(id);
+                SrcStatus srcStatus;
+                do {
+                    srcStatus = repoApiClient.getAlgorithmStatus(id);
+                    Thread.sleep(2000);
+                    System.out.println(id.toString() + " is compiling!");
+                } while (srcStatus.getStatus().compareTo(StatusEnum.COMPILING) == 0);
+                System.out.println(srcStatus.toString());
+                if (srcStatus.getStatus().compareTo(StatusEnum.SUCCESSFULLY_COMPILED)==0){
+                    executorApiClient.executeAlgorithm(id);
+                    do {
+                        srcStatus = repoApiClient.getAlgorithmStatus(id);
+                        Thread.sleep(2000);
+                        System.out.println(id.toString() + " is executing!");
+                    } while (srcStatus.getStatus().compareTo(StatusEnum.EXECUTING) == 0);
+                    System.out.println(srcStatus.toString());
+                }
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+        });
         Map<String,String> res = new HashMap<>();
         res.put("id",id.toString());
         return new ResponseEntity<>(res, HttpStatus.OK);
@@ -78,13 +91,11 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     @Override
     public ResponseEntity<Map<String,String>> getTop(){
         Map<String,String> res = new HashMap<>();
-        ApiClient defaultClient = new ApiClient().setBasePath("http://localhost:8000/repo/api");
-        RepoApi apiInstance = new RepoApi(defaultClient);
         try {
-            IdArray ids = apiInstance.getTopCode();
+            IdArray ids = repoApiClient.getTopCode();
             ids.getId().forEach( id -> {
                 try {
-                    File receivedFile = apiInstance.getAlgorithmCode(UUID.fromString(id));
+                    File receivedFile = repoApiClient.getAlgorithmCode(UUID.fromString(id));
                     String firstLine = Files.readAllLines(receivedFile.toPath()).get(0);
                     System.out.println(firstLine);
                     res.put(id,firstLine);

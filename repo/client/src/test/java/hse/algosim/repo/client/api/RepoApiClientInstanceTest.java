@@ -24,9 +24,9 @@ import org.junit.Ignore;
  * API tests for DefaultApi
  */
 @Ignore
-public class RepoApiTest {
+public class RepoApiClientInstanceTest {
 
-    private final RepoApi api = new RepoApi();
+    private final RepoApiClientInstance api = new RepoApiClientInstance();
 
     
     /**

@@ -1,6 +1,6 @@
 /*
- * Algosim-executor
- * A collab project of HSE and Deutsche Bank aiming to improve trading algorithms testing. Gets the artifact from nexus and executes it.
+ * Algosim compiler
+ * A compiler service for collab project of HSE and Deutsche Bank aiming to improve trading algorithms testing. Gets the source code from the repo and compiles it.
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: kirkondrash@yandex.ru
@@ -11,38 +11,24 @@
  */
 
 
-package hse.algosim.executor.client.api;
-
-import hse.algosim.executor.client.api.ApiCallback;
-import hse.algosim.executor.client.api.ApiClient;
-import hse.algosim.executor.client.api.ApiException;
-import hse.algosim.executor.client.api.ApiResponse;
-import hse.algosim.executor.client.api.Configuration;
-import hse.algosim.executor.client.api.Pair;
-import hse.algosim.executor.client.api.ProgressRequestBody;
-import hse.algosim.executor.client.api.ProgressResponseBody;
-
-import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
+package hse.algosim.compiler.client.api;
 
 
 import java.util.UUID;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DefaultApi {
+public class CompilerApiClientInstance {
     private ApiClient localVarApiClient;
 
-    public DefaultApi() {
+    public CompilerApiClientInstance() {
         this(Configuration.getDefaultApiClient());
     }
 
-    public DefaultApi(ApiClient apiClient) {
+    public CompilerApiClientInstance(ApiClient apiClient) {
         this.localVarApiClient = apiClient;
     }
 
@@ -55,7 +41,7 @@ public class DefaultApi {
     }
 
     /**
-     * Build call for executeAlgorithm
+     * Build call for compileAlgorithm
      * @param id UUID of algorithm to fetch (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -63,15 +49,15 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Successfully executed </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> Artifact not found for this UUID </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Successfully compiled </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call executeAlgorithmCall(UUID id, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call compileAlgorithmCall(UUID id, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
-        String localVarPath = "/execute/{id}"
+        String localVarPath = "/compile/{id}"
             .replaceAll("\\{" + "id" + "\\}", localVarApiClient.escapeString(id.toString()));
 
         List<Pair> localVarQueryParams = new ArrayList<Pair>();
@@ -98,56 +84,56 @@ public class DefaultApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call executeAlgorithmValidateBeforeCall(UUID id, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call compileAlgorithmValidateBeforeCall(UUID id, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling executeAlgorithm(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling compileAlgorithm(Async)");
         }
         
 
-        okhttp3.Call localVarCall = executeAlgorithmCall(id, _callback);
+        okhttp3.Call localVarCall = compileAlgorithmCall(id, _callback);
         return localVarCall;
 
     }
 
     /**
      * 
-     * Gets the artifact from nexus, executes and benchmarks it
+     * Gets the sources from the db and compiles them
      * @param id UUID of algorithm to fetch (required)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Successfully executed </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> Artifact not found for this UUID </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Successfully compiled </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
-    public void executeAlgorithm(UUID id) throws ApiException {
-        executeAlgorithmWithHttpInfo(id);
+    public void compileAlgorithm(UUID id) throws ApiException {
+        compileAlgorithmWithHttpInfo(id);
     }
 
     /**
      * 
-     * Gets the artifact from nexus, executes and benchmarks it
+     * Gets the sources from the db and compiles them
      * @param id UUID of algorithm to fetch (required)
      * @return ApiResponse&lt;Void&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Successfully executed </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> Artifact not found for this UUID </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Successfully compiled </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Void> executeAlgorithmWithHttpInfo(UUID id) throws ApiException {
-        okhttp3.Call localVarCall = executeAlgorithmValidateBeforeCall(id, null);
+    public ApiResponse<Void> compileAlgorithmWithHttpInfo(UUID id) throws ApiException {
+        okhttp3.Call localVarCall = compileAlgorithmValidateBeforeCall(id, null);
         return localVarApiClient.execute(localVarCall);
     }
 
     /**
      *  (asynchronously)
-     * Gets the artifact from nexus, executes and benchmarks it
+     * Gets the sources from the db and compiles them
      * @param id UUID of algorithm to fetch (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
@@ -155,13 +141,13 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Successfully executed </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> Artifact not found for this UUID </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Successfully compiled </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call executeAlgorithmAsync(UUID id, final ApiCallback<Void> _callback) throws ApiException {
+    public okhttp3.Call compileAlgorithmAsync(UUID id, final ApiCallback<Void> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = executeAlgorithmValidateBeforeCall(id, _callback);
+        okhttp3.Call localVarCall = compileAlgorithmValidateBeforeCall(id, _callback);
         localVarApiClient.executeAsync(localVarCall, _callback);
         return localVarCall;
     }

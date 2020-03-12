@@ -28,14 +28,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RepoApi {
+public class RepoApiClientInstance {
     private ApiClient localVarApiClient;
 
-    public RepoApi() {
+    public RepoApiClientInstance() {
         this(Configuration.getDefaultApiClient());
     }
 
-    public RepoApi(ApiClient apiClient) {
+    public RepoApiClientInstance(ApiClient apiClient) {
         this.localVarApiClient = apiClient;
     }
 

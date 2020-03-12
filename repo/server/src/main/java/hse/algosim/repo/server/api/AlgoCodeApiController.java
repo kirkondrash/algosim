@@ -42,7 +42,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
 
     @Override
     public ResponseEntity<Resource> getAlgorithmCode(@PathVariable("id") UUID id) {
-        System.out.println("Sending file!");
+        System.out.println("Sending file "+id.toString());
         Resource r = new PathResource(ids.get(id.toString()));
         HttpHeaders hp = new HttpHeaders();
         hp.add("Content-Disposition","attachment; filename="+id.toString());
@@ -52,7 +52,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
 
     @Override
     public ResponseEntity<Void> uploadAlgorithmCode(@PathVariable("id") UUID id, @Valid MultipartFile code) {
-        System.out.println("Received file!");
+        System.out.println("Received file "+id.toString());
         System.out.println(id.toString());
         try {
             File receivedFile = new File("files/"+id.toString()).getAbsoluteFile();
