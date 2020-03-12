@@ -4,85 +4,24 @@ All URIs are relative to *http://localhost:8080/api*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**changeAlgorithmStatus**](DefaultApi.md#changeAlgorithmStatus) | **PUT** /algoStatus/{id} | 
 [**deleteAlgorithmCode**](DefaultApi.md#deleteAlgorithmCode) | **DELETE** /algoCode/{id} | 
 [**deleteAlgorithmJar**](DefaultApi.md#deleteAlgorithmJar) | **DELETE** /algoJar/{id} | 
 [**deleteAlgorithmMeta**](DefaultApi.md#deleteAlgorithmMeta) | **DELETE** /algoMeta/{id} | 
 [**deleteAlgorithmStatus**](DefaultApi.md#deleteAlgorithmStatus) | **DELETE** /algoStatus/{id} | 
-[**findAlgorithmCode**](DefaultApi.md#findAlgorithmCode) | **GET** /algoCode/{id} | 
-[**findAlgorithmJar**](DefaultApi.md#findAlgorithmJar) | **GET** /algoJar/{id} | 
-[**findAlgorithmMeta**](DefaultApi.md#findAlgorithmMeta) | **GET** /algoMeta/{id} | 
-[**findAlgorithmStatus**](DefaultApi.md#findAlgorithmStatus) | **GET** /algoStatus/{id} | 
+[**getAlgorithmCode**](DefaultApi.md#getAlgorithmCode) | **GET** /algoCode/{id} | 
+[**getAlgorithmJar**](DefaultApi.md#getAlgorithmJar) | **GET** /algoJar/{id} | 
+[**getAlgorithmMeta**](DefaultApi.md#getAlgorithmMeta) | **GET** /algoMeta/{id} | 
+[**getAlgorithmStatus**](DefaultApi.md#getAlgorithmStatus) | **GET** /algoStatus/{id} | 
 [**getTopCode**](DefaultApi.md#getTopCode) | **GET** /getTopCode | 
+[**replaceAlgorithmCode**](DefaultApi.md#replaceAlgorithmCode) | **PUT** /algoCode/{id} | 
+[**replaceAlgorithmJar**](DefaultApi.md#replaceAlgorithmJar) | **PUT** /algoJar/{id} | 
+[**replaceAlgorithmMeta**](DefaultApi.md#replaceAlgorithmMeta) | **PUT** /algoMeta/{id} | 
+[**replaceAlgorithmStatus**](DefaultApi.md#replaceAlgorithmStatus) | **PUT** /algoStatus/{id} | 
 [**uploadAlgorithmCode**](DefaultApi.md#uploadAlgorithmCode) | **POST** /algoCode/{id} | 
 [**uploadAlgorithmJar**](DefaultApi.md#uploadAlgorithmJar) | **POST** /algoJar/{id} | 
 [**uploadAlgorithmMeta**](DefaultApi.md#uploadAlgorithmMeta) | **POST** /algoMeta/{id} | 
 [**uploadAlgorithmStatus**](DefaultApi.md#uploadAlgorithmStatus) | **POST** /algoStatus/{id} | 
 
-
-<a name="changeAlgorithmStatus"></a>
-# **changeAlgorithmStatus**
-> changeAlgorithmStatus(id, srcStatus)
-
-
-
-Changes the algorithm status and/or benchmarks
-
-### Example
-```java
-// Import classes:
-import hse.algosim.repo.client.api.ApiClient;
-import hse.algosim.repo.client.api.ApiException;
-import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.DefaultApi;
-
-public class Example {
-  public static void main(String[] args) {
-    ApiClient defaultClient = Configuration.getDefaultApiClient();
-    defaultClient.setBasePath("http://localhost:8080/api");
-
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm to fetch
-    SrcStatus srcStatus = new SrcStatus(); // SrcStatus | Status to be uploaded
-    try {
-      apiInstance.changeAlgorithmStatus(id, srcStatus);
-    } catch (ApiException e) {
-      System.err.println("Exception when calling DefaultApi#changeAlgorithmStatus");
-      System.err.println("Status code: " + e.getCode());
-      System.err.println("Reason: " + e.getResponseBody());
-      System.err.println("Response headers: " + e.getResponseHeaders());
-      e.printStackTrace();
-    }
-  }
-}
-```
-
-### Parameters
-
-Name | Type | Description  | Notes
-------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm to fetch |
- **srcStatus** | [**SrcStatus**](SrcStatus.md)| Status to be uploaded |
-
-### Return type
-
-null (empty response body)
-
-### Authorization
-
-No authorization required
-
-### HTTP request headers
-
- - **Content-Type**: application/json
- - **Accept**: Not defined
-
-### HTTP response details
-| Status code | Description | Response headers |
-|-------------|-------------|------------------|
-**200** | Status successfully changed |  -  |
-**404** | Status not found for this UUID |  -  |
 
 <a name="deleteAlgorithmCode"></a>
 # **deleteAlgorithmCode**
@@ -90,7 +29,7 @@ No authorization required
 
 
 
-Deletes algorithm sources based on the UUID supplied
+Deletes algorithm source
 
 ### Example
 ```java
@@ -98,15 +37,14 @@ Deletes algorithm sources based on the UUID supplied
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.DefaultApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm to delete
     try {
       apiInstance.deleteAlgorithmCode(id);
@@ -160,15 +98,14 @@ deletes the algorithm jar based on the UUID supplied
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.DefaultApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm to delete
     try {
       apiInstance.deleteAlgorithmJar(id);
@@ -214,7 +151,7 @@ No authorization required
 
 
 
-Clears algorithm metadata
+Deletes algorithm metadata based on the UUID supplied
 
 ### Example
 ```java
@@ -223,15 +160,15 @@ import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
 import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.DefaultApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm which metadata will be cleared
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
+    UUID id = new UUID(); // UUID | UUID of algorithm which metadata will be deleted
     try {
       apiInstance.deleteAlgorithmMeta(id);
     } catch (ApiException e) {
@@ -249,7 +186,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm which metadata will be cleared |
+ **id** | [**UUID**](.md)| UUID of algorithm which metadata will be deleted |
 
 ### Return type
 
@@ -267,7 +204,7 @@ No authorization required
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**204** | Metadata successfully cleared |  -  |
+**204** | Metadata successfully deleted |  -  |
 **404** | Metadata not found for this UUID |  -  |
 
 <a name="deleteAlgorithmStatus"></a>
@@ -284,16 +221,15 @@ Returns an algorithm status
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.DefaultApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm to fetch
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
+    UUID id = new UUID(); // UUID | UUID of algorithm which status will be deleted
     try {
       apiInstance.deleteAlgorithmStatus(id);
     } catch (ApiException e) {
@@ -311,7 +247,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm to fetch |
+ **id** | [**UUID**](.md)| UUID of algorithm which status will be deleted |
 
 ### Return type
 
@@ -332,13 +268,13 @@ No authorization required
 **200** | Status successfully deleted |  -  |
 **404** | Status not found for this UUID |  -  |
 
-<a name="findAlgorithmCode"></a>
-# **findAlgorithmCode**
-> File findAlgorithmCode(id)
+<a name="getAlgorithmCode"></a>
+# **getAlgorithmCode**
+> File getAlgorithmCode(id)
 
 
 
-Returns algorithm sources based on UUID supplied
+Returns algorithm source
 
 ### Example
 ```java
@@ -346,21 +282,20 @@ Returns algorithm sources based on UUID supplied
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.DefaultApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm to fetch
     try {
-      File result = apiInstance.findAlgorithmCode(id);
+      File result = apiInstance.getAlgorithmCode(id);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling DefaultApi#findAlgorithmCode");
+      System.err.println("Exception when calling DefaultApi#getAlgorithmCode");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -392,12 +327,12 @@ No authorization required
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Source code |  -  |
-**404** | Source code not found for this UUID supplied |  -  |
+**200** | Source code successfully fetched |  -  |
+**404** | Source code not found for this UUI |  -  |
 
-<a name="findAlgorithmJar"></a>
-# **findAlgorithmJar**
-> File findAlgorithmJar(id)
+<a name="getAlgorithmJar"></a>
+# **getAlgorithmJar**
+> File getAlgorithmJar(id)
 
 
 
@@ -410,20 +345,20 @@ import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
 import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.DefaultApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm to fetch
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
+    UUID id = new UUID(); // UUID | UUID of algorithm which jar will be fetched
     try {
-      File result = apiInstance.findAlgorithmJar(id);
+      File result = apiInstance.getAlgorithmJar(id);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling DefaultApi#findAlgorithmJar");
+      System.err.println("Exception when calling DefaultApi#getAlgorithmJar");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -437,7 +372,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm to fetch |
+ **id** | [**UUID**](.md)| UUID of algorithm which jar will be fetched |
 
 ### Return type
 
@@ -455,12 +390,12 @@ No authorization required
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | source code and description |  -  |
+**200** | Artifact successfully fetched |  -  |
 **404** | Artifact not found for this UUID |  -  |
 
-<a name="findAlgorithmMeta"></a>
-# **findAlgorithmMeta**
-> SrcMeta findAlgorithmMeta(id)
+<a name="getAlgorithmMeta"></a>
+# **getAlgorithmMeta**
+> SrcMeta getAlgorithmMeta(id)
 
 
 
@@ -472,21 +407,20 @@ Returns algorithm metadata
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.DefaultApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm which metadata is fetched
     try {
-      SrcMeta result = apiInstance.findAlgorithmMeta(id);
+      SrcMeta result = apiInstance.getAlgorithmMeta(id);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling DefaultApi#findAlgorithmMeta");
+      System.err.println("Exception when calling DefaultApi#getAlgorithmMeta");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -518,12 +452,12 @@ No authorization required
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Metadata |  -  |
+**200** | Metadata successfully fetched |  -  |
 **404** | Metadata not found for this UUID |  -  |
 
-<a name="findAlgorithmStatus"></a>
-# **findAlgorithmStatus**
-> SrcStatus findAlgorithmStatus(id)
+<a name="getAlgorithmStatus"></a>
+# **getAlgorithmStatus**
+> SrcStatus getAlgorithmStatus(id)
 
 
 
@@ -535,21 +469,20 @@ Returns an algorithm status
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.DefaultApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm to fetch
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
+    UUID id = new UUID(); // UUID | UUID of algorithm which status will be fetched
     try {
-      SrcStatus result = apiInstance.findAlgorithmStatus(id);
+      SrcStatus result = apiInstance.getAlgorithmStatus(id);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling DefaultApi#findAlgorithmStatus");
+      System.err.println("Exception when calling DefaultApi#getAlgorithmStatus");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -563,7 +496,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm to fetch |
+ **id** | [**UUID**](.md)| UUID of algorithm which status will be fetched |
 
 ### Return type
 
@@ -581,7 +514,7 @@ No authorization required
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | algorithm starus |  -  |
+**200** | Status successfully fetched |  -  |
 **404** | Status not found for this UUID |  -  |
 
 <a name="getTopCode"></a>
@@ -598,15 +531,14 @@ Returns some 10 algos ids
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.DefaultApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     try {
       IdArray result = apiInstance.getTopCode();
       System.out.println(result);
@@ -642,13 +574,13 @@ No authorization required
 |-------------|-------------|------------------|
 **200** | Source code |  -  |
 
-<a name="uploadAlgorithmCode"></a>
-# **uploadAlgorithmCode**
-> uploadAlgorithmCode(id, code)
+<a name="replaceAlgorithmCode"></a>
+# **replaceAlgorithmCode**
+> replaceAlgorithmCode(id, code)
 
 
 
-Uploads the algorithm sources based on UUID supplied
+Replaces the algorithm source
 
 ### Example
 ```java
@@ -656,21 +588,20 @@ Uploads the algorithm sources based on UUID supplied
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.DefaultApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm to upload to db
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
+    UUID id = new UUID(); // UUID | UUID of algorithm to replace
     File code = new File("/path/to/file"); // File | 
     try {
-      apiInstance.uploadAlgorithmCode(id, code);
+      apiInstance.replaceAlgorithmCode(id, code);
     } catch (ApiException e) {
-      System.err.println("Exception when calling DefaultApi#uploadAlgorithmCode");
+      System.err.println("Exception when calling DefaultApi#replaceAlgorithmCode");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -684,7 +615,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm to upload to db |
+ **id** | [**UUID**](.md)| UUID of algorithm to replace |
  **code** | **File**|  | [optional]
 
 ### Return type
@@ -703,7 +634,259 @@ No authorization required
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**201** | Source code was uploaded successfully |  -  |
+**200** | Source code successfully replaced |  -  |
+
+<a name="replaceAlgorithmJar"></a>
+# **replaceAlgorithmJar**
+> replaceAlgorithmJar(id, jar)
+
+
+
+Replaces algorithm artifact
+
+### Example
+```java
+// Import classes:
+import hse.algosim.repo.client.api.ApiClient;
+import hse.algosim.repo.client.api.ApiException;
+import hse.algosim.repo.client.api.Configuration;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://localhost:8080/api");
+
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
+    UUID id = new UUID(); // UUID | UUID of algorithm which jar is uploaded
+    File jar = new File("/path/to/file"); // File | 
+    try {
+      apiInstance.replaceAlgorithmJar(id, jar);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling DefaultApi#replaceAlgorithmJar");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | [**UUID**](.md)| UUID of algorithm which jar is uploaded |
+ **jar** | **File**|  | [optional]
+
+### Return type
+
+null (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
+ - **Accept**: Not defined
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Artifact successfully replaced |  -  |
+**404** | Source code / artifact not found for this UUID |  -  |
+
+<a name="replaceAlgorithmMeta"></a>
+# **replaceAlgorithmMeta**
+> replaceAlgorithmMeta(id, srcMeta)
+
+
+
+Replaces algorithm metadata like description or author
+
+### Example
+```java
+// Import classes:
+import hse.algosim.repo.client.api.ApiClient;
+import hse.algosim.repo.client.api.ApiException;
+import hse.algosim.repo.client.api.Configuration;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://localhost:8080/api");
+
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
+    UUID id = new UUID(); // UUID | UUID of algorithm which metadata is replaced
+    SrcMeta srcMeta = new SrcMeta(); // SrcMeta | Metadata to be uploaded
+    try {
+      apiInstance.replaceAlgorithmMeta(id, srcMeta);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling DefaultApi#replaceAlgorithmMeta");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | [**UUID**](.md)| UUID of algorithm which metadata is replaced |
+ **srcMeta** | [**SrcMeta**](SrcMeta.md)| Metadata to be uploaded |
+
+### Return type
+
+null (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: Not defined
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Metadata successfully replaced |  -  |
+**404** | Source code / metadata not found for this UUID |  -  |
+
+<a name="replaceAlgorithmStatus"></a>
+# **replaceAlgorithmStatus**
+> replaceAlgorithmStatus(id, srcStatus)
+
+
+
+Replaces the algorithm status and/or benchmarks
+
+### Example
+```java
+// Import classes:
+import hse.algosim.repo.client.api.ApiClient;
+import hse.algosim.repo.client.api.ApiException;
+import hse.algosim.repo.client.api.Configuration;
+import hse.algosim.repo.client.api.models.*;
+import hse.algosim.repo.client.api.RepoApiClientInstance;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://localhost:8080/api");
+
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
+    UUID id = new UUID(); // UUID | UUID of algorithm which status will be replaced
+    SrcStatus srcStatus = new SrcStatus(); // SrcStatus | Status to be uploaded
+    try {
+      apiInstance.replaceAlgorithmStatus(id, srcStatus);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling DefaultApi#replaceAlgorithmStatus");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | [**UUID**](.md)| UUID of algorithm which status will be replaced |
+ **srcStatus** | [**SrcStatus**](SrcStatus.md)| Status to be uploaded |
+
+### Return type
+
+null (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: application/json
+ - **Accept**: Not defined
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**200** | Status successfully replaced |  -  |
+**404** | Source code / status not found for this UUID |  -  |
+
+<a name="uploadAlgorithmCode"></a>
+# **uploadAlgorithmCode**
+> uploadAlgorithmCode(id, code)
+
+
+
+Uploads the algorithm source
+
+### Example
+```java
+// Import classes:
+import hse.algosim.repo.client.api.ApiClient;
+import hse.algosim.repo.client.api.ApiException;
+import hse.algosim.repo.client.api.Configuration;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
+
+public class Example {
+  public static void main(String[] args) {
+    ApiClient defaultClient = Configuration.getDefaultApiClient();
+    defaultClient.setBasePath("http://localhost:8080/api");
+
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
+    UUID id = new UUID(); // UUID | UUID of algorithm to upload
+    File code = new File("/path/to/file"); // File | 
+    try {
+      apiInstance.uploadAlgorithmCode(id, code);
+    } catch (ApiException e) {
+      System.err.println("Exception when calling DefaultApi#uploadAlgorithmCode");
+      System.err.println("Status code: " + e.getCode());
+      System.err.println("Reason: " + e.getResponseBody());
+      System.err.println("Response headers: " + e.getResponseHeaders());
+      e.printStackTrace();
+    }
+  }
+}
+```
+
+### Parameters
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **id** | [**UUID**](.md)| UUID of algorithm to upload |
+ **code** | **File**|  | [optional]
+
+### Return type
+
+null (empty response body)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+ - **Content-Type**: multipart/form-data
+ - **Accept**: Not defined
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+**201** | Source code successfully uploaded |  -  |
 
 <a name="uploadAlgorithmJar"></a>
 # **uploadAlgorithmJar**
@@ -719,15 +902,14 @@ Uploads algorithm artifact
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.DefaultApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm which jar is uploaded
     File jar = new File("/path/to/file"); // File | 
     try {
@@ -766,7 +948,7 @@ No authorization required
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Successfully uploaded to nexus |  -  |
+**201** | Artifact successfully uploaded |  -  |
 **404** | Source code not found for this UUID |  -  |
 
 <a name="uploadAlgorithmMeta"></a>
@@ -775,7 +957,7 @@ No authorization required
 
 
 
-Loads algorithm metadata like description or author
+Upoads algorithm metadata like description or author
 
 ### Example
 ```java
@@ -783,15 +965,14 @@ Loads algorithm metadata like description or author
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.DefaultApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm which metadata is uploaded
     SrcMeta srcMeta = new SrcMeta(); // SrcMeta | Metadata to be uploaded
     try {
@@ -830,7 +1011,7 @@ No authorization required
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**201** | The metadata was uploaded successfully |  -  |
+**201** | Metadata successfully uploaded |  -  |
 **404** | Source not found for this UUID |  -  |
 
 <a name="uploadAlgorithmStatus"></a>
@@ -847,16 +1028,15 @@ Uploads the algorithm status and/or benchmarks
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.DefaultApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm to fetch
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
+    UUID id = new UUID(); // UUID | UUID of algorithm which status will be uploaded
     SrcStatus srcStatus = new SrcStatus(); // SrcStatus | Status to be uploaded
     try {
       apiInstance.uploadAlgorithmStatus(id, srcStatus);
@@ -875,7 +1055,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm to fetch |
+ **id** | [**UUID**](.md)| UUID of algorithm which status will be uploaded |
  **srcStatus** | [**SrcStatus**](SrcStatus.md)| Status to be uploaded |
 
 ### Return type
@@ -894,6 +1074,6 @@ No authorization required
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Status successfully changed |  -  |
+**200** | Status successfully uploaded |  -  |
 **404** | Source code not found for this UUID |  -  |
 

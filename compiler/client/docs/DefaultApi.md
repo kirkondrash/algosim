@@ -20,16 +20,15 @@ Gets the sources from the db and compiles them
 // Import classes:
 import hse.algosim.compiler.client.api.ApiClient;
 import hse.algosim.compiler.client.api.ApiException;
-import hse.algosim.compiler.client.api.Configuration;
+import hse.algosim.compiler.client.api.CompilerApiClientInstance;import hse.algosim.compiler.client.api.Configuration;
 import hse.algosim.compiler.client.api.models.*;
-import hse.algosim.compiler.client.api.DefaultApi;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
+    CompilerApiClientInstance apiInstance = new CompilerApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm to fetch
     try {
       apiInstance.compileAlgorithm(id);

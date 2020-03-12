@@ -27,6 +27,7 @@ static_resources:
                   prefix: "/compiler"
                 route:
                   prefix_rewrite: "/"
+                  timeout: 60s
                   cluster: compiler
               - match:
                   prefix: "/executor"

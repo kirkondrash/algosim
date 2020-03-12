@@ -3,9 +3,8 @@ info:
   version: 0.0.1
   title: Algosim repo
   description: |
-    A repo service for collab project of HSE and Deutsche Bank aiming to improve trading algorithms testing. Service linked to:
-      - the db for algorithm description, source code and benchmarks
-      - nexus for the artifacts   
+    A repo service for collab project of HSE and Deutsche Bank aiming to improve trading algorithms testing.
+    For now, just stores in folders sources and artifacts. Meta and statuses are stored in-memory.
   contact:
     name: developers
     email: kirkondrash@yandex.ru
@@ -26,12 +25,12 @@ paths:
                 $ref: '#/components/schemas/IdArray'
   /algoCode/{id}:
     post:
-      description: Uploads the algorithm sources based on UUID supplied 
+      description: Uploads the algorithm source 
       operationId: uploadAlgorithmCode
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm to upload to db
+          description: UUID of algorithm to upload
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -44,10 +43,30 @@ paths:
               $ref: '#/components/schemas/SrcCode'
       responses:
         '201':
-          description: Source code was uploaded successfully
+          description: Source code successfully uploaded
+    put:
+      description: Replaces the algorithm source
+      operationId: replaceAlgorithmCode
+      parameters:
+        - name: id
+          in: path
+          description: UUID of algorithm to replace
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      requestBody:
+        description: Source code to be uploaded
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SrcCode'
+      responses:
+        '200':
+          description: Source code successfully replaced
     get:
-      description: Returns algorithm sources based on UUID supplied
-      operationId: findAlgorithmCode
+      description: Returns algorithm source
+      operationId: getAlgorithmCode
       parameters:
         - name: id
           in: path
@@ -57,16 +76,16 @@ paths:
             $ref: '#/components/schemas/SrcId'
       responses:
         '200':
-          description: Source code
+          description: Source code successfully fetched
           content:
             application/octet-stream:
               schema:
                 type: string
                 format: binary
         '404':
-          description: Source code not found for this UUID supplied
+          description: Source code not found for this UUI
     delete:
-      description: Deletes algorithm sources based on the UUID supplied
+      description: Deletes algorithm source
       operationId: deleteAlgorithmCode
       parameters:
         - name: id
@@ -82,7 +101,7 @@ paths:
           description: Source code not found for this UUID
   /algoMeta/{id}:
     post:
-      description: Loads algorithm metadata like description or author
+      description: Upoads algorithm metadata like description or author
       operationId: uploadAlgorithmMeta
       parameters:
         - name: id
@@ -100,12 +119,34 @@ paths:
               $ref: '#/components/schemas/SrcMeta'
       responses:
         '201':
-          description: The metadata was uploaded successfully
+          description: Metadata successfully uploaded
         '404':
           description: Source not found for this UUID
+    put:
+      description: Replaces algorithm metadata like description or author
+      operationId: replaceAlgorithmMeta
+      parameters:
+        - name: id
+          in: path
+          description: UUID of algorithm which metadata is replaced
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      requestBody:
+        description: Metadata to be uploaded
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SrcMeta'
+      responses:
+        '200':
+          description: Metadata successfully replaced
+        '404':
+          description: Source code / metadata not found for this UUID
     get:
       description: Returns algorithm metadata
-      operationId: findAlgorithmMeta
+      operationId: getAlgorithmMeta
       parameters:
         - name: id
           in: path
@@ -115,7 +156,7 @@ paths:
             $ref: '#/components/schemas/SrcId'
       responses:
         '200':
-          description: Metadata
+          description: Metadata successfully fetched
           content:
             application/json:
               schema:
@@ -123,18 +164,18 @@ paths:
         '404':
           description: Metadata not found for this UUID
     delete:
-      description: Clears algorithm metadata
+      description: Deletes algorithm metadata based on the UUID supplied
       operationId: deleteAlgorithmMeta
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm which metadata will be cleared
+          description: UUID of algorithm which metadata will be deleted
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
       responses:
         '204':
-          description: Metadata successfully cleared
+          description: Metadata successfully deleted
         '404':
           description: Metadata not found for this UUID
   /algoJar/{id}:
@@ -149,7 +190,29 @@ paths:
           schema:
             $ref: '#/components/schemas/SrcId'
       requestBody:
-        description: Code to be uploaded
+        description: Artifact to be uploaded
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SrcJar'
+      responses:
+        '201':
+          description: Artifact successfully uploaded
+        '404':
+          description: Source code not found for this UUID
+    put:
+      description: Replaces algorithm artifact
+      operationId: replaceAlgorithmJar
+      parameters:
+        - name: id
+          in: path
+          description: UUID of algorithm which jar is uploaded
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      requestBody:
+        description: Artifact to be uploaded
         required: true
         content:
           multipart/form-data:
@@ -157,22 +220,22 @@ paths:
               $ref: '#/components/schemas/SrcJar'
       responses:
         '200':
-          description: Successfully uploaded to nexus
+          description: Artifact successfully replaced
         '404':
-          description: Source code not found for this UUID
+          description: Source code / artifact not found for this UUID
     get:
       description: Returns algorithm jar
-      operationId: findAlgorithmJar
+      operationId: getAlgorithmJar
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm to fetch
+          description: UUID of algorithm which jar will be fetched
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
       responses:
         '200':
-          description: source code and description
+          description: Artifact successfully fetched
           content:
             application/octet-stream:
               schema:
@@ -202,7 +265,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm to fetch
+          description: UUID of algorithm which status will be uploaded
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -215,16 +278,16 @@ paths:
               $ref: '#/components/schemas/SrcStatus'
       responses:
         '200':
-          description: Status successfully changed
+          description: Status successfully uploaded
         '404':
           description: Source code not found for this UUID
     put:
-      description: Changes the algorithm status and/or benchmarks 
-      operationId: changeAlgorithmStatus
+      description: Replaces the algorithm status and/or benchmarks 
+      operationId: replaceAlgorithmStatus
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm to fetch
+          description: UUID of algorithm which status will be replaced
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -237,22 +300,22 @@ paths:
               $ref: '#/components/schemas/SrcStatus'
       responses:
         '200':
-          description: Status successfully changed
+          description: Status successfully replaced
         '404':
-          description: Status not found for this UUID
+          description: Source code / status not found for this UUID
     get:
       description: Returns an algorithm status 
-      operationId: findAlgorithmStatus
+      operationId: getAlgorithmStatus
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm to fetch
+          description: UUID of algorithm which status will be fetched
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
       responses:
         '200':
-          description: algorithm starus
+          description: Status successfully fetched
           content:
             application/json:
               schema:
@@ -265,7 +328,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm to fetch
+          description: UUID of algorithm which status will be deleted
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -319,9 +382,17 @@ components:
       properties:
         status:
           type: string
-          example: "SCHEDULED"
-        rank:
-          type: integer
+          enum:
+            - SCHEDULED FOR COMPILATION
+            - COMPILING
+            - SUCCESSFULLY COMPILED
+            - COMPILATION FAILED
+            - SCHEDULED FOR EXECUTION
+            - EXECUTING
+            - SUCCESSFULLY EXECUTED
+            - EXECUTION FAILED
+        errorTrace:
+          type: string
         winloss:
           type: string
           example: "+200kk"

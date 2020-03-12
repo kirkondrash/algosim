@@ -1,6 +1,6 @@
 /*
  * Algosim repo
- * A repo service for collab project of HSE and Deutsche Bank aiming to improve trading algorithms testing. Service linked to:   - the db for algorithm description, source code and benchmarks   - nexus for the artifacts    
+ * A repo service for collab project of HSE and Deutsche Bank aiming to improve trading algorithms testing. For now, just stores in folders sources and artifacts. Meta and statuses are stored in-memory. 
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: kirkondrash@yandex.ru
@@ -13,18 +13,7 @@
 
 package hse.algosim.repo.client.api;
 
-import hse.algosim.repo.client.api.ApiCallback;
-import hse.algosim.repo.client.api.ApiClient;
-import hse.algosim.repo.client.api.ApiException;
-import hse.algosim.repo.client.api.ApiResponse;
-import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.Pair;
-import hse.algosim.repo.client.api.ProgressRequestBody;
-import hse.algosim.repo.client.api.ProgressResponseBody;
-
 import com.google.gson.reflect.TypeToken;
-
-import java.io.IOException;
 
 
 import java.io.File;
@@ -39,14 +28,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class DefaultApi {
+public class RepoApiClientInstance {
     private ApiClient localVarApiClient;
 
-    public DefaultApi() {
+    public RepoApiClientInstance() {
         this(Configuration.getDefaultApiClient());
     }
 
-    public DefaultApi(ApiClient apiClient) {
+    public RepoApiClientInstance(ApiClient apiClient) {
         this.localVarApiClient = apiClient;
     }
 
@@ -58,126 +47,6 @@ public class DefaultApi {
         this.localVarApiClient = apiClient;
     }
 
-    /**
-     * Build call for changeAlgorithmStatus
-     * @param id UUID of algorithm to fetch (required)
-     * @param srcStatus Status to be uploaded (required)
-     * @param _callback Callback for upload/download progress
-     * @return Call to execute
-     * @throws ApiException If fail to serialize the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Status successfully changed </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> Status not found for this UUID </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call changeAlgorithmStatusCall(UUID id, SrcStatus srcStatus, final ApiCallback _callback) throws ApiException {
-        Object localVarPostBody = srcStatus;
-
-        // create path and map variables
-        String localVarPath = "/algoStatus/{id}"
-            .replaceAll("\\{" + "id" + "\\}", localVarApiClient.escapeString(id.toString()));
-
-        List<Pair> localVarQueryParams = new ArrayList<Pair>();
-        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
-        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
-        Map<String, String> localVarCookieParams = new HashMap<String, String>();
-        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
-        final String[] localVarAccepts = {
-            
-        };
-        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
-        if (localVarAccept != null) {
-            localVarHeaderParams.put("Accept", localVarAccept);
-        }
-
-        final String[] localVarContentTypes = {
-            "application/json"
-        };
-        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
-        localVarHeaderParams.put("Content-Type", localVarContentType);
-
-        String[] localVarAuthNames = new String[] {  };
-        return localVarApiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
-    }
-
-    @SuppressWarnings("rawtypes")
-    private okhttp3.Call changeAlgorithmStatusValidateBeforeCall(UUID id, SrcStatus srcStatus, final ApiCallback _callback) throws ApiException {
-        
-        // verify the required parameter 'id' is set
-        if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling changeAlgorithmStatus(Async)");
-        }
-        
-        // verify the required parameter 'srcStatus' is set
-        if (srcStatus == null) {
-            throw new ApiException("Missing the required parameter 'srcStatus' when calling changeAlgorithmStatus(Async)");
-        }
-        
-
-        okhttp3.Call localVarCall = changeAlgorithmStatusCall(id, srcStatus, _callback);
-        return localVarCall;
-
-    }
-
-    /**
-     * 
-     * Changes the algorithm status and/or benchmarks
-     * @param id UUID of algorithm to fetch (required)
-     * @param srcStatus Status to be uploaded (required)
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Status successfully changed </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> Status not found for this UUID </td><td>  -  </td></tr>
-     </table>
-     */
-    public void changeAlgorithmStatus(UUID id, SrcStatus srcStatus) throws ApiException {
-        changeAlgorithmStatusWithHttpInfo(id, srcStatus);
-    }
-
-    /**
-     * 
-     * Changes the algorithm status and/or benchmarks
-     * @param id UUID of algorithm to fetch (required)
-     * @param srcStatus Status to be uploaded (required)
-     * @return ApiResponse&lt;Void&gt;
-     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Status successfully changed </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> Status not found for this UUID </td><td>  -  </td></tr>
-     </table>
-     */
-    public ApiResponse<Void> changeAlgorithmStatusWithHttpInfo(UUID id, SrcStatus srcStatus) throws ApiException {
-        okhttp3.Call localVarCall = changeAlgorithmStatusValidateBeforeCall(id, srcStatus, null);
-        return localVarApiClient.execute(localVarCall);
-    }
-
-    /**
-     *  (asynchronously)
-     * Changes the algorithm status and/or benchmarks
-     * @param id UUID of algorithm to fetch (required)
-     * @param srcStatus Status to be uploaded (required)
-     * @param _callback The callback to be executed when the API call finishes
-     * @return The request call
-     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
-     * @http.response.details
-     <table summary="Response Details" border="1">
-        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Status successfully changed </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> Status not found for this UUID </td><td>  -  </td></tr>
-     </table>
-     */
-    public okhttp3.Call changeAlgorithmStatusAsync(UUID id, SrcStatus srcStatus, final ApiCallback<Void> _callback) throws ApiException {
-
-        okhttp3.Call localVarCall = changeAlgorithmStatusValidateBeforeCall(id, srcStatus, _callback);
-        localVarApiClient.executeAsync(localVarCall, _callback);
-        return localVarCall;
-    }
     /**
      * Build call for deleteAlgorithmCode
      * @param id UUID of algorithm to delete (required)
@@ -237,7 +106,7 @@ public class DefaultApi {
 
     /**
      * 
-     * Deletes algorithm sources based on the UUID supplied
+     * Deletes algorithm source
      * @param id UUID of algorithm to delete (required)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
@@ -253,7 +122,7 @@ public class DefaultApi {
 
     /**
      * 
-     * Deletes algorithm sources based on the UUID supplied
+     * Deletes algorithm source
      * @param id UUID of algorithm to delete (required)
      * @return ApiResponse&lt;Void&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
@@ -271,7 +140,7 @@ public class DefaultApi {
 
     /**
      *  (asynchronously)
-     * Deletes algorithm sources based on the UUID supplied
+     * Deletes algorithm source
      * @param id UUID of algorithm to delete (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
@@ -402,14 +271,14 @@ public class DefaultApi {
     }
     /**
      * Build call for deleteAlgorithmMeta
-     * @param id UUID of algorithm which metadata will be cleared (required)
+     * @param id UUID of algorithm which metadata will be deleted (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 204 </td><td> Metadata successfully cleared </td><td>  -  </td></tr>
+        <tr><td> 204 </td><td> Metadata successfully deleted </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Metadata not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
@@ -459,13 +328,13 @@ public class DefaultApi {
 
     /**
      * 
-     * Clears algorithm metadata
-     * @param id UUID of algorithm which metadata will be cleared (required)
+     * Deletes algorithm metadata based on the UUID supplied
+     * @param id UUID of algorithm which metadata will be deleted (required)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 204 </td><td> Metadata successfully cleared </td><td>  -  </td></tr>
+        <tr><td> 204 </td><td> Metadata successfully deleted </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Metadata not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
@@ -475,14 +344,14 @@ public class DefaultApi {
 
     /**
      * 
-     * Clears algorithm metadata
-     * @param id UUID of algorithm which metadata will be cleared (required)
+     * Deletes algorithm metadata based on the UUID supplied
+     * @param id UUID of algorithm which metadata will be deleted (required)
      * @return ApiResponse&lt;Void&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 204 </td><td> Metadata successfully cleared </td><td>  -  </td></tr>
+        <tr><td> 204 </td><td> Metadata successfully deleted </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Metadata not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
@@ -493,15 +362,15 @@ public class DefaultApi {
 
     /**
      *  (asynchronously)
-     * Clears algorithm metadata
-     * @param id UUID of algorithm which metadata will be cleared (required)
+     * Deletes algorithm metadata based on the UUID supplied
+     * @param id UUID of algorithm which metadata will be deleted (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 204 </td><td> Metadata successfully cleared </td><td>  -  </td></tr>
+        <tr><td> 204 </td><td> Metadata successfully deleted </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Metadata not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
@@ -513,7 +382,7 @@ public class DefaultApi {
     }
     /**
      * Build call for deleteAlgorithmStatus
-     * @param id UUID of algorithm to fetch (required)
+     * @param id UUID of algorithm which status will be deleted (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
@@ -571,7 +440,7 @@ public class DefaultApi {
     /**
      * 
      * Returns an algorithm status
-     * @param id UUID of algorithm to fetch (required)
+     * @param id UUID of algorithm which status will be deleted (required)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
@@ -587,7 +456,7 @@ public class DefaultApi {
     /**
      * 
      * Returns an algorithm status
-     * @param id UUID of algorithm to fetch (required)
+     * @param id UUID of algorithm which status will be deleted (required)
      * @return ApiResponse&lt;Void&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
@@ -605,7 +474,7 @@ public class DefaultApi {
     /**
      *  (asynchronously)
      * Returns an algorithm status
-     * @param id UUID of algorithm to fetch (required)
+     * @param id UUID of algorithm which status will be deleted (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
@@ -623,7 +492,7 @@ public class DefaultApi {
         return localVarCall;
     }
     /**
-     * Build call for findAlgorithmCode
+     * Build call for getAlgorithmCode
      * @param id UUID of algorithm to fetch (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -631,11 +500,11 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Source code </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> Source code not found for this UUID supplied </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Source code successfully fetched </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code not found for this UUI </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call findAlgorithmCodeCall(UUID id, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call getAlgorithmCodeCall(UUID id, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -666,59 +535,59 @@ public class DefaultApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call findAlgorithmCodeValidateBeforeCall(UUID id, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call getAlgorithmCodeValidateBeforeCall(UUID id, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling findAlgorithmCode(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling getAlgorithmCode(Async)");
         }
         
 
-        okhttp3.Call localVarCall = findAlgorithmCodeCall(id, _callback);
+        okhttp3.Call localVarCall = getAlgorithmCodeCall(id, _callback);
         return localVarCall;
 
     }
 
     /**
      * 
-     * Returns algorithm sources based on UUID supplied
+     * Returns algorithm source
      * @param id UUID of algorithm to fetch (required)
      * @return File
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Source code </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> Source code not found for this UUID supplied </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Source code successfully fetched </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code not found for this UUI </td><td>  -  </td></tr>
      </table>
      */
-    public File findAlgorithmCode(UUID id) throws ApiException {
-        ApiResponse<File> localVarResp = findAlgorithmCodeWithHttpInfo(id);
+    public File getAlgorithmCode(UUID id) throws ApiException {
+        ApiResponse<File> localVarResp = getAlgorithmCodeWithHttpInfo(id);
         return localVarResp.getData();
     }
 
     /**
      * 
-     * Returns algorithm sources based on UUID supplied
+     * Returns algorithm source
      * @param id UUID of algorithm to fetch (required)
      * @return ApiResponse&lt;File&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Source code </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> Source code not found for this UUID supplied </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Source code successfully fetched </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code not found for this UUI </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<File> findAlgorithmCodeWithHttpInfo(UUID id) throws ApiException {
-        okhttp3.Call localVarCall = findAlgorithmCodeValidateBeforeCall(id, null);
+    public ApiResponse<File> getAlgorithmCodeWithHttpInfo(UUID id) throws ApiException {
+        okhttp3.Call localVarCall = getAlgorithmCodeValidateBeforeCall(id, null);
         Type localVarReturnType = new TypeToken<File>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
 
     /**
      *  (asynchronously)
-     * Returns algorithm sources based on UUID supplied
+     * Returns algorithm source
      * @param id UUID of algorithm to fetch (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
@@ -726,31 +595,31 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Source code </td><td>  -  </td></tr>
-        <tr><td> 404 </td><td> Source code not found for this UUID supplied </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Source code successfully fetched </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code not found for this UUI </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call findAlgorithmCodeAsync(UUID id, final ApiCallback<File> _callback) throws ApiException {
+    public okhttp3.Call getAlgorithmCodeAsync(UUID id, final ApiCallback<File> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = findAlgorithmCodeValidateBeforeCall(id, _callback);
+        okhttp3.Call localVarCall = getAlgorithmCodeValidateBeforeCall(id, _callback);
         Type localVarReturnType = new TypeToken<File>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
     /**
-     * Build call for findAlgorithmJar
-     * @param id UUID of algorithm to fetch (required)
+     * Build call for getAlgorithmJar
+     * @param id UUID of algorithm which jar will be fetched (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> source code and description </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Artifact successfully fetched </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Artifact not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call findAlgorithmJarCall(UUID id, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call getAlgorithmJarCall(UUID id, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -781,15 +650,15 @@ public class DefaultApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call findAlgorithmJarValidateBeforeCall(UUID id, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call getAlgorithmJarValidateBeforeCall(UUID id, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling findAlgorithmJar(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling getAlgorithmJar(Async)");
         }
         
 
-        okhttp3.Call localVarCall = findAlgorithmJarCall(id, _callback);
+        okhttp3.Call localVarCall = getAlgorithmJarCall(id, _callback);
         return localVarCall;
 
     }
@@ -797,36 +666,36 @@ public class DefaultApi {
     /**
      * 
      * Returns algorithm jar
-     * @param id UUID of algorithm to fetch (required)
+     * @param id UUID of algorithm which jar will be fetched (required)
      * @return File
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> source code and description </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Artifact successfully fetched </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Artifact not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
-    public File findAlgorithmJar(UUID id) throws ApiException {
-        ApiResponse<File> localVarResp = findAlgorithmJarWithHttpInfo(id);
+    public File getAlgorithmJar(UUID id) throws ApiException {
+        ApiResponse<File> localVarResp = getAlgorithmJarWithHttpInfo(id);
         return localVarResp.getData();
     }
 
     /**
      * 
      * Returns algorithm jar
-     * @param id UUID of algorithm to fetch (required)
+     * @param id UUID of algorithm which jar will be fetched (required)
      * @return ApiResponse&lt;File&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> source code and description </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Artifact successfully fetched </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Artifact not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<File> findAlgorithmJarWithHttpInfo(UUID id) throws ApiException {
-        okhttp3.Call localVarCall = findAlgorithmJarValidateBeforeCall(id, null);
+    public ApiResponse<File> getAlgorithmJarWithHttpInfo(UUID id) throws ApiException {
+        okhttp3.Call localVarCall = getAlgorithmJarValidateBeforeCall(id, null);
         Type localVarReturnType = new TypeToken<File>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -834,26 +703,26 @@ public class DefaultApi {
     /**
      *  (asynchronously)
      * Returns algorithm jar
-     * @param id UUID of algorithm to fetch (required)
+     * @param id UUID of algorithm which jar will be fetched (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> source code and description </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Artifact successfully fetched </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Artifact not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call findAlgorithmJarAsync(UUID id, final ApiCallback<File> _callback) throws ApiException {
+    public okhttp3.Call getAlgorithmJarAsync(UUID id, final ApiCallback<File> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = findAlgorithmJarValidateBeforeCall(id, _callback);
+        okhttp3.Call localVarCall = getAlgorithmJarValidateBeforeCall(id, _callback);
         Type localVarReturnType = new TypeToken<File>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
     /**
-     * Build call for findAlgorithmMeta
+     * Build call for getAlgorithmMeta
      * @param id UUID of algorithm which metadata is fetched (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -861,11 +730,11 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Metadata </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Metadata successfully fetched </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Metadata not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call findAlgorithmMetaCall(UUID id, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call getAlgorithmMetaCall(UUID id, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -896,15 +765,15 @@ public class DefaultApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call findAlgorithmMetaValidateBeforeCall(UUID id, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call getAlgorithmMetaValidateBeforeCall(UUID id, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling findAlgorithmMeta(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling getAlgorithmMeta(Async)");
         }
         
 
-        okhttp3.Call localVarCall = findAlgorithmMetaCall(id, _callback);
+        okhttp3.Call localVarCall = getAlgorithmMetaCall(id, _callback);
         return localVarCall;
 
     }
@@ -918,12 +787,12 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Metadata </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Metadata successfully fetched </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Metadata not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
-    public SrcMeta findAlgorithmMeta(UUID id) throws ApiException {
-        ApiResponse<SrcMeta> localVarResp = findAlgorithmMetaWithHttpInfo(id);
+    public SrcMeta getAlgorithmMeta(UUID id) throws ApiException {
+        ApiResponse<SrcMeta> localVarResp = getAlgorithmMetaWithHttpInfo(id);
         return localVarResp.getData();
     }
 
@@ -936,12 +805,12 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Metadata </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Metadata successfully fetched </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Metadata not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<SrcMeta> findAlgorithmMetaWithHttpInfo(UUID id) throws ApiException {
-        okhttp3.Call localVarCall = findAlgorithmMetaValidateBeforeCall(id, null);
+    public ApiResponse<SrcMeta> getAlgorithmMetaWithHttpInfo(UUID id) throws ApiException {
+        okhttp3.Call localVarCall = getAlgorithmMetaValidateBeforeCall(id, null);
         Type localVarReturnType = new TypeToken<SrcMeta>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -956,31 +825,31 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Metadata </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Metadata successfully fetched </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Metadata not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call findAlgorithmMetaAsync(UUID id, final ApiCallback<SrcMeta> _callback) throws ApiException {
+    public okhttp3.Call getAlgorithmMetaAsync(UUID id, final ApiCallback<SrcMeta> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = findAlgorithmMetaValidateBeforeCall(id, _callback);
+        okhttp3.Call localVarCall = getAlgorithmMetaValidateBeforeCall(id, _callback);
         Type localVarReturnType = new TypeToken<SrcMeta>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
     /**
-     * Build call for findAlgorithmStatus
-     * @param id UUID of algorithm to fetch (required)
+     * Build call for getAlgorithmStatus
+     * @param id UUID of algorithm which status will be fetched (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
      * @throws ApiException If fail to serialize the request body object
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> algorithm starus </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Status successfully fetched </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Status not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call findAlgorithmStatusCall(UUID id, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call getAlgorithmStatusCall(UUID id, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -1011,15 +880,15 @@ public class DefaultApi {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call findAlgorithmStatusValidateBeforeCall(UUID id, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call getAlgorithmStatusValidateBeforeCall(UUID id, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling findAlgorithmStatus(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling getAlgorithmStatus(Async)");
         }
         
 
-        okhttp3.Call localVarCall = findAlgorithmStatusCall(id, _callback);
+        okhttp3.Call localVarCall = getAlgorithmStatusCall(id, _callback);
         return localVarCall;
 
     }
@@ -1027,36 +896,36 @@ public class DefaultApi {
     /**
      * 
      * Returns an algorithm status
-     * @param id UUID of algorithm to fetch (required)
+     * @param id UUID of algorithm which status will be fetched (required)
      * @return SrcStatus
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> algorithm starus </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Status successfully fetched </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Status not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
-    public SrcStatus findAlgorithmStatus(UUID id) throws ApiException {
-        ApiResponse<SrcStatus> localVarResp = findAlgorithmStatusWithHttpInfo(id);
+    public SrcStatus getAlgorithmStatus(UUID id) throws ApiException {
+        ApiResponse<SrcStatus> localVarResp = getAlgorithmStatusWithHttpInfo(id);
         return localVarResp.getData();
     }
 
     /**
      * 
      * Returns an algorithm status
-     * @param id UUID of algorithm to fetch (required)
+     * @param id UUID of algorithm which status will be fetched (required)
      * @return ApiResponse&lt;SrcStatus&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> algorithm starus </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Status successfully fetched </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Status not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<SrcStatus> findAlgorithmStatusWithHttpInfo(UUID id) throws ApiException {
-        okhttp3.Call localVarCall = findAlgorithmStatusValidateBeforeCall(id, null);
+    public ApiResponse<SrcStatus> getAlgorithmStatusWithHttpInfo(UUID id) throws ApiException {
+        okhttp3.Call localVarCall = getAlgorithmStatusValidateBeforeCall(id, null);
         Type localVarReturnType = new TypeToken<SrcStatus>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -1064,20 +933,20 @@ public class DefaultApi {
     /**
      *  (asynchronously)
      * Returns an algorithm status
-     * @param id UUID of algorithm to fetch (required)
+     * @param id UUID of algorithm which status will be fetched (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
      * @throws ApiException If fail to process the API call, e.g. serializing the request body object
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> algorithm starus </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Status successfully fetched </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Status not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call findAlgorithmStatusAsync(UUID id, final ApiCallback<SrcStatus> _callback) throws ApiException {
+    public okhttp3.Call getAlgorithmStatusAsync(UUID id, final ApiCallback<SrcStatus> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = findAlgorithmStatusValidateBeforeCall(id, _callback);
+        okhttp3.Call localVarCall = getAlgorithmStatusValidateBeforeCall(id, _callback);
         Type localVarReturnType = new TypeToken<SrcStatus>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
@@ -1184,8 +1053,8 @@ public class DefaultApi {
         return localVarCall;
     }
     /**
-     * Build call for uploadAlgorithmCode
-     * @param id UUID of algorithm to upload to db (required)
+     * Build call for replaceAlgorithmCode
+     * @param id UUID of algorithm to replace (required)
      * @param code  (optional)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -1193,7 +1062,481 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 201 </td><td> Source code was uploaded successfully </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Source code successfully replaced </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call replaceAlgorithmCodeCall(UUID id, File code, final ApiCallback _callback) throws ApiException {
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/algoCode/{id}"
+            .replaceAll("\\{" + "id" + "\\}", localVarApiClient.escapeString(id.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarCookieParams = new HashMap<String, String>();
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        if (code != null) {
+            localVarFormParams.put("code", code);
+        }
+
+        final String[] localVarAccepts = {
+            
+        };
+        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {
+            "multipart/form-data"
+        };
+        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        String[] localVarAuthNames = new String[] {  };
+        return localVarApiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private okhttp3.Call replaceAlgorithmCodeValidateBeforeCall(UUID id, File code, final ApiCallback _callback) throws ApiException {
+        
+        // verify the required parameter 'id' is set
+        if (id == null) {
+            throw new ApiException("Missing the required parameter 'id' when calling replaceAlgorithmCode(Async)");
+        }
+        
+
+        okhttp3.Call localVarCall = replaceAlgorithmCodeCall(id, code, _callback);
+        return localVarCall;
+
+    }
+
+    /**
+     * 
+     * Replaces the algorithm source
+     * @param id UUID of algorithm to replace (required)
+     * @param code  (optional)
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Source code successfully replaced </td><td>  -  </td></tr>
+     </table>
+     */
+    public void replaceAlgorithmCode(UUID id, File code) throws ApiException {
+        replaceAlgorithmCodeWithHttpInfo(id, code);
+    }
+
+    /**
+     * 
+     * Replaces the algorithm source
+     * @param id UUID of algorithm to replace (required)
+     * @param code  (optional)
+     * @return ApiResponse&lt;Void&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Source code successfully replaced </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<Void> replaceAlgorithmCodeWithHttpInfo(UUID id, File code) throws ApiException {
+        okhttp3.Call localVarCall = replaceAlgorithmCodeValidateBeforeCall(id, code, null);
+        return localVarApiClient.execute(localVarCall);
+    }
+
+    /**
+     *  (asynchronously)
+     * Replaces the algorithm source
+     * @param id UUID of algorithm to replace (required)
+     * @param code  (optional)
+     * @param _callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Source code successfully replaced </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call replaceAlgorithmCodeAsync(UUID id, File code, final ApiCallback<Void> _callback) throws ApiException {
+
+        okhttp3.Call localVarCall = replaceAlgorithmCodeValidateBeforeCall(id, code, _callback);
+        localVarApiClient.executeAsync(localVarCall, _callback);
+        return localVarCall;
+    }
+    /**
+     * Build call for replaceAlgorithmJar
+     * @param id UUID of algorithm which jar is uploaded (required)
+     * @param jar  (optional)
+     * @param _callback Callback for upload/download progress
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Artifact successfully replaced </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code / artifact not found for this UUID </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call replaceAlgorithmJarCall(UUID id, File jar, final ApiCallback _callback) throws ApiException {
+        Object localVarPostBody = null;
+
+        // create path and map variables
+        String localVarPath = "/algoJar/{id}"
+            .replaceAll("\\{" + "id" + "\\}", localVarApiClient.escapeString(id.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarCookieParams = new HashMap<String, String>();
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        if (jar != null) {
+            localVarFormParams.put("jar", jar);
+        }
+
+        final String[] localVarAccepts = {
+            
+        };
+        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {
+            "multipart/form-data"
+        };
+        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        String[] localVarAuthNames = new String[] {  };
+        return localVarApiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private okhttp3.Call replaceAlgorithmJarValidateBeforeCall(UUID id, File jar, final ApiCallback _callback) throws ApiException {
+        
+        // verify the required parameter 'id' is set
+        if (id == null) {
+            throw new ApiException("Missing the required parameter 'id' when calling replaceAlgorithmJar(Async)");
+        }
+        
+
+        okhttp3.Call localVarCall = replaceAlgorithmJarCall(id, jar, _callback);
+        return localVarCall;
+
+    }
+
+    /**
+     * 
+     * Replaces algorithm artifact
+     * @param id UUID of algorithm which jar is uploaded (required)
+     * @param jar  (optional)
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Artifact successfully replaced </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code / artifact not found for this UUID </td><td>  -  </td></tr>
+     </table>
+     */
+    public void replaceAlgorithmJar(UUID id, File jar) throws ApiException {
+        replaceAlgorithmJarWithHttpInfo(id, jar);
+    }
+
+    /**
+     * 
+     * Replaces algorithm artifact
+     * @param id UUID of algorithm which jar is uploaded (required)
+     * @param jar  (optional)
+     * @return ApiResponse&lt;Void&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Artifact successfully replaced </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code / artifact not found for this UUID </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<Void> replaceAlgorithmJarWithHttpInfo(UUID id, File jar) throws ApiException {
+        okhttp3.Call localVarCall = replaceAlgorithmJarValidateBeforeCall(id, jar, null);
+        return localVarApiClient.execute(localVarCall);
+    }
+
+    /**
+     *  (asynchronously)
+     * Replaces algorithm artifact
+     * @param id UUID of algorithm which jar is uploaded (required)
+     * @param jar  (optional)
+     * @param _callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Artifact successfully replaced </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code / artifact not found for this UUID </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call replaceAlgorithmJarAsync(UUID id, File jar, final ApiCallback<Void> _callback) throws ApiException {
+
+        okhttp3.Call localVarCall = replaceAlgorithmJarValidateBeforeCall(id, jar, _callback);
+        localVarApiClient.executeAsync(localVarCall, _callback);
+        return localVarCall;
+    }
+    /**
+     * Build call for replaceAlgorithmMeta
+     * @param id UUID of algorithm which metadata is replaced (required)
+     * @param srcMeta Metadata to be uploaded (required)
+     * @param _callback Callback for upload/download progress
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Metadata successfully replaced </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code / metadata not found for this UUID </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call replaceAlgorithmMetaCall(UUID id, SrcMeta srcMeta, final ApiCallback _callback) throws ApiException {
+        Object localVarPostBody = srcMeta;
+
+        // create path and map variables
+        String localVarPath = "/algoMeta/{id}"
+            .replaceAll("\\{" + "id" + "\\}", localVarApiClient.escapeString(id.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarCookieParams = new HashMap<String, String>();
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        final String[] localVarAccepts = {
+            
+        };
+        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {
+            "application/json"
+        };
+        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        String[] localVarAuthNames = new String[] {  };
+        return localVarApiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private okhttp3.Call replaceAlgorithmMetaValidateBeforeCall(UUID id, SrcMeta srcMeta, final ApiCallback _callback) throws ApiException {
+        
+        // verify the required parameter 'id' is set
+        if (id == null) {
+            throw new ApiException("Missing the required parameter 'id' when calling replaceAlgorithmMeta(Async)");
+        }
+        
+        // verify the required parameter 'srcMeta' is set
+        if (srcMeta == null) {
+            throw new ApiException("Missing the required parameter 'srcMeta' when calling replaceAlgorithmMeta(Async)");
+        }
+        
+
+        okhttp3.Call localVarCall = replaceAlgorithmMetaCall(id, srcMeta, _callback);
+        return localVarCall;
+
+    }
+
+    /**
+     * 
+     * Replaces algorithm metadata like description or author
+     * @param id UUID of algorithm which metadata is replaced (required)
+     * @param srcMeta Metadata to be uploaded (required)
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Metadata successfully replaced </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code / metadata not found for this UUID </td><td>  -  </td></tr>
+     </table>
+     */
+    public void replaceAlgorithmMeta(UUID id, SrcMeta srcMeta) throws ApiException {
+        replaceAlgorithmMetaWithHttpInfo(id, srcMeta);
+    }
+
+    /**
+     * 
+     * Replaces algorithm metadata like description or author
+     * @param id UUID of algorithm which metadata is replaced (required)
+     * @param srcMeta Metadata to be uploaded (required)
+     * @return ApiResponse&lt;Void&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Metadata successfully replaced </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code / metadata not found for this UUID </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<Void> replaceAlgorithmMetaWithHttpInfo(UUID id, SrcMeta srcMeta) throws ApiException {
+        okhttp3.Call localVarCall = replaceAlgorithmMetaValidateBeforeCall(id, srcMeta, null);
+        return localVarApiClient.execute(localVarCall);
+    }
+
+    /**
+     *  (asynchronously)
+     * Replaces algorithm metadata like description or author
+     * @param id UUID of algorithm which metadata is replaced (required)
+     * @param srcMeta Metadata to be uploaded (required)
+     * @param _callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Metadata successfully replaced </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code / metadata not found for this UUID </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call replaceAlgorithmMetaAsync(UUID id, SrcMeta srcMeta, final ApiCallback<Void> _callback) throws ApiException {
+
+        okhttp3.Call localVarCall = replaceAlgorithmMetaValidateBeforeCall(id, srcMeta, _callback);
+        localVarApiClient.executeAsync(localVarCall, _callback);
+        return localVarCall;
+    }
+    /**
+     * Build call for replaceAlgorithmStatus
+     * @param id UUID of algorithm which status will be replaced (required)
+     * @param srcStatus Status to be uploaded (required)
+     * @param _callback Callback for upload/download progress
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Status successfully replaced </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code / status not found for this UUID </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call replaceAlgorithmStatusCall(UUID id, SrcStatus srcStatus, final ApiCallback _callback) throws ApiException {
+        Object localVarPostBody = srcStatus;
+
+        // create path and map variables
+        String localVarPath = "/algoStatus/{id}"
+            .replaceAll("\\{" + "id" + "\\}", localVarApiClient.escapeString(id.toString()));
+
+        List<Pair> localVarQueryParams = new ArrayList<Pair>();
+        List<Pair> localVarCollectionQueryParams = new ArrayList<Pair>();
+        Map<String, String> localVarHeaderParams = new HashMap<String, String>();
+        Map<String, String> localVarCookieParams = new HashMap<String, String>();
+        Map<String, Object> localVarFormParams = new HashMap<String, Object>();
+        final String[] localVarAccepts = {
+            
+        };
+        final String localVarAccept = localVarApiClient.selectHeaderAccept(localVarAccepts);
+        if (localVarAccept != null) {
+            localVarHeaderParams.put("Accept", localVarAccept);
+        }
+
+        final String[] localVarContentTypes = {
+            "application/json"
+        };
+        final String localVarContentType = localVarApiClient.selectHeaderContentType(localVarContentTypes);
+        localVarHeaderParams.put("Content-Type", localVarContentType);
+
+        String[] localVarAuthNames = new String[] {  };
+        return localVarApiClient.buildCall(localVarPath, "PUT", localVarQueryParams, localVarCollectionQueryParams, localVarPostBody, localVarHeaderParams, localVarCookieParams, localVarFormParams, localVarAuthNames, _callback);
+    }
+
+    @SuppressWarnings("rawtypes")
+    private okhttp3.Call replaceAlgorithmStatusValidateBeforeCall(UUID id, SrcStatus srcStatus, final ApiCallback _callback) throws ApiException {
+        
+        // verify the required parameter 'id' is set
+        if (id == null) {
+            throw new ApiException("Missing the required parameter 'id' when calling replaceAlgorithmStatus(Async)");
+        }
+        
+        // verify the required parameter 'srcStatus' is set
+        if (srcStatus == null) {
+            throw new ApiException("Missing the required parameter 'srcStatus' when calling replaceAlgorithmStatus(Async)");
+        }
+        
+
+        okhttp3.Call localVarCall = replaceAlgorithmStatusCall(id, srcStatus, _callback);
+        return localVarCall;
+
+    }
+
+    /**
+     * 
+     * Replaces the algorithm status and/or benchmarks
+     * @param id UUID of algorithm which status will be replaced (required)
+     * @param srcStatus Status to be uploaded (required)
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Status successfully replaced </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code / status not found for this UUID </td><td>  -  </td></tr>
+     </table>
+     */
+    public void replaceAlgorithmStatus(UUID id, SrcStatus srcStatus) throws ApiException {
+        replaceAlgorithmStatusWithHttpInfo(id, srcStatus);
+    }
+
+    /**
+     * 
+     * Replaces the algorithm status and/or benchmarks
+     * @param id UUID of algorithm which status will be replaced (required)
+     * @param srcStatus Status to be uploaded (required)
+     * @return ApiResponse&lt;Void&gt;
+     * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Status successfully replaced </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code / status not found for this UUID </td><td>  -  </td></tr>
+     </table>
+     */
+    public ApiResponse<Void> replaceAlgorithmStatusWithHttpInfo(UUID id, SrcStatus srcStatus) throws ApiException {
+        okhttp3.Call localVarCall = replaceAlgorithmStatusValidateBeforeCall(id, srcStatus, null);
+        return localVarApiClient.execute(localVarCall);
+    }
+
+    /**
+     *  (asynchronously)
+     * Replaces the algorithm status and/or benchmarks
+     * @param id UUID of algorithm which status will be replaced (required)
+     * @param srcStatus Status to be uploaded (required)
+     * @param _callback The callback to be executed when the API call finishes
+     * @return The request call
+     * @throws ApiException If fail to process the API call, e.g. serializing the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 200 </td><td> Status successfully replaced </td><td>  -  </td></tr>
+        <tr><td> 404 </td><td> Source code / status not found for this UUID </td><td>  -  </td></tr>
+     </table>
+     */
+    public okhttp3.Call replaceAlgorithmStatusAsync(UUID id, SrcStatus srcStatus, final ApiCallback<Void> _callback) throws ApiException {
+
+        okhttp3.Call localVarCall = replaceAlgorithmStatusValidateBeforeCall(id, srcStatus, _callback);
+        localVarApiClient.executeAsync(localVarCall, _callback);
+        return localVarCall;
+    }
+    /**
+     * Build call for uploadAlgorithmCode
+     * @param id UUID of algorithm to upload (required)
+     * @param code  (optional)
+     * @param _callback Callback for upload/download progress
+     * @return Call to execute
+     * @throws ApiException If fail to serialize the request body object
+     * @http.response.details
+     <table summary="Response Details" border="1">
+        <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
+        <tr><td> 201 </td><td> Source code successfully uploaded </td><td>  -  </td></tr>
      </table>
      */
     public okhttp3.Call uploadAlgorithmCodeCall(UUID id, File code, final ApiCallback _callback) throws ApiException {
@@ -1246,14 +1589,14 @@ public class DefaultApi {
 
     /**
      * 
-     * Uploads the algorithm sources based on UUID supplied
-     * @param id UUID of algorithm to upload to db (required)
+     * Uploads the algorithm source
+     * @param id UUID of algorithm to upload (required)
      * @param code  (optional)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 201 </td><td> Source code was uploaded successfully </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Source code successfully uploaded </td><td>  -  </td></tr>
      </table>
      */
     public void uploadAlgorithmCode(UUID id, File code) throws ApiException {
@@ -1262,15 +1605,15 @@ public class DefaultApi {
 
     /**
      * 
-     * Uploads the algorithm sources based on UUID supplied
-     * @param id UUID of algorithm to upload to db (required)
+     * Uploads the algorithm source
+     * @param id UUID of algorithm to upload (required)
      * @param code  (optional)
      * @return ApiResponse&lt;Void&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 201 </td><td> Source code was uploaded successfully </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Source code successfully uploaded </td><td>  -  </td></tr>
      </table>
      */
     public ApiResponse<Void> uploadAlgorithmCodeWithHttpInfo(UUID id, File code) throws ApiException {
@@ -1280,8 +1623,8 @@ public class DefaultApi {
 
     /**
      *  (asynchronously)
-     * Uploads the algorithm sources based on UUID supplied
-     * @param id UUID of algorithm to upload to db (required)
+     * Uploads the algorithm source
+     * @param id UUID of algorithm to upload (required)
      * @param code  (optional)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
@@ -1289,7 +1632,7 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 201 </td><td> Source code was uploaded successfully </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Source code successfully uploaded </td><td>  -  </td></tr>
      </table>
      */
     public okhttp3.Call uploadAlgorithmCodeAsync(UUID id, File code, final ApiCallback<Void> _callback) throws ApiException {
@@ -1308,7 +1651,7 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Successfully uploaded to nexus </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Artifact successfully uploaded </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Source code not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
@@ -1369,7 +1712,7 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Successfully uploaded to nexus </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Artifact successfully uploaded </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Source code not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
@@ -1387,7 +1730,7 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Successfully uploaded to nexus </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Artifact successfully uploaded </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Source code not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
@@ -1407,7 +1750,7 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Successfully uploaded to nexus </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Artifact successfully uploaded </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Source code not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
@@ -1427,7 +1770,7 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 201 </td><td> The metadata was uploaded successfully </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Metadata successfully uploaded </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Source not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
@@ -1482,14 +1825,14 @@ public class DefaultApi {
 
     /**
      * 
-     * Loads algorithm metadata like description or author
+     * Upoads algorithm metadata like description or author
      * @param id UUID of algorithm which metadata is uploaded (required)
      * @param srcMeta Metadata to be uploaded (required)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 201 </td><td> The metadata was uploaded successfully </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Metadata successfully uploaded </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Source not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
@@ -1499,7 +1842,7 @@ public class DefaultApi {
 
     /**
      * 
-     * Loads algorithm metadata like description or author
+     * Upoads algorithm metadata like description or author
      * @param id UUID of algorithm which metadata is uploaded (required)
      * @param srcMeta Metadata to be uploaded (required)
      * @return ApiResponse&lt;Void&gt;
@@ -1507,7 +1850,7 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 201 </td><td> The metadata was uploaded successfully </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Metadata successfully uploaded </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Source not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
@@ -1518,7 +1861,7 @@ public class DefaultApi {
 
     /**
      *  (asynchronously)
-     * Loads algorithm metadata like description or author
+     * Upoads algorithm metadata like description or author
      * @param id UUID of algorithm which metadata is uploaded (required)
      * @param srcMeta Metadata to be uploaded (required)
      * @param _callback The callback to be executed when the API call finishes
@@ -1527,7 +1870,7 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 201 </td><td> The metadata was uploaded successfully </td><td>  -  </td></tr>
+        <tr><td> 201 </td><td> Metadata successfully uploaded </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Source not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
@@ -1539,7 +1882,7 @@ public class DefaultApi {
     }
     /**
      * Build call for uploadAlgorithmStatus
-     * @param id UUID of algorithm to fetch (required)
+     * @param id UUID of algorithm which status will be uploaded (required)
      * @param srcStatus Status to be uploaded (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -1547,7 +1890,7 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Status successfully changed </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Status successfully uploaded </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Source code not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
@@ -1603,13 +1946,13 @@ public class DefaultApi {
     /**
      * 
      * Uploads the algorithm status and/or benchmarks
-     * @param id UUID of algorithm to fetch (required)
+     * @param id UUID of algorithm which status will be uploaded (required)
      * @param srcStatus Status to be uploaded (required)
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Status successfully changed </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Status successfully uploaded </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Source code not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
@@ -1620,14 +1963,14 @@ public class DefaultApi {
     /**
      * 
      * Uploads the algorithm status and/or benchmarks
-     * @param id UUID of algorithm to fetch (required)
+     * @param id UUID of algorithm which status will be uploaded (required)
      * @param srcStatus Status to be uploaded (required)
      * @return ApiResponse&lt;Void&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Status successfully changed </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Status successfully uploaded </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Source code not found for this UUID </td><td>  -  </td></tr>
      </table>
      */
@@ -1639,7 +1982,7 @@ public class DefaultApi {
     /**
      *  (asynchronously)
      * Uploads the algorithm status and/or benchmarks
-     * @param id UUID of algorithm to fetch (required)
+     * @param id UUID of algorithm which status will be uploaded (required)
      * @param srcStatus Status to be uploaded (required)
      * @param _callback The callback to be executed when the API call finishes
      * @return The request call
@@ -1647,7 +1990,7 @@ public class DefaultApi {
      * @http.response.details
      <table summary="Response Details" border="1">
         <tr><td> Status Code </td><td> Description </td><td> Response Headers </td></tr>
-        <tr><td> 200 </td><td> Status successfully changed </td><td>  -  </td></tr>
+        <tr><td> 200 </td><td> Status successfully uploaded </td><td>  -  </td></tr>
         <tr><td> 404 </td><td> Source code not found for this UUID </td><td>  -  </td></tr>
      </table>
      */

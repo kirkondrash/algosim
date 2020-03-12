@@ -73,5 +73,17 @@
             <artifactId>algosim-repo-client</artifactId>
             <version>0.0.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>hse.algosim.compiler</groupId>
+            <artifactId>algosim-compiler-client</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>hse.algosim.executor</groupId>
+            <artifactId>algosim-executor-client</artifactId>
+            <version>0.0.1</version>
+        </dependency>
     </dependencies>
 </project>

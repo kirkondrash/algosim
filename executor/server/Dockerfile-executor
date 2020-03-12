@@ -3,5 +3,5 @@ WORKDIR /app/server
 COPY . /app/server
 RUN mvn package
 
-FROM algosim-dist AS executor-dist
+FROM algosim-dist-jre AS executor-dist
 COPY --from=executor-builder /app/server/target/algosim-executor-server-0.0.1.jar  /app/app.jar

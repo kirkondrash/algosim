@@ -13,23 +13,17 @@
 
 package hse.algosim.executor.client.api;
 
-import hse.algosim.executor.client.api.ApiException;
 import java.util.UUID;
 import org.junit.Test;
 import org.junit.Ignore;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * API tests for DefaultApi
  */
 @Ignore
-public class DefaultApiTest {
+public class ExecutorApiClientInstanceTest {
 
-    private final DefaultApi api = new DefaultApi();
+    private final ExecutorApiClientInstance api = new ExecutorApiClientInstance();
 
     
     /**

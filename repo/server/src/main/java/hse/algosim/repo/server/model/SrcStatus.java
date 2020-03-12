@@ -3,6 +3,7 @@ package hse.algosim.repo.server.model;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.openapitools.jackson.nullable.JsonNullable;
@@ -14,16 +15,59 @@ import javax.validation.constraints.*;
  */
 
 public class SrcStatus   {
-  @JsonProperty("status")
-  private String status;
+  /**
+   * Gets or Sets status
+   */
+  public enum StatusEnum {
+    SCHEDULED_FOR_COMPILATION("SCHEDULED FOR COMPILATION"),
+    
+    COMPILING("COMPILING"),
+    
+    SUCCESSFULLY_COMPILED("SUCCESSFULLY COMPILED"),
+    
+    COMPILATION_FAILED("COMPILATION FAILED"),
+    
+    SCHEDULED_FOR_EXECUTION("SCHEDULED FOR EXECUTION"),
+    
+    EXECUTING("EXECUTING"),
+    
+    SUCCESSFULLY_EXECUTED("SUCCESSFULLY EXECUTED"),
+    
+    EXECUTION_FAILED("EXECUTION FAILED");
 
-  @JsonProperty("rank")
-  private Integer rank;
+    private String value;
+
+    StatusEnum(String value) {
+      this.value = value;
+    }
+
+    @Override
+    @JsonValue
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    @JsonCreator
+    public static StatusEnum fromValue(String value) {
+      for (StatusEnum b : StatusEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+  }
+
+  @JsonProperty("status")
+  private StatusEnum status;
+
+  @JsonProperty("errorTrace")
+  private String errorTrace;
 
   @JsonProperty("winloss")
   private String winloss;
 
-  public SrcStatus status(String status) {
+  public SrcStatus status(StatusEnum status) {
     this.status = status;
     return this;
   }
@@ -32,36 +76,36 @@ public class SrcStatus   {
    * Get status
    * @return status
   */
-  @ApiModelProperty(example = "SCHEDULED", required = true, value = "")
+  @ApiModelProperty(required = true, value = "")
   @NotNull
 
 
-  public String getStatus() {
+  public StatusEnum getStatus() {
     return status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(StatusEnum status) {
     this.status = status;
   }
 
-  public SrcStatus rank(Integer rank) {
-    this.rank = rank;
+  public SrcStatus errorTrace(String errorTrace) {
+    this.errorTrace = errorTrace;
     return this;
   }
 
   /**
-   * Get rank
-   * @return rank
+   * Get errorTrace
+   * @return errorTrace
   */
   @ApiModelProperty(value = "")
 
 
-  public Integer getRank() {
-    return rank;
+  public String getErrorTrace() {
+    return errorTrace;
   }
 
-  public void setRank(Integer rank) {
-    this.rank = rank;
+  public void setErrorTrace(String errorTrace) {
+    this.errorTrace = errorTrace;
   }
 
   public SrcStatus winloss(String winloss) {
@@ -95,13 +139,13 @@ public class SrcStatus   {
     }
     SrcStatus srcStatus = (SrcStatus) o;
     return Objects.equals(this.status, srcStatus.status) &&
-        Objects.equals(this.rank, srcStatus.rank) &&
+        Objects.equals(this.errorTrace, srcStatus.errorTrace) &&
         Objects.equals(this.winloss, srcStatus.winloss);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(status, rank, winloss);
+    return Objects.hash(status, errorTrace, winloss);
   }
 
   @Override
@@ -110,7 +154,7 @@ public class SrcStatus   {
     sb.append("class SrcStatus {\n");
     
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
-    sb.append("    rank: ").append(toIndentedString(rank)).append("\n");
+    sb.append("    errorTrace: ").append(toIndentedString(errorTrace)).append("\n");
     sb.append("    winloss: ").append(toIndentedString(winloss)).append("\n");
     sb.append("}");
     return sb.toString();

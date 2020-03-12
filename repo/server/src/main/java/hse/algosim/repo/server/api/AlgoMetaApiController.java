@@ -30,7 +30,7 @@ public class AlgoMetaApiController implements AlgoMetaApi {
     }
 
     @Override
-    public ResponseEntity<SrcMeta> findAlgorithmMeta(@PathVariable("id") UUID id) {
+    public ResponseEntity<SrcMeta> getAlgorithmMeta(@PathVariable("id") UUID id) {
         System.out.println("Sending meta!");
         return new ResponseEntity<>(new SrcMeta().author("hello").description("there"), HttpStatus.OK);
     }

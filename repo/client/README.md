@@ -75,15 +75,14 @@ Please follow the [installation](#installation) instruction and execute the foll
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.Configuration;
-import hse.algosim.repo.client.api.models.*;
-import hse.algosim.repo.client.api.DefaultApi;
+import hse.algosim.repo.client.api.RepoApiClientInstance;import hse.algosim.repo.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    DefaultApi apiInstance = new DefaultApi(defaultClient);
+    RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm to fetch
     SrcStatus srcStatus = new SrcStatus(); // SrcStatus | Status to be uploaded
     try {

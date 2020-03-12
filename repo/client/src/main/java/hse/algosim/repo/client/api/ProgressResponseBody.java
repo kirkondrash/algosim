@@ -1,6 +1,6 @@
 /*
  * Algosim repo
- * A repo service for collab project of HSE and Deutsche Bank aiming to improve trading algorithms testing. Service linked to:   - the db for algorithm description, source code and benchmarks   - nexus for the artifacts    
+ * A repo service for collab project of HSE and Deutsche Bank aiming to improve trading algorithms testing. For now, just stores in folders sources and artifacts. Meta and statuses are stored in-memory. 
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: kirkondrash@yandex.ru

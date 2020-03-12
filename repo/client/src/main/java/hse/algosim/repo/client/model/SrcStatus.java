@@ -1,6 +1,6 @@
 /*
  * Algosim repo
- * A repo service for collab project of HSE and Deutsche Bank aiming to improve trading algorithms testing. Service linked to:   - the db for algorithm description, source code and benchmarks   - nexus for the artifacts    
+ * A repo service for collab project of HSE and Deutsche Bank aiming to improve trading algorithms testing. For now, just stores in folders sources and artifacts. Meta and statuses are stored in-memory. 
  *
  * The version of the OpenAPI document: 0.0.1
  * Contact: kirkondrash@yandex.ru
@@ -29,20 +29,79 @@ import java.io.IOException;
  */
 
 public class SrcStatus {
+  /**
+   * Gets or Sets status
+   */
+  @JsonAdapter(StatusEnum.Adapter.class)
+  public enum StatusEnum {
+    SCHEDULED_FOR_COMPILATION("SCHEDULED FOR COMPILATION"),
+    
+    COMPILING("COMPILING"),
+    
+    SUCCESSFULLY_COMPILED("SUCCESSFULLY COMPILED"),
+    
+    COMPILATION_FAILED("COMPILATION FAILED"),
+    
+    SCHEDULED_FOR_EXECUTION("SCHEDULED FOR EXECUTION"),
+    
+    EXECUTING("EXECUTING"),
+    
+    SUCCESSFULLY_EXECUTED("SUCCESSFULLY EXECUTED"),
+    
+    EXECUTION_FAILED("EXECUTION FAILED");
+
+    private String value;
+
+    StatusEnum(String value) {
+      this.value = value;
+    }
+
+    public String getValue() {
+      return value;
+    }
+
+    @Override
+    public String toString() {
+      return String.valueOf(value);
+    }
+
+    public static StatusEnum fromValue(String value) {
+      for (StatusEnum b : StatusEnum.values()) {
+        if (b.value.equals(value)) {
+          return b;
+        }
+      }
+      throw new IllegalArgumentException("Unexpected value '" + value + "'");
+    }
+
+    public static class Adapter extends TypeAdapter<StatusEnum> {
+      @Override
+      public void write(final JsonWriter jsonWriter, final StatusEnum enumeration) throws IOException {
+        jsonWriter.value(enumeration.getValue());
+      }
+
+      @Override
+      public StatusEnum read(final JsonReader jsonReader) throws IOException {
+        String value =  jsonReader.nextString();
+        return StatusEnum.fromValue(value);
+      }
+    }
+  }
+
   public static final String SERIALIZED_NAME_STATUS = "status";
   @SerializedName(SERIALIZED_NAME_STATUS)
-  private String status;
+  private StatusEnum status;
 
-  public static final String SERIALIZED_NAME_RANK = "rank";
-  @SerializedName(SERIALIZED_NAME_RANK)
-  private Integer rank;
+  public static final String SERIALIZED_NAME_ERROR_TRACE = "errorTrace";
+  @SerializedName(SERIALIZED_NAME_ERROR_TRACE)
+  private String errorTrace;
 
   public static final String SERIALIZED_NAME_WINLOSS = "winloss";
   @SerializedName(SERIALIZED_NAME_WINLOSS)
   private String winloss;
 
 
-  public SrcStatus status(String status) {
+  public SrcStatus status(StatusEnum status) {
     
     this.status = status;
     return this;
@@ -52,38 +111,38 @@ public class SrcStatus {
    * Get status
    * @return status
   **/
-  @ApiModelProperty(example = "SCHEDULED", required = true, value = "")
+  @ApiModelProperty(required = true, value = "")
 
-  public String getStatus() {
+  public StatusEnum getStatus() {
     return status;
   }
 
 
-  public void setStatus(String status) {
+  public void setStatus(StatusEnum status) {
     this.status = status;
   }
 
 
-  public SrcStatus rank(Integer rank) {
+  public SrcStatus errorTrace(String errorTrace) {
     
-    this.rank = rank;
+    this.errorTrace = errorTrace;
     return this;
   }
 
    /**
-   * Get rank
-   * @return rank
+   * Get errorTrace
+   * @return errorTrace
   **/
   @javax.annotation.Nullable
   @ApiModelProperty(value = "")
 
-  public Integer getRank() {
-    return rank;
+  public String getErrorTrace() {
+    return errorTrace;
   }
 
 
-  public void setRank(Integer rank) {
-    this.rank = rank;
+  public void setErrorTrace(String errorTrace) {
+    this.errorTrace = errorTrace;
   }
 
 
@@ -120,13 +179,13 @@ public class SrcStatus {
     }
     SrcStatus srcStatus = (SrcStatus) o;
     return Objects.equals(this.status, srcStatus.status) &&
-        Objects.equals(this.rank, srcStatus.rank) &&
+        Objects.equals(this.errorTrace, srcStatus.errorTrace) &&
         Objects.equals(this.winloss, srcStatus.winloss);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(status, rank, winloss);
+    return Objects.hash(status, errorTrace, winloss);
   }
 
 
@@ -135,7 +194,7 @@ public class SrcStatus {
     StringBuilder sb = new StringBuilder();
     sb.append("class SrcStatus {\n");
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
-    sb.append("    rank: ").append(toIndentedString(rank)).append("\n");
+    sb.append("    errorTrace: ").append(toIndentedString(errorTrace)).append("\n");
     sb.append("    winloss: ").append(toIndentedString(winloss)).append("\n");
     sb.append("}");
     return sb.toString();
