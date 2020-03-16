@@ -22,3 +22,4 @@ TODO:
   - `docker build -t algosim-dist-jre -f Dockerfile-dist-jre .`
   - `docker build -t algosim-dist-jdk -f Dockerfile-dist-jdk .`
 2. Потом уже собрать  и запустить сервисы по `docker-compose up --build`. Для того чтобы запустить сборку без использования закэшированных слоев (если вам кажется, что что-то не подхватывается при сборке) - `docker-compose build --no-cache`.
+3. Несолько compiler-worker'ов - `docker-compose up --scale compiler=3`
