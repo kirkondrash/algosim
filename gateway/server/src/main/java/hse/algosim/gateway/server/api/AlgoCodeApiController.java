@@ -29,16 +29,13 @@ import java.util.concurrent.CompletableFuture;
 public class AlgoCodeApiController implements AlgoCodeApi {
 
     private final NativeWebRequest request;
-    private RepoApiClientInstance repoApiClient;
-    private CompilerApiClientInstance compilerApiClient;
-    private ExecutorApiClientInstance executorApiClient;
+    private final static RepoApiClientInstance repoApiClient = new RepoApiClientInstance(new hse.algosim.repo.client.api.ApiClient().setBasePath("http://localhost:8000/repo/api"));
+    private final static CompilerApiClientInstance compilerApiClient = new CompilerApiClientInstance(new hse.algosim.compiler.client.api.ApiClient().setBasePath("http://localhost:8000/compiler/api"));
+    private final static ExecutorApiClientInstance executorApiClient = new ExecutorApiClientInstance(new hse.algosim.executor.client.api.ApiClient().setBasePath("http://localhost:8000/executor/api"));
 
     @org.springframework.beans.factory.annotation.Autowired
     public AlgoCodeApiController(NativeWebRequest request) {
         this.request = request;
-        repoApiClient = new RepoApiClientInstance(new hse.algosim.repo.client.api.ApiClient().setBasePath("http://localhost:8000/repo/api"));
-        compilerApiClient = new CompilerApiClientInstance(new hse.algosim.compiler.client.api.ApiClient().setBasePath("http://localhost:8000/compiler/api"));
-        executorApiClient = new ExecutorApiClientInstance(new hse.algosim.executor.client.api.ApiClient().setBasePath("http://localhost:8000/executor/api"));
     }
 
     @Override
@@ -62,7 +59,15 @@ public class AlgoCodeApiController implements AlgoCodeApi {
 
         CompletableFuture<Void> demo = CompletableFuture.runAsync(()-> {
             try {
-                compilerApiClient.compileAlgorithm(id);
+                while (true) {
+                    try {
+                        compilerApiClient.compileAlgorithm(id);
+                        break;
+                    } catch (hse.algosim.compiler.client.api.ApiException ae) {
+                        System.out.println("Compiler busy!");
+                        Thread.sleep(2000);
+                    }
+                }
                 SrcStatus srcStatus;
                 do {
                     srcStatus = repoApiClient.getAlgorithmStatus(id);

@@ -30,12 +30,11 @@ import java.util.stream.Collectors;
 public class ExecuteApiController implements ExecuteApi {
 
     private final NativeWebRequest request;
-    private RepoApiClientInstance repoApiClient;
+    private final static RepoApiClientInstance repoApiClient = new RepoApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/repo/api"));
 
     @org.springframework.beans.factory.annotation.Autowired
     public ExecuteApiController(NativeWebRequest request) {
         this.request = request;
-        repoApiClient = new RepoApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/repo/api"));
     }
 
     @Override
