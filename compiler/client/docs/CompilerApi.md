@@ -4,37 +4,36 @@ All URIs are relative to *http://localhost:8080/api*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**executeAlgorithm**](DefaultApi.md#executeAlgorithm) | **POST** /execute/{id} | 
+[**compileAlgorithm**](CompilerApi.md#compileAlgorithm) | **POST** /compile/{id} | 
 
 
-<a name="executeAlgorithm"></a>
-# **executeAlgorithm**
-> executeAlgorithm(id)
+<a name="compileAlgorithm"></a>
+# **compileAlgorithm**
+> compileAlgorithm(id)
 
 
 
-Gets the artifact from nexus, executes and benchmarks it
+Gets the sources from the db and compiles them
 
 ### Example
 ```java
 // Import classes:
-import hse.algosim.executor.client.api.ApiClient;
-import hse.algosim.executor.client.api.ApiException;
-import hse.algosim.executor.client.api.Configuration;
-import hse.algosim.executor.client.api.models.*;
-import hse.algosim.executor.client.api.ExecutorApiClientInstance;
+import hse.algosim.compiler.client.api.ApiClient;
+import hse.algosim.compiler.client.api.ApiException;
+import hse.algosim.compiler.client.api.CompilerApiClientInstance;import hse.algosim.compiler.client.api.Configuration;
+import hse.algosim.compiler.client.api.models.*;
 
 public class Example {
   public static void main(String[] args) {
     ApiClient defaultClient = Configuration.getDefaultApiClient();
     defaultClient.setBasePath("http://localhost:8080/api");
 
-    ExecutorApiClientInstance apiInstance = new ExecutorApiClientInstance(defaultClient);
+    CompilerApiClientInstance apiInstance = new CompilerApiClientInstance(defaultClient);
     UUID id = new UUID(); // UUID | UUID of algorithm to fetch
     try {
-      apiInstance.executeAlgorithm(id);
+      apiInstance.compileAlgorithm(id);
     } catch (ApiException e) {
-      System.err.println("Exception when calling DefaultApi#executeAlgorithm");
+      System.err.println("Exception when calling DefaultApi#compileAlgorithm");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -66,6 +65,6 @@ No authorization required
 ### HTTP response details
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
-**200** | Successfully executed |  -  |
-**404** | Artifact not found for this UUID |  -  |
+**200** | Successfully compiled |  -  |
+**404** | Source code not found for this UUID |  -  |
 

@@ -13,7 +13,7 @@ A compiler service for collab project of HSE and Deutsche Bank aiming to improve
 
 Building the API client library requires:
 1. Java 1.8+
-2. Maven/Gradle
+2. Maven
 
 ## Installation
 
@@ -42,14 +42,6 @@ Add this dependency to your project's POM:
   <version>0.0.1</version>
   <scope>compile</scope>
 </dependency>
-```
-
-### Gradle users
-
-Add this dependency to your project's build file:
-
-```groovy
-compile "hse.algosim.compiler:algosim-compiler-client:0.0.1"
 ```
 
 ### Others
@@ -105,7 +97,7 @@ All URIs are relative to *http://localhost:8080/api*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*DefaultApi* | [**compileAlgorithm**](docs/DefaultApi.md#compileAlgorithm) | **POST** /compile/{id} | 
+*DefaultApi* | [**compileAlgorithm**](docs/CompilerApi.md#compileAlgorithm) | **POST** /compile/{id} | 
 
 
 ## Documentation for Models
