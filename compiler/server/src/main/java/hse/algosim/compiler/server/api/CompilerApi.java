@@ -74,24 +74,4 @@ public interface CompilerApi {
 
     }
 
-    @ApiOperation(value = "", nickname = "fail", notes = "", tags={ "compiler", })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Ready") })
-    @RequestMapping(value = "/fail",
-            method = RequestMethod.POST)
-    default ResponseEntity<Void> fail() {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
-
-    @ApiOperation(value = "", nickname = "up", notes = "", tags={ "compiler", })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Ready") })
-    @RequestMapping(value = "/up",
-            method = RequestMethod.POST)
-    default ResponseEntity<Void> up() {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
-
 }
