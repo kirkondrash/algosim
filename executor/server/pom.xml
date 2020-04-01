@@ -69,15 +69,9 @@
         </dependency>
 
         <dependency>
-            <groupId>hse.algosim.repo</groupId>
-            <artifactId>algosim-repo-client</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.maven.shared</groupId>
-            <artifactId>maven-invoker</artifactId>
-            <version>3.0.1</version>
+            <groupId>hse.algosim.client</groupId>
+            <artifactId>repo</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

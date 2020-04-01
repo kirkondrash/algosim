@@ -1,12 +1,13 @@
 package hse.algosim.gateway.server.api;
 
-import hse.algosim.repo.client.api.ApiException;
-import hse.algosim.repo.client.api.RepoApiClientInstance;
-import hse.algosim.repo.client.model.IdArray;
-import hse.algosim.repo.client.model.SrcStatus;
-import hse.algosim.repo.client.model.SrcStatus.StatusEnum;
-import hse.algosim.compiler.client.api.CompilerApiClientInstance;
-import hse.algosim.executor.client.api.ExecutorApiClientInstance;
+import hse.algosim.client.api.ApiClient;
+import hse.algosim.client.api.ApiException;
+import hse.algosim.client.api.compiler.CompilerApiClientInstance;
+import hse.algosim.client.api.executor.ExecutorApiClientInstance;
+import hse.algosim.client.api.repo.RepoApiClientInstance;
+import hse.algosim.client.model.IdArray;
+import hse.algosim.client.model.SrcStatus;
+import hse.algosim.client.model.SrcStatus.StatusEnum;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -29,9 +30,9 @@ import java.util.concurrent.CompletableFuture;
 public class AlgoCodeApiController implements AlgoCodeApi {
 
     private final NativeWebRequest request;
-    private final static RepoApiClientInstance repoApiClient = new RepoApiClientInstance(new hse.algosim.repo.client.api.ApiClient().setBasePath("http://localhost:8000/repo/api"));
-    private final static CompilerApiClientInstance compilerApiClient = new CompilerApiClientInstance(new hse.algosim.compiler.client.api.ApiClient().setBasePath("http://localhost:8000/compiler/api"));
-    private final static ExecutorApiClientInstance executorApiClient = new ExecutorApiClientInstance(new hse.algosim.executor.client.api.ApiClient().setBasePath("http://localhost:8000/executor/api"));
+    private final static RepoApiClientInstance repoApiClient = new RepoApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/repo/api"));
+    private final static CompilerApiClientInstance compilerApiClient = new CompilerApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/compiler/api"));
+    private final static ExecutorApiClientInstance executorApiClient = new ExecutorApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/executor/api"));
 
     @org.springframework.beans.factory.annotation.Autowired
     public AlgoCodeApiController(NativeWebRequest request) {
@@ -63,7 +64,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
                     try {
                         compilerApiClient.compileAlgorithm(id);
                         break;
-                    } catch (hse.algosim.compiler.client.api.ApiException ae) {
+                    } catch (ApiException ae) {
                         System.out.println("Compiler busy!");
                         Thread.sleep(2000);
                     }
@@ -82,7 +83,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
                         try {
                             executorApiClient.executeAlgorithm(id);
                             break;
-                        } catch (hse.algosim.executor.client.api.ApiException ae) {
+                        } catch (ApiException ae) {
                             System.out.println("Executor busy!");
                             Thread.sleep(2000);
                         }

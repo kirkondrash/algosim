@@ -69,21 +69,21 @@
         </dependency>
 
         <dependency>
-            <groupId>hse.algosim.repo</groupId>
-            <artifactId>algosim-repo-client</artifactId>
-            <version>0.0.1</version>
+            <groupId>hse.algosim.client</groupId>
+            <artifactId>repo</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>hse.algosim.compiler</groupId>
-            <artifactId>algosim-compiler-client</artifactId>
-            <version>0.0.1</version>
+            <groupId>hse.algosim.client</groupId>
+            <artifactId>compiler</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
-            <groupId>hse.algosim.executor</groupId>
-            <artifactId>algosim-executor-client</artifactId>
-            <version>0.0.1</version>
+            <groupId>hse.algosim.client</groupId>
+            <artifactId>executor</artifactId>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>

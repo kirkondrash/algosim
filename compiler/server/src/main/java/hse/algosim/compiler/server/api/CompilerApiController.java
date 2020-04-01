@@ -1,10 +1,10 @@
 package hse.algosim.compiler.server.api;
 
-import hse.algosim.repo.client.api.ApiClient;
-import hse.algosim.repo.client.api.ApiException;
-import hse.algosim.repo.client.api.RepoApiClientInstance;
-import hse.algosim.repo.client.model.SrcStatus;
-import hse.algosim.repo.client.model.SrcStatus.StatusEnum;
+import hse.algosim.client.api.ApiClient;
+import hse.algosim.client.api.ApiException;
+import hse.algosim.client.api.repo.RepoApiClientInstance;
+import hse.algosim.client.model.SrcStatus;
+import hse.algosim.client.model.SrcStatus.StatusEnum;
 import org.apache.maven.shared.invoker.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

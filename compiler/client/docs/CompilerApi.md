@@ -1,10 +1,10 @@
-# DefaultApi
+# CompilerApi
 
 All URIs are relative to *http://localhost:8080/api*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**compileAlgorithm**](CompilerApi.md#compileAlgorithm) | **POST** /compile/{id} | 
+[**compileAlgorithm**](CompilerApi.md#compilealgorithm) | **POST** /compile/{id} | 
 
 
 <a name="compileAlgorithm"></a>
@@ -33,7 +33,7 @@ public class Example {
     try {
       apiInstance.compileAlgorithm(id);
     } catch (ApiException e) {
-      System.err.println("Exception when calling DefaultApi#compileAlgorithm");
+      System.err.println("Exception when calling CompilerApiClientInstance#compileAlgorithm");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());

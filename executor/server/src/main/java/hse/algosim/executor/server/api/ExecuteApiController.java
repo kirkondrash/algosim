@@ -1,9 +1,10 @@
 package hse.algosim.executor.server.api;
 
-import hse.algosim.repo.client.api.ApiClient;
-import hse.algosim.repo.client.api.ApiException;
-import hse.algosim.repo.client.api.RepoApiClientInstance;
-import hse.algosim.repo.client.model.SrcStatus;
+import hse.algosim.client.api.ApiClient;
+import hse.algosim.client.api.ApiException;
+import hse.algosim.client.api.repo.RepoApiClientInstance;
+import hse.algosim.client.model.SrcStatus;
+import hse.algosim.client.model.SrcStatus.StatusEnum;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
