@@ -4,6 +4,7 @@ FROM maven:3.6.2-jdk-8 AS clients-builder
 COPY ./compiler/client /app/compiler
 COPY ./executor/client /app/executor
 COPY ./repo/client /app/repo
+COPY ./framework /framework
 RUN cd /app/repo && mvn clean install && \
     cd /app/compiler && mvn clean install && \
     cd /app/executor && mvn clean install

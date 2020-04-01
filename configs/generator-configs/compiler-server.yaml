@@ -1,6 +1,7 @@
 java8: true
 swaggerDocketConfig: true
 hideGenerationTimestamp: true
+useTags: true
 
 artifactId: algosim-compiler-server
 artifactVersion: 0.0.1

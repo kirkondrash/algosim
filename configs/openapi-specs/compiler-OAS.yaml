@@ -11,6 +11,8 @@ servers:
 paths:
   /compile/{id}:
     post:
+      tags:
+        - compiler
       description: Gets the sources from the db and compiles them
       operationId: compileAlgorithm
       parameters:
@@ -25,6 +27,17 @@ paths:
           description: Successfully compiled
         '404':
           description: Source code not found for this UUID
+  /ready:
+    get:
+      tags: 
+        - compiler
+      description: Returns readiness of the host for compilation
+      operationId: getReadiness
+      responses:
+        '200':
+          description: Ready
+        '503':
+          description: Busy
 
 components:
   schemas:

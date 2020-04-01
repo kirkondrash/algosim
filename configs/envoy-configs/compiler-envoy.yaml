@@ -36,6 +36,13 @@ static_resources:
     connect_timeout: 0.25s
     type: strict_dns
     lb_policy: round_robin
+#    health_checks:
+#      - timeout: 0.5s
+#        interval: 1s
+#        unhealthy_threshold: 1
+#        healthy_threshold: 1
+#        http_health_check:
+#          path: "/api/ready"
     load_assignment:
       cluster_name: local_service
       endpoints:

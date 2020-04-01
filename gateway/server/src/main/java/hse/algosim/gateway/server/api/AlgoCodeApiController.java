@@ -29,16 +29,13 @@ import java.util.concurrent.CompletableFuture;
 public class AlgoCodeApiController implements AlgoCodeApi {
 
     private final NativeWebRequest request;
-    private RepoApiClientInstance repoApiClient;
-    private CompilerApiClientInstance compilerApiClient;
-    private ExecutorApiClientInstance executorApiClient;
+    private final static RepoApiClientInstance repoApiClient = new RepoApiClientInstance(new hse.algosim.repo.client.api.ApiClient().setBasePath("http://localhost:8000/repo/api"));
+    private final static CompilerApiClientInstance compilerApiClient = new CompilerApiClientInstance(new hse.algosim.compiler.client.api.ApiClient().setBasePath("http://localhost:8000/compiler/api"));
+    private final static ExecutorApiClientInstance executorApiClient = new ExecutorApiClientInstance(new hse.algosim.executor.client.api.ApiClient().setBasePath("http://localhost:8000/executor/api"));
 
     @org.springframework.beans.factory.annotation.Autowired
     public AlgoCodeApiController(NativeWebRequest request) {
         this.request = request;
-        repoApiClient = new RepoApiClientInstance(new hse.algosim.repo.client.api.ApiClient().setBasePath("http://localhost:8000/repo/api"));
-        compilerApiClient = new CompilerApiClientInstance(new hse.algosim.compiler.client.api.ApiClient().setBasePath("http://localhost:8000/compiler/api"));
-        executorApiClient = new ExecutorApiClientInstance(new hse.algosim.executor.client.api.ApiClient().setBasePath("http://localhost:8000/executor/api"));
     }
 
     @Override
@@ -62,21 +59,40 @@ public class AlgoCodeApiController implements AlgoCodeApi {
 
         CompletableFuture<Void> demo = CompletableFuture.runAsync(()-> {
             try {
-                compilerApiClient.compileAlgorithm(id);
+                while (true) {
+                    try {
+                        compilerApiClient.compileAlgorithm(id);
+                        break;
+                    } catch (hse.algosim.compiler.client.api.ApiException ae) {
+                        System.out.println("Compiler busy!");
+                        Thread.sleep(2000);
+                    }
+                }
                 SrcStatus srcStatus;
                 do {
                     srcStatus = repoApiClient.getAlgorithmStatus(id);
                     Thread.sleep(2000);
-                    System.out.println(id.toString() + " is compiling!");
-                } while (srcStatus.getStatus().compareTo(StatusEnum.COMPILING) == 0);
+                    System.out.println(String.format("%s was taken by worker for compilation! State: %s",id.toString(), srcStatus.getStatus()));
+                } while (srcStatus.getStatus().compareTo(StatusEnum.COMPILING) == 0
+                        || srcStatus.getStatus().compareTo(StatusEnum.SCHEDULED_FOR_COMPILATION) == 0 );
                 System.out.println(srcStatus.toString());
                 if (srcStatus.getStatus().compareTo(StatusEnum.SUCCESSFULLY_COMPILED)==0){
-                    executorApiClient.executeAlgorithm(id);
+                    repoApiClient.replaceAlgorithmStatus(id, srcStatus.status(StatusEnum.SCHEDULED_FOR_EXECUTION));
+                    while (true) {
+                        try {
+                            executorApiClient.executeAlgorithm(id);
+                            break;
+                        } catch (hse.algosim.executor.client.api.ApiException ae) {
+                            System.out.println("Executor busy!");
+                            Thread.sleep(2000);
+                        }
+                    }
                     do {
                         srcStatus = repoApiClient.getAlgorithmStatus(id);
                         Thread.sleep(2000);
-                        System.out.println(id.toString() + " is executing!");
-                    } while (srcStatus.getStatus().compareTo(StatusEnum.EXECUTING) == 0);
+                        System.out.println(String.format("%s was taken by worker for execution! State: %s",id.toString(), srcStatus.getStatus()));
+                    } while (srcStatus.getStatus().compareTo(StatusEnum.EXECUTING) == 0
+                            || srcStatus.getStatus().compareTo(StatusEnum.SCHEDULED_FOR_EXECUTION) == 0 );
                     System.out.println(srcStatus.toString());
                 }
             } catch (Exception e){

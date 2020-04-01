@@ -1,11 +1,9 @@
 package hse.algosim.executor.server.api;
 
-import com.google.common.collect.Lists;
 import hse.algosim.repo.client.api.ApiClient;
 import hse.algosim.repo.client.api.ApiException;
 import hse.algosim.repo.client.api.RepoApiClientInstance;
 import hse.algosim.repo.client.model.SrcStatus;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -14,15 +12,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Controller
@@ -30,12 +26,17 @@ import java.util.stream.Collectors;
 public class ExecuteApiController implements ExecuteApi {
 
     private final NativeWebRequest request;
-    private RepoApiClientInstance repoApiClient;
+    private final static RepoApiClientInstance repoApiClient = new RepoApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/repo/api"));
+    private final static ThreadPoolExecutor singleThreadExecutor = new ThreadPoolExecutor(
+            1,
+            1,
+            0L,
+            TimeUnit.MILLISECONDS,
+            new LinkedBlockingQueue<Runnable>(2));
 
     @org.springframework.beans.factory.annotation.Autowired
     public ExecuteApiController(NativeWebRequest request) {
         this.request = request;
-        repoApiClient = new RepoApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/repo/api"));
     }
 
     @Override
@@ -45,43 +46,53 @@ public class ExecuteApiController implements ExecuteApi {
 
     @Override
     public ResponseEntity<Void> executeAlgorithm(@PathVariable("id") UUID id) {
-        File jar;
         try {
-            repoApiClient.replaceAlgorithmStatus(
-                    id,
-                    new SrcStatus().status(SrcStatus.StatusEnum.EXECUTING));
-            jar = repoApiClient.getAlgorithmJar(id);
-        } catch (ApiException e) {
-            e.printStackTrace();
-            HttpHeaders httpHeaders = new HttpHeaders();
-            httpHeaders.putAll(e.getResponseHeaders());
-            return new ResponseEntity<>(
-                    httpHeaders,
-                    HttpStatus.valueOf(e.getCode()));
-        }
+            singleThreadExecutor.submit(()->{
+                SrcStatus srcStatus = new SrcStatus();
+                File jar = null;
+                try {
+                    repoApiClient.replaceAlgorithmStatus(
+                            id,
+                            new SrcStatus().status(SrcStatus.StatusEnum.EXECUTING));
+                    jar = repoApiClient.getAlgorithmJar(id);
 
-        CompletableFuture<Void> execution = CompletableFuture.runAsync(()-> {
-            try {
-                SrcStatus srcStatus = new SrcStatus().status(SrcStatus.StatusEnum.SUCCESSFULLY_EXECUTED);
-                ProcessBuilder processBuilder = new ProcessBuilder().command(Arrays.asList("java", "-jar", jar.getAbsolutePath()));
-                Process p = processBuilder.start();
-                int i = p.waitFor();
-                if (i != 0) {
-                    srcStatus.setStatus(SrcStatus.StatusEnum.EXECUTION_FAILED);
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-                    srcStatus.setErrorTrace(reader.lines().collect(Collectors.joining(System.lineSeparator())));
+                    Process p = new ProcessBuilder()
+                            .command(Arrays.asList("java", "-jar", jar.getAbsolutePath()))
+                            .start();
+                    BufferedReader pErrorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+                    BufferedReader pOutputReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+                    srcStatus = srcStatus
+                            .status(SrcStatus.StatusEnum.SUCCESSFULLY_EXECUTED)
+                            .errorTrace(pErrorReader.lines().collect(Collectors.joining(System.lineSeparator())))
+                            .winloss(pOutputReader.lines().collect(Collectors.joining(System.lineSeparator())));
+
+                    if (p.waitFor() != 0) {
+                        srcStatus.setStatus(SrcStatus.StatusEnum.EXECUTION_FAILED);
+                    }
+                } catch (InterruptedException | ApiException | IOException e ){
+                    StringWriter stringWriter = new StringWriter();
+                    e.printStackTrace(new PrintWriter(stringWriter));
+                    srcStatus = srcStatus
+                            .status(SrcStatus.StatusEnum.EXECUTION_FAILED)
+                            .errorTrace(stringWriter.toString());
+                } finally {
+                    if (jar != null){
+                        jar.delete();
+                    }
+                    try {
+                        repoApiClient.replaceAlgorithmStatus(
+                                id,
+                                srcStatus);
+                    } catch (ApiException e) {
+                        e.printStackTrace();
+                    }
                 }
-                else {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()));
-                    srcStatus.setWinloss(reader.lines().collect(Collectors.joining(System.lineSeparator())));
-                }
-                repoApiClient.replaceAlgorithmStatus(
-                        id,
-                        srcStatus);
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-        });
+            });
+        }catch (RejectedExecutionException re){
+            System.out.println("Caught RejectedExecutionException" + id.toString());
+            return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+        }
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
