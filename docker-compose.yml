@@ -3,7 +3,7 @@ version: '3.7'
 services:
    repo:
      build:
-       context: repo/server
+       context: repo
        dockerfile: Dockerfile-repo
        target: repo-dist
      volumes:
@@ -18,7 +18,7 @@ services:
        - SERVICE_NAME=repo
    compiler:
      build:
-       context: compiler/server
+       context: compiler
        dockerfile: Dockerfile-compiler
        target: compiler-dist
      volumes:
@@ -34,7 +34,7 @@ services:
        - SERVICE_NAME=compiler
    executor:
      build:
-       context: executor/server
+       context: executor
        dockerfile: Dockerfile-executor
        target: executor-dist
      volumes:
@@ -52,7 +52,7 @@ services:
      depends_on:
        - repo
      build:
-       context: gateway/server
+       context: gateway
        dockerfile: Dockerfile-gateway
        target: gateway-dist
      volumes:
