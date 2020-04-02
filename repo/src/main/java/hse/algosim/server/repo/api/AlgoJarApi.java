@@ -3,6 +3,7 @@ package hse.algosim.server.repo.api;
 import io.swagger.annotations.*;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,61 +18,58 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Validated
-@Api(value = "algoJar", description = "the algoJar API")
+@Api(value = "algoJar", description = "the algoJar API",tags={ "artifact" })
 public interface AlgoJarApi {
 
     default Optional<NativeWebRequest> getRequest() {
         return Optional.empty();
     }
 
-    @ApiOperation(value = "", nickname = "deleteAlgorithmJar", notes = "deletes the algorithm jar based on the UUID supplied", tags={  })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 204, message = "Artifact successfully deleted"),
-        @ApiResponse(code = 404, message = "Artifact not found for this UUID") })
+    @ApiOperation(value = "", nickname = "createAlgorithmJar", notes = "Uploads algorithm artifact")
+    @ApiResponses(value = {
+            @ApiResponse(code = 201, message = "Artifact successfully uploaded"),
+            @ApiResponse(code = 409, message = "Source code already uploaded for this UUID")
+    })
     @RequestMapping(value = "/algoJar/{id}",
-        method = RequestMethod.DELETE)
+            consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE },
+            method = RequestMethod.POST)
+    default ResponseEntity<Void> createAlgorithmJar(@ApiParam(value = "UUID of algorithm which jar is uploaded",required=true) @PathVariable("id") UUID id, @ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile jar) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @ApiOperation(value = "", nickname = "readAlgorithmJar", notes = "Returns algorithm jar", response = Resource.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Artifact successfully fetched", response = Resource.class),
+            @ApiResponse(code = 404, message = "Artifact not found for this UUID") })
+    @RequestMapping(value = "/algoJar/{id}",
+            produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_OCTET_STREAM_VALUE },
+            method = RequestMethod.GET)
+    default ResponseEntity<Resource> readAlgorithmJar(@ApiParam(value = "UUID of algorithm which jar will be fetched",required=true) @PathVariable("id") UUID id) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @ApiOperation(value = "", nickname = "updateAlgorithmJar", notes = "Replaces algorithm artifact")
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "Artifact successfully replaced"),
+            @ApiResponse(code = 404, message = "Source code / artifact not found for this UUID") })
+    @RequestMapping(value = "/algoJar/{id}",
+            consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
+            produces = { MediaType.APPLICATION_JSON_VALUE },
+            method = RequestMethod.PUT)
+    default ResponseEntity<Void> updateAlgorithmJar(@ApiParam(value = "UUID of algorithm which jar is uploaded",required=true) @PathVariable("id") UUID id, @ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile jar) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @ApiOperation(value = "", nickname = "deleteAlgorithmJar", notes = "deletes the algorithm jar based on the UUID supplied")
+    @ApiResponses(value = {
+            @ApiResponse(code = 204, message = "Artifact successfully deleted"),
+            @ApiResponse(code = 404, message = "Artifact not found for this UUID") })
+    @RequestMapping(value = "/algoJar/{id}",
+            produces = { MediaType.APPLICATION_JSON_VALUE },
+            method = RequestMethod.DELETE)
     default ResponseEntity<Void> deleteAlgorithmJar(@ApiParam(value = "UUID of algorithm to delete",required=true) @PathVariable("id") UUID id) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
-
-
-    @ApiOperation(value = "", nickname = "getAlgorithmJar", notes = "Returns algorithm jar", response = Resource.class, tags={  })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Artifact successfully fetched", response = Resource.class),
-        @ApiResponse(code = 404, message = "Artifact not found for this UUID") })
-    @RequestMapping(value = "/algoJar/{id}",
-        produces = { "application/octet-stream" }, 
-        method = RequestMethod.GET)
-    default ResponseEntity<Resource> getAlgorithmJar(@ApiParam(value = "UUID of algorithm which jar will be fetched",required=true) @PathVariable("id") UUID id) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
-
-
-    @ApiOperation(value = "", nickname = "replaceAlgorithmJar", notes = "Replaces algorithm artifact", tags={  })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Artifact successfully replaced"),
-        @ApiResponse(code = 404, message = "Source code / artifact not found for this UUID") })
-    @RequestMapping(value = "/algoJar/{id}",
-        consumes = { "multipart/form-data" },
-        method = RequestMethod.PUT)
-    default ResponseEntity<Void> replaceAlgorithmJar(@ApiParam(value = "UUID of algorithm which jar is uploaded",required=true) @PathVariable("id") UUID id,@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile jar) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
-
-
-    @ApiOperation(value = "", nickname = "uploadAlgorithmJar", notes = "Uploads algorithm artifact", tags={  })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 201, message = "Artifact successfully uploaded"),
-        @ApiResponse(code = 404, message = "Source code not found for this UUID") })
-    @RequestMapping(value = "/algoJar/{id}",
-        consumes = { "multipart/form-data" },
-        method = RequestMethod.POST)
-    default ResponseEntity<Void> uploadAlgorithmJar(@ApiParam(value = "UUID of algorithm which jar is uploaded",required=true) @PathVariable("id") UUID id,@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile jar) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
     }
 
 }

@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Validated
-@Api(value = "Compiler", description = "the Compiler API")
+@Api(value = "Compiler", description = "the Compiler API", tags={ "compiler"})
 public interface CompilerApi {
 
     default Optional<NativeWebRequest> getRequest() {
@@ -28,7 +28,7 @@ public interface CompilerApi {
      * @return Successfully compiled (status code 200)
      *         or Source code not found for this UUID (status code 404)
      */
-    @ApiOperation(value = "", nickname = "compileAlgorithm", notes = "Gets the sources from the db and compiles them", tags={ "compiler", })
+    @ApiOperation(value = "", nickname = "compileAlgorithm", notes = "Gets the sources from the db and compiles them")
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successfully compiled"),
         @ApiResponse(code = 404, message = "Source code not found for this UUID") })
@@ -47,7 +47,7 @@ public interface CompilerApi {
      * @return Ready (status code 200)
      *         or Busy (status code 503)
      */
-    @ApiOperation(value = "", nickname = "getReadiness", notes = "Returns readiness of the host for compilation", tags={ "compiler", })
+    @ApiOperation(value = "", nickname = "getReadiness", notes = "Returns readiness of the host for compilation")
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Ready"),
         @ApiResponse(code = 503, message = "Busy") })

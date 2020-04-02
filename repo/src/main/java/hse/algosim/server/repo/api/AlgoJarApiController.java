@@ -1,5 +1,7 @@
 package hse.algosim.server.repo.api;
 
+import hse.algosim.server.exceptions.ResourceAlreadyExistsException;
+import hse.algosim.server.exceptions.ResourceNotFoundException;
 import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -24,13 +26,11 @@ import java.util.UUID;
 public class AlgoJarApiController implements AlgoJarApi {
 
     private final NativeWebRequest request;
-    private Map<String,String> ids;
+    private static Map<String,File> ids = new HashMap<>();
 
     @org.springframework.beans.factory.annotation.Autowired
     public AlgoJarApiController(NativeWebRequest request) {
         this.request = request;
-        ids = new HashMap<>();
-        new File("artifacts/").mkdirs();
     }
 
     @Override
@@ -39,9 +39,17 @@ public class AlgoJarApiController implements AlgoJarApi {
     }
 
     @Override
-    public ResponseEntity<Resource> getAlgorithmJar(@PathVariable("id") UUID id) {
-        System.out.println("Sending artifact "+id.toString());
-        Resource r = new PathResource(ids.get(id.toString()));
+    public ResponseEntity<Void> createAlgorithmJar(@PathVariable("id") UUID id, @Valid MultipartFile jar) {
+        if (ids.containsKey(id.toString()))
+            throw new ResourceAlreadyExistsException("Artifact already uploaded for this UUID");
+        saveFile(id.toString(),jar);
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @Override
+    public ResponseEntity<Resource> readAlgorithmJar(@PathVariable("id") UUID id) {
+        File jar = getFile(id.toString());
+        Resource r = new PathResource(jar.toPath());
         HttpHeaders hp = new HttpHeaders();
         hp.add("Content-Disposition","attachment; filename="+id.toString());
         hp.add("Content-Type","application/octet-stream");
@@ -49,16 +57,36 @@ public class AlgoJarApiController implements AlgoJarApi {
     }
 
     @Override
-    public ResponseEntity<Void> uploadAlgorithmJar(@PathVariable("id") UUID id, @Valid MultipartFile jar) {
-        System.out.println("Received artifact "+id.toString());
-        System.out.println(id.toString());
+    public ResponseEntity<Void> updateAlgorithmJar(@PathVariable("id") UUID id, @Valid MultipartFile jar) {
+        File oldJar = getFile(id.toString());
+        oldJar.delete();
+        saveFile(id.toString(),jar);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteAlgorithmJar(@PathVariable("id") UUID id) {
+        File jar = getFile(id.toString());
+        jar.delete();
+        ids.remove(id.toString());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    public File getFile(String id){
+        File jar = ids.get(id);
+        if (jar == null)
+            throw new ResourceNotFoundException("Artifact not found for this UUID");
+        return jar;
+    }
+
+    public void saveFile(String id, MultipartFile jar){
         try {
-            File receivedArtifact = new File("artifacts/"+id.toString()).getAbsoluteFile();
-            ids.put(id.toString(),receivedArtifact.getAbsolutePath());
+            File receivedArtifact = new File("artifacts/"+ id).getAbsoluteFile();
+            receivedArtifact.getParentFile().mkdirs();
+            ids.put(id,receivedArtifact);
             jar.transferTo(receivedArtifact);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

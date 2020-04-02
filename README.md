@@ -1,8 +1,13 @@
 ![sequence-diagram](configs/algosim-sequence.png "Взаимодействие сервисов")
 ***
 TODO:
-- maybe services host and basepath as .properties file
-- how to use swagger-ui in terms of containers and envoy?
+- host и basepath сервисов как параметры/файлы пропертей
+- поправить swagger-ui чтоьы выстраивались корректные запросы с учетом envoy-прокси
+- единый источник quotes в framework: receiveTick: timestamp, пара, цена
+- BUG: запросы работают либо без Accept, либо с "Accept: application/json, application/octet-stream"; c "Accept: application/octet-stream, application/json" НЕ работают, разобраться почему
+- перейти на единый формат сериализации (gson/jackson) в клиентах и серверах, сделать единый артефакт с моделями
+- для compiler/executor родительский worker-класс с настройками ThreadPool
+- concurrent maps для хранения данных
 ***
 Структура репо:
 - Dockerfile-base, Dockerfile-dist-{jdk,jre}, start-service.sh - для сборки базовых образов. В base (он с jdk,maven, исходным кодом клиентов) собирается артефакт сервиса, в dist (тонкий образ, alpine+envoy+(jre|jdk)) он запускается.

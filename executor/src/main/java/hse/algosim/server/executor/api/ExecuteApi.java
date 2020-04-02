@@ -13,14 +13,14 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Validated
-@Api(value = "execute", description = "the execute API")
+@Api(value = "execute", description = "the execute API", tags={ "executor" })
 public interface ExecuteApi {
 
     default Optional<NativeWebRequest> getRequest() {
         return Optional.empty();
     }
 
-    @ApiOperation(value = "", nickname = "executeAlgorithm", notes = "Gets the artifact from nexus, executes and benchmarks it", tags={  })
+    @ApiOperation(value = "", nickname = "executeAlgorithm", notes = "Gets the artifact from nexus, executes and benchmarks it")
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successfully executed"),
         @ApiResponse(code = 404, message = "Artifact not found for this UUID") })

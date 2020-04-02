@@ -1,6 +1,8 @@
 package hse.algosim.server.repo.api;
 
 import hse.algosim.server.model.SrcMeta;
+import hse.algosim.server.exceptions.ResourceAlreadyExistsException;
+import hse.algosim.server.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,6 +22,7 @@ import java.util.UUID;
 public class AlgoMetaApiController implements AlgoMetaApi {
 
     private final NativeWebRequest request;
+    private static Map<String, SrcMeta> ids = new HashMap<>();;
 
     @org.springframework.beans.factory.annotation.Autowired
     public AlgoMetaApiController(NativeWebRequest request) {
@@ -30,16 +35,36 @@ public class AlgoMetaApiController implements AlgoMetaApi {
     }
 
     @Override
-    public ResponseEntity<SrcMeta> getAlgorithmMeta(@PathVariable("id") UUID id) {
-        System.out.println("Sending meta!");
-        return new ResponseEntity<>(new SrcMeta().author("hello").description("there"), HttpStatus.OK);
+    public ResponseEntity<Void> createAlgorithmMeta(@PathVariable("id") UUID id, @RequestBody @Valid SrcMeta srcMeta) {
+        if (ids.containsKey(id.toString()))
+            throw new ResourceAlreadyExistsException("Metadata already uploaded for this UUID");
+        ids.put(id.toString(),srcMeta);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<Void> uploadAlgorithmMeta(@PathVariable("id") UUID id, @RequestBody @Valid SrcMeta srcMeta) {
-        System.out.println("Received meta!");
-        System.out.println(srcMeta.getDescription()+srcMeta.getAuthor());
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<SrcMeta> readAlgorithmMeta(@PathVariable("id") UUID id) {
+        SrcMeta meta = ids.get(id.toString());
+        if (meta == null)
+            throw new ResourceNotFoundException("Metadata not found for this UUID");
+        return new ResponseEntity<>(meta, HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<Void> updateAlgorithmMeta(@PathVariable("id") UUID id, @Valid SrcMeta srcMeta) {
+        SrcMeta meta = ids.get(id.toString());
+        if (meta == null)
+            throw new ResourceNotFoundException("Metadata not found for this UUID");
+        ids.replace(id.toString(),srcMeta);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @Override
+    public ResponseEntity<Void> deleteAlgorithmMeta(@PathVariable("id") UUID id) {
+        SrcMeta meta = ids.get(id.toString());
+        if (meta == null)
+            throw new ResourceNotFoundException("Metadata not found for this UUID");
+        ids.remove(id.toString());
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

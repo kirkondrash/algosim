@@ -15,14 +15,14 @@ import java.util.Map;
 import java.util.Optional;
 
 @Validated
-@Api(value = "algoCode", description = "the algoCode API")
+@Api(value = "algoCode", description = "the algoCode API", tags={ "gateway" })
 public interface AlgoCodeApi {
 
     default Optional<NativeWebRequest> getRequest() {
         return Optional.empty();
     }
 
-    @ApiOperation(value = "", nickname = "getAlgorithmCode", notes = "Gets code loaded by user, assigns the UUID to it. The code will later be compiled and executed", response = Map.class, tags={  })
+    @ApiOperation(value = "", nickname = "getAlgorithmCode", notes = "Gets code loaded by user, assigns the UUID to it. The code will later be compiled and executed", response = Map.class)
     @ApiResponses(value = { 
         @ApiResponse(code = 201, message = "Source code was uploaded successfully", response = Map.class) })
     @RequestMapping(value = "/algoCode",
@@ -34,7 +34,7 @@ public interface AlgoCodeApi {
 
     }
 
-    @ApiOperation(value = "", nickname = "getTop", notes = "Gets some 10 algos ids and first line of files", response = Map.class, tags={  })
+    @ApiOperation(value = "", nickname = "getTop", notes = "Gets some 10 algos ids and first line of files", response = Map.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = Map.class) })
     @RequestMapping(value = "/getTop",
