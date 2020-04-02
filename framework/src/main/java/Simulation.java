@@ -1,22 +1,20 @@
 public class Simulation {
     public static void main(String[] args) {
-        QuotesDAO eurusd = new QuotesDAO(
-                "EUR",
-                "RUB",
-                "2020",
-                "01",
-                "20");
+        QuotesDAO quotes = new QuotesDAO("test_set");
         final TradingAlgorithm tradingAlgorithm = new TradingAlgorithmImpl();
-        eurusd.getTicks().forEach( quote -> {
-            try {
-                tradingAlgorithm.receiveTick(quote);
-            } catch (TradingLogicException e) {
-                e.printStackTrace();
-            }
-        });
+        quotes.getTicks()
+                .filter(tick -> tick.getCurrencyPair().equals("EUR/RUB"))
+                .forEach( quote -> {
+                    try {
+                        tradingAlgorithm.receiveTick(quote);
+                    } catch (TradingLogicException e) {
+                        e.printStackTrace();
+                    }
+                });
+
         tradingAlgorithm.evaluateResult();
 
-        eurusd.getWindow(0,0,10).forEach(System.out::println);
+        //quotes.getWindow(0,0,10).forEach(System.out::println);
 
     }
 }

@@ -4,35 +4,26 @@ import java.io.FileReader;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.stream.DoubleStream;
 import java.util.stream.Stream;
 
 public class QuotesDAO {
     private String fileName;
 
-    public QuotesDAO(String base, String quote, String yyyy, String mm, String dd) {
-        fileName = String.join(
-                "_",
-                Arrays.asList(
-                        base.toUpperCase(),
-                        quote.toUpperCase(),
-                        yyyy,
-                        mm,
-                        dd));
+    public QuotesDAO(String fileName) {
+        this.fileName = fileName;
     }
 
-    public DoubleStream getTicks(){
+    public Stream<Tick> getTicks() {
         Stream<String> quoteStream = null;
         try {
             BufferedReader br = new BufferedReader(
-                    new FileReader(String.format("/quotes/%s.csv", fileName)));
+                    new FileReader(String.format("/Users/kirkondrash/Desktop/algosim/quotes/%s.csv", fileName)));
             quoteStream = br.lines().skip(1);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        return quoteStream.mapToDouble(q -> Double.parseDouble(q.split(",")[1]));
+        return quoteStream.map(Tick::new);
     }
 
     //Sadly, only eager version by now..
@@ -40,7 +31,7 @@ public class QuotesDAO {
         Stream<String> quoteStream = null;
         try {
             BufferedReader br = new BufferedReader(
-                    new FileReader(String.format("/quotes/%s.csv", fileName)));
+                    new FileReader(String.format("/Users/kirkondrash/Desktop/algosim/quotes/%s.csv", fileName)));
             quoteStream = br.lines().skip(1);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

@@ -25,7 +25,7 @@ public class SimulationOrdersDAO {
                 )
                 .forEach(order -> {
                     order.close();
-                    System.out.println(order);
+                    //System.out.println(order);
                 });
         orderList.parallelStream()
                 .filter(order -> order.getState().equals(SimulationOrder.State.WAIT))
@@ -33,7 +33,7 @@ public class SimulationOrdersDAO {
                         || currentPrice.get() <= order.getOpeningPrice() && order.getOpeningPrice() < currentPrice.getPrev()) )
                 .forEach(order -> {
                     order.setState(SimulationOrder.State.OPENED);
-                    System.out.println(order);
+                    //System.out.println(order);
                 });
     }
 
