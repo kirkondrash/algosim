@@ -8,7 +8,7 @@
   </parent>
 
   <groupId>hse.algosim.client</groupId>
-  <artifactId>compiler</artifactId>
+  <artifactId>compiler-client</artifactId>
   <version>1.0-SNAPSHOT</version>
 
   <name>compiler</name>

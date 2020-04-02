@@ -5,4 +5,4 @@ RUN mvn package
 
 FROM algosim-dist-jdk AS compiler-dist
 COPY --from=compiler-builder /framework  /framework
-COPY --from=compiler-builder /app/target/algosim-compiler-server-0.0.1.jar  /app/app.jar
+COPY --from=compiler-builder /app/target/compiler-server-0.0.1.jar  /app/app.jar

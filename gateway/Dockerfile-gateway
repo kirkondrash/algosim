@@ -4,4 +4,4 @@ COPY . /app
 RUN mvn package
 
 FROM algosim-dist-jre AS gateway-dist
-COPY --from=gateway-builder /app/target/algosim-gateway-server-0.0.1.jar  /app/app.jar
+COPY --from=gateway-builder /app/target/gateway-server-0.0.1.jar  /app/app.jar

@@ -38,7 +38,7 @@ Add this dependency to your project's POM:
 ```xml
 <dependency>
   <groupId>hse.algosim.client</groupId>
-  <artifactId>compiler</artifactId>
+  <artifactId>compiler-client</artifactId>
   <version>1.0-SNAPSHOT</version>
   <scope>compile</scope>
 </dependency>
@@ -54,7 +54,7 @@ mvn clean package
 
 Then manually install the following JARs:
 
-* `target/compiler-1.0-SNAPSHOT.jar`
+* `target/compiler-client-1.0-SNAPSHOT.jar`
 * `target/lib/*.jar`
 
 ## Getting Started
@@ -68,7 +68,7 @@ import hse.algosim.client.api.ApiClient;
 import hse.algosim.client.api.ApiException;
 import hse.algosim.client.api.Configuration;
 import hse.algosim.client.models.*;
-import hse.algosim.client.api.compiler.CompilerApiClientInstance;
+import CompilerApiClientInstance;
 
 public class Example {
   public static void main(String[] args) {

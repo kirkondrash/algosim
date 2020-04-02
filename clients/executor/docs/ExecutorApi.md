@@ -22,7 +22,7 @@ import hse.algosim.client.api.ApiClient;
 import hse.algosim.client.api.ApiException;
 import hse.algosim.client.api.Configuration;
 import hse.algosim.client.models.*;
-import hse.algosim.client.api.executor.ExecutorApiClientInstance;
+import ExecutorApiClientInstance;
 
 public class Example {
   public static void main(String[] args) {
