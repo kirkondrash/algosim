@@ -1,6 +1,6 @@
 package hse.algosim.repo.server.api;
 
-import hse.algosim.repo.server.model.SrcMeta;
+import hse.algosim.server.model.SrcMeta;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;

@@ -1,6 +1,6 @@
 package hse.algosim.repo.server.api;
 
-import hse.algosim.repo.server.model.IdArray;
+import hse.algosim.server.model.IdArray;
 import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;

@@ -54,7 +54,7 @@ public class ExecuteApiController implements ExecuteApi {
                 try {
                     repoApiClient.replaceAlgorithmStatus(
                             id,
-                            new SrcStatus().status(SrcStatus.StatusEnum.EXECUTING));
+                            new SrcStatus().status(StatusEnum.EXECUTING));
                     jar = repoApiClient.getAlgorithmJar(id);
 
                     Process p = new ProcessBuilder()
@@ -64,18 +64,18 @@ public class ExecuteApiController implements ExecuteApi {
                     BufferedReader pOutputReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
 
                     srcStatus = srcStatus
-                            .status(SrcStatus.StatusEnum.SUCCESSFULLY_EXECUTED)
+                            .status(StatusEnum.SUCCESSFULLY_EXECUTED)
                             .errorTrace(pErrorReader.lines().collect(Collectors.joining(System.lineSeparator())))
                             .winloss(pOutputReader.lines().collect(Collectors.joining(System.lineSeparator())));
 
                     if (p.waitFor() != 0) {
-                        srcStatus.setStatus(SrcStatus.StatusEnum.EXECUTION_FAILED);
+                        srcStatus.setStatus(StatusEnum.EXECUTION_FAILED);
                     }
                 } catch (InterruptedException | ApiException | IOException e ){
                     StringWriter stringWriter = new StringWriter();
                     e.printStackTrace(new PrintWriter(stringWriter));
                     srcStatus = srcStatus
-                            .status(SrcStatus.StatusEnum.EXECUTION_FAILED)
+                            .status(StatusEnum.EXECUTION_FAILED)
                             .errorTrace(stringWriter.toString());
                 } finally {
                     if (jar != null){

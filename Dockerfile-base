@@ -2,5 +2,7 @@
 # it will be cached and wont be built every time the build starts
 FROM maven:3.6.2-jdk-8 AS clients-builder
 COPY ./clients /clients
+COPY ./models /models
 COPY ./framework /framework
-RUN cd /clients && mvn clean install
+RUN cd /clients && mvn clean install && \
+    cd /models && mvn clean install
