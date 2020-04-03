@@ -1,4 +1,3 @@
-import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,12 +8,12 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
 
     private State state;
     private Type type;
-    @Inject
     private CurrentPrice currentPrice;
     List<Double> autoClosingPrices = new ArrayList<>();
 
-    public SimulationOrder(){
+    public SimulationOrder(CurrentPrice currentPrice){
         state = State.WAIT;
+        this.currentPrice = currentPrice;
     }
 
     public State getState() {
@@ -59,9 +58,11 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
     }
 
     public SimulationOrder buyStop(double pips) throws TradingLogicException {
+        if (state != State.WAIT)
+            throw new TradingLogicException("Wrong move! BuyStop can be applied only to not opened orders!");
         if (pips <= currentPrice.get())
             throw new TradingLogicException(String.format(
-                    "Wrong move! BuyStop level [%d] has to be higher than current[%d]!",
+                    "Wrong move! BuyStop level [%f] has to be higher than current[%f]!",
                     pips,
                     currentPrice.get()));
         type = Type.BUY;
@@ -70,9 +71,11 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
     }
 
     public SimulationOrder sellStop(double pips) throws TradingLogicException {
+        if (state != State.WAIT)
+            throw new TradingLogicException("Wrong move! SellStop can be applied only to not opened orders!");
         if (pips >= currentPrice.get())
             throw new TradingLogicException(String.format(
-                    "Wrong move! SellStop level [%d] has to be lower than current[%d]!",
+                    "Wrong move! SellStop level [%f] has to be lower than current[%f]!",
                     pips,
                     currentPrice.get()));
         type = Type.SELL;
@@ -81,9 +84,11 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
     }
 
     public SimulationOrder buyLimit(double pips) throws TradingLogicException {
+        if (state != State.WAIT)
+            throw new TradingLogicException("Wrong move! BuyLimit can be applied only to not opened orders!");
         if (pips >= currentPrice.get())
             throw new TradingLogicException(String.format(
-                    "Wrong move! BuyLimit level [%d] has to be lower than current[%d]!",
+                    "Wrong move! BuyLimit level [%f] has to be lower than current[%f]!",
                     pips,
                     currentPrice.get()));
         type = Type.BUY;
@@ -92,9 +97,11 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
     }
 
     public SimulationOrder sellLimit(double pips) throws TradingLogicException {
+        if (state != State.WAIT)
+            throw new TradingLogicException("Wrong move! SellLimit can be applied only to not opened orders!");
         if (pips <= currentPrice.get())
             throw new TradingLogicException(String.format(
-                    "Wrong move! SellLimit level [%d] has to be higher than current[%d]!",
+                    "Wrong move! SellLimit level [%f] has to be higher than current[%f]!",
                     pips,
                     currentPrice.get()));
         type = SimulationOrder.Type.SELL;
@@ -107,14 +114,14 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
             case BUY:
                 if (pips >= openingPrice)
                     throw new TradingLogicException(String.format(
-                            "Wrong move! Buying StopLoss level [%d] has to be lower than opening[%d]!",
+                            "Wrong move! Buying StopLoss level [%f] has to be lower than opening[%f]!",
                             pips,
                             openingPrice));
                 break;
             case SELL:
                 if (pips <= openingPrice)
                     throw new TradingLogicException(String.format(
-                            "Wrong move! Selling StopLoss level [%d] has to be higher than opening[%d]!",
+                            "Wrong move! Selling StopLoss level [%f] has to be higher than opening[%f]!",
                             pips,
                             openingPrice));
                 break;
@@ -131,14 +138,14 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
             case BUY:
                 if (pips <= openingPrice)
                     throw new TradingLogicException(String.format(
-                            "Wrong move! Buying MakeProfit level [%d] has to be higher than opening[%d]!",
+                            "Wrong move! Buying MakeProfit level [%f] has to be higher than opening[%f]!",
                             pips,
                             openingPrice));
                 break;
             case SELL:
                 if (pips >= openingPrice)
                     throw new TradingLogicException(String.format(
-                            "Wrong move! Selling MakeProfit level [%d] has to be lower than opening[%d]!",
+                            "Wrong move! Selling MakeProfit level [%f] has to be lower than opening[%f]!",
                             pips,
                             openingPrice));
                 break;

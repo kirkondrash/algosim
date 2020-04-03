@@ -3,7 +3,6 @@
 TODO:
 - для compiler/executor родительский worker-класс с настройками ThreadPool
 - concurrent maps для хранения данных
-- убрать бин CurrentPrice из SimulationOrdersDAO
 - добавить мультивалютность в SimulationOrdersDAO
 Optional TODO:
 - host и basepath сервисов как параметры/файлы пропертей

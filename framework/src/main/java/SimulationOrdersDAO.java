@@ -1,11 +1,8 @@
-import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SimulationOrdersDAO {
     private List<SimulationOrder> orderList;
-    @Inject
-    private CurrentPrice currentPrice;
 
     public SimulationOrdersDAO() {
         orderList = new ArrayList<>();
@@ -15,7 +12,7 @@ public class SimulationOrdersDAO {
         return orderList;
     }
 
-    public void executeOrders() {
+    public void executeOrders(CurrentPrice currentPrice) {
         orderList.parallelStream()
                 .filter(order -> order.getState().equals(SimulationOrder.State.OPENED))
                 .filter(order ->

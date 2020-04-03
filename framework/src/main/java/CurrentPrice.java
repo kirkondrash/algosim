@@ -1,6 +1,3 @@
-import com.google.inject.Singleton;
-
-@Singleton
 public class CurrentPrice {
     private double currentPrice = 0;
     private double previousPrice = 0;
