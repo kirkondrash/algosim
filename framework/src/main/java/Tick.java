@@ -1,15 +1,12 @@
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 
 public class Tick {
     private long timestamp;
     private String currencyPair;
-    private double rate;
+    private BigDecimal rate;
     private static DateTimeFormatter dtf  = DateTimeFormatter
             .ofPattern("yyyy.MM.dd HHmmss")
             .withZone(ZoneId.systemDefault());
@@ -19,7 +16,7 @@ public class Tick {
         Instant i = Instant.from(dtf.parse(lineValues[0]+" "+lineValues[1]));
         timestamp = i.getEpochSecond();
         currencyPair = lineValues[2];
-        rate = Double.parseDouble(lineValues[3]);
+        rate = new BigDecimal(lineValues[3]);
     }
 
     public long getTimestamp() {
@@ -30,7 +27,7 @@ public class Tick {
         return currencyPair;
     }
 
-    public double getRate() {
+    public BigDecimal getRate() {
         return rate;
     }
 }

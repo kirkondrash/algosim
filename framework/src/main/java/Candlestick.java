@@ -1,58 +1,58 @@
+import java.math.BigDecimal;
+import java.time.Instant;
+
 public class Candlestick {
-    private double low = 0.0;
-    private double high = 0.0;
-    private double open = 0.0;
-    private double close = 0.0;
+    private Instant openingTime;
+    private Instant closingTime;
+    private BigDecimal lowRate;
+    private BigDecimal highRate;
+    private BigDecimal openingRate;
+    private BigDecimal closingRate;
 
-    public Candlestick() {
+    public Candlestick(long close, long dur) {
+        lowRate = new BigDecimal(0);
+        highRate = new BigDecimal(0);
+        openingRate = new BigDecimal(0);
+        closingRate = new BigDecimal(0);
+        openingTime = Instant.ofEpochSecond(close-dur);
+        closingTime = Instant.ofEpochSecond(close);
     }
 
-    public Candlestick(double low, double high, double open, double close) {
-        this.low = low;
-        this.high = high;
-        this.open = open;
-        this.close = close;
+    public Candlestick openingRate(BigDecimal openingRate) {
+        this.openingRate = openingRate;
+        return this;
     }
 
-    public double getLow() {
-        return low;
+    public Candlestick closingRate(BigDecimal closingRate) {
+        this.closingRate = closingRate;
+        return this;
     }
 
-    public void setLow(double low) {
-        this.low = low;
+    public BigDecimal getLowRate() {
+        return lowRate;
     }
 
-    public double getHigh() {
-        return high;
+    public void setLowRate(BigDecimal lowRate) {
+        this.lowRate = lowRate;
     }
 
-    public void setHigh(double high) {
-        this.high = high;
+    public BigDecimal getHighRate() {
+        return highRate;
     }
 
-    public double getOpen() {
-        return open;
-    }
-
-    public void setOpen(double open) {
-        this.open = open;
-    }
-
-    public double getClose() {
-        return close;
-    }
-
-    public void setClose(double close) {
-        this.close = close;
+    public void setHighRate(BigDecimal highRate) {
+        this.highRate = highRate;
     }
 
     @Override
     public String toString() {
         return "Candlestick{" +
-                "low=" + low +
-                ", high=" + high +
-                ", open=" + open +
-                ", close=" + close +
+                "openingTime=" + openingTime +
+                ", closingTime=" + closingTime +
+                ", lowRate=" + lowRate +
+                ", highRate=" + highRate +
+                ", openingRate=" + openingRate +
+                ", closingRate=" + closingRate +
                 '}';
     }
 }

@@ -3,7 +3,7 @@
 TODO:
 - для compiler/executor родительский worker-класс с настройками ThreadPool
 - concurrent maps для хранения данных
-- добавить мультивалютность в SimulationOrdersDAO
+- перевести все сравнения double в framework на treshold
 Optional TODO:
 - host и basepath сервисов как параметры/файлы пропертей
 - поправить swagger-ui чтоьы выстраивались корректные запросы с учетом envoy-прокси

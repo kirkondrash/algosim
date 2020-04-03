@@ -1,7 +1,11 @@
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -27,50 +31,45 @@ public class QuotesDAO {
     }
 
     //Sadly, only eager version by now..
-    public Stream<Candlestick> getWindow(int hh, int mm, int ss){
-        Stream<String> quoteStream = null;
+    public Stream<Candlestick> getWindow(String pair, int hh, int mm, int ss){
+        long nextClose = 0;
         try {
             BufferedReader br = new BufferedReader(
                     new FileReader(String.format("/Users/kirkondrash/Desktop/algosim/quotes/%s.csv", fileName)));
-            quoteStream = br.lines().skip(1);
-        } catch (FileNotFoundException e) {
+            br.readLine();
+            String[] lineValues = br.readLine().split(",");
+            nextClose = Instant.from(DateTimeFormatter
+                    .ofPattern("yyyy.MM.dd HHmmss")
+                    .withZone(ZoneId.systemDefault()).parse(lineValues[0]+" "+lineValues[1])).getEpochSecond();
+        } catch (IOException e) {
             e.printStackTrace();
         }
+        Stream<Tick> tickStream =getTicks().filter(order -> order.getCurrencyPair().equals(pair));
 
         ArrayList<Candlestick> candleArray = new ArrayList<>();
-        int dur = 60*hh+60*mm+ss;
-        int nextOpen = 0;
-        int nextClose = 0;
-        double prevQuote;
-        double curQuote = 0.0;
-        double lowQuote = 0.0;
-        double highQuote = 0.0;
-        double openQuote = 0.0;
-        for (Iterator<String> i = quoteStream.iterator(); i.hasNext(); ){
-            String q = i.next();
-            String[] line = q.split(",");
+
+        int dur = (hh*60+mm)*60+ss;
+        Candlestick currentCandle = new Candlestick(nextClose,dur);
+        BigDecimal prevQuote;
+        BigDecimal curQuote = new BigDecimal(0);
+        for (Iterator<Tick> i = tickStream.iterator(); i.hasNext(); ){
+            Tick q = i.next();
             prevQuote = curQuote;
-            curQuote = Double.parseDouble(line[1]);
-            int curTime = LocalTime.parse(line[0], DateTimeFormatter.ofPattern("HHmmss")).toSecondOfDay();
+            curQuote = q.getRate();
+            long curTime = q.getTimestamp();
             if (curTime >= nextClose) {
-//                System.out.println(String.format("Close window %s", LocalTime.ofSecondOfDay(nextClose)));
-                candleArray.add(new Candlestick(lowQuote, highQuote, openQuote, prevQuote));
-                lowQuote = 0.0;
-                highQuote = 0.0;
-//                System.out.println(String.format("Open window %s", LocalTime.ofSecondOfDay(nextClose)));
-                nextClose +=dur;
-                openQuote = curQuote;
+                candleArray.add(currentCandle.closingRate(prevQuote));
+                nextClose += dur;
                 while (curTime - nextClose >= 0) {
-//                    System.out.println(String.format("Close window %s", LocalTime.ofSecondOfDay(nextClose)));
-                    candleArray.add(new Candlestick());
-//                    System.out.println(String.format("Open window %s", LocalTime.ofSecondOfDay(nextClose)));
+                    candleArray.add(new Candlestick(nextClose,dur));
                     nextClose += dur;
                 }
+                currentCandle = new Candlestick(nextClose,dur).openingRate(curQuote);
             }
-            if(curQuote>highQuote || highQuote == 0)
-                highQuote = curQuote;
-            if (curQuote<lowQuote || lowQuote == 0)
-                lowQuote = curQuote;
+            if(curQuote.compareTo(currentCandle.getHighRate())>0 || currentCandle.getHighRate().signum() == 0)
+                currentCandle.setHighRate(curQuote);
+            if (curQuote.compareTo(currentCandle.getLowRate())<0 || currentCandle.getLowRate().signum() == 0)
+                currentCandle.setLowRate(curQuote);
         }
         return candleArray.stream();
     }

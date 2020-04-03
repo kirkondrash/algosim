@@ -3,7 +3,6 @@ public class Simulation {
         QuotesDAO quotes = new QuotesDAO("test_set_2");
         final TradingAlgorithm tradingAlgorithm = new TradingAlgorithmImpl();
         quotes.getTicks()
-                .filter(tick -> tick.getCurrencyPair().equals("EUR/RUB"))
                 .forEach( quote -> {
                     try {
                         tradingAlgorithm.receiveTick(quote);
@@ -14,7 +13,7 @@ public class Simulation {
 
         tradingAlgorithm.evaluateResult();
 
-        //quotes.getWindow(0,0,10).forEach(System.out::println);
+        //quotes.getWindow("USD/RUB",0,0,5).forEach(System.out::println);
 
     }
 }

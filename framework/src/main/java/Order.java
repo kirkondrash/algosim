@@ -1,11 +1,20 @@
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Order {
+    String pair;
     int lot;
-    double openingPrice = 0;
-    double closingPrice = 0;
+    BigDecimal openingPrice;
+    BigDecimal closingPrice;
 
+    public String getPair() {
+        return pair;
+    }
+
+    public void setPair(String pair) {
+        this.pair = pair;
+    }
 
     public int getLot() {
         return lot;
@@ -15,17 +24,17 @@ public abstract class Order {
         this.lot = lot;
     }
 
-    public double getOpeningPrice() {
+    public BigDecimal getOpeningPrice() {
         return openingPrice;
     }
 
-    public void setOpeningPrice(double openingPrice) {
+    public void setOpeningPrice(BigDecimal openingPrice) {
         this.openingPrice = openingPrice;
     }
 
-    public double getClosingPrice() { return closingPrice; }
+    public BigDecimal getClosingPrice() { return closingPrice; }
 
-    public void setClosingPrice(double closingPrice) {
+    public void setClosingPrice(BigDecimal closingPrice) {
         this.closingPrice = closingPrice;
     }
 

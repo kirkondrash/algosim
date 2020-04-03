@@ -1,28 +1,46 @@
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Random;
+
 public class TradingAlgorithmImpl implements TradingAlgorithm {
     private SimulationOrdersDAO ordersBase;
-    private CurrentPrice currentPrice;
+    private CurrencyRates currencyRates;
+    private static Random r = new Random(System.currentTimeMillis());
 
     public TradingAlgorithmImpl() {
         ordersBase = new SimulationOrdersDAO();
-        currentPrice = new CurrentPrice();
+        currencyRates = new CurrencyRates();
     }
 
     public void receiveTick(Tick tick) throws TradingLogicException {
-        currentPrice.set(tick.getRate());
-        //System.out.println(tick.getRate());
-        SimulationOrder o1 = new SimulationOrder(currentPrice)
-                .lot(10)
-                .buyNow()
-                .stopLoss(tick.getRate()-0.1)
-                .makeProfit(tick.getRate()+0.05);
-        //System.out.println(o1);
-        ordersBase.put(o1);
-        ordersBase.executeOrders(currentPrice);
+        CurrencyRate currencyRate = currencyRates.updateAndReturnCurrentRate(tick.getCurrencyPair(),tick.getRate());
+
+        /* put you trading logic here */
+        if (r.nextBoolean()) { // imitation of favourable conditions
+            double stopLoss = 0.001 * r.nextDouble(); // imitation of user choice of stop-loss level
+            double makeProfit = 0.001 * r.nextDouble(); // imitation of user choice of make-profit level
+
+            SimulationOrder o1 = new SimulationOrder(tick.getCurrencyPair(), currencyRate).buyNow();
+            if (Arrays.asList(tick.getCurrencyPair().split("/")).contains("RUB")) {
+                o1
+                        .lot(50)
+                        .stopLoss(tick.getRate().subtract(new BigDecimal(String.valueOf(stopLoss * 100))))
+                        .makeProfit(tick.getRate().add(new BigDecimal(String.valueOf(makeProfit * 100))));
+            } else {
+                o1
+                        .lot(10)
+                        .stopLoss(tick.getRate().subtract(new BigDecimal(String.valueOf(stopLoss))))
+                        .makeProfit(tick.getRate().add(new BigDecimal(String.valueOf(makeProfit))));
+            }
+            ordersBase.put(o1);
+        }
+
+        ordersBase.executeOrders();
     }
 
     @Override
     public void evaluateResult() {
-        System.out.println(String.format("Total WL: %f", ordersBase.evaluateResult()));
+        System.out.println(String.format("{ \"winloss\": %f}", ordersBase.evaluateWinLoss()));
     }
 
 }
