@@ -1,6 +1,6 @@
 public class Simulation {
     public static void main(String[] args) {
-        QuotesDAO quotes = new QuotesDAO("test_set_light");
+        QuotesDAO quotes = new QuotesDAO("test_set");
         final TradingAlgorithm tradingAlgorithm = new TradingAlgorithmImpl();
         quotes.getTicks()
                 .forEach( quote -> {

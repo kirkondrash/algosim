@@ -1,44 +1,40 @@
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SimulationOrdersDAO {
-    private Set<SimulationOrder> openOrderList;
-    private Set<SimulationOrder> closeOrderList;
-    private Set<SimulationOrder> waitOrderList;
+    private Set<SimulationOrder> orderSet;
 
     public SimulationOrdersDAO() {
-        waitOrderList = ConcurrentHashMap.newKeySet();
-        openOrderList = ConcurrentHashMap.newKeySet();
-        closeOrderList = ConcurrentHashMap.newKeySet();
+        orderSet = ConcurrentHashMap.newKeySet();
     }
 
     public void executeOrders() {
 
-        openOrderList.parallelStream()
+        orderSet.parallelStream()
+                .filter(order -> order.getState().equals(SimulationOrder.State.OPENED))
                 .filter(order -> order.getAutoClosingPrices().stream().anyMatch(
                                 autoClosingPrice -> isLevelCrossed(order.getCurrencyRate(),autoClosingPrice)))
-                .forEach(order -> {order.close();closeOrderList.add(order);openOrderList.remove(order);});
+                .forEach(order -> order.close());
 
-        waitOrderList.parallelStream()
+        orderSet.parallelStream()
+                .filter(order -> order.getState().equals(SimulationOrder.State.WAIT))
                 .filter(order -> isLevelCrossed(order.getCurrencyRate(), order.getOpeningPrice()))
-                .map(order -> {openOrderList.add(order);waitOrderList.remove(order); return order.open();})
+                .map(order -> order.open())
                 // the case of scheduled order when rate went through opening and make-profit level at once
                 .filter(order -> order.getAutoClosingPrices().stream().allMatch(
                         autoClosingPrice -> isLevelCrossed(order.getCurrencyRate(),autoClosingPrice)))
-                .forEach(order -> {order.close();closeOrderList.add(order);openOrderList.remove(order);});
+                .forEach(order -> order.close());
     }
 
     public void put(SimulationOrder order){
-        waitOrderList.add(order);
+        orderSet.add(order);
     }
 
     public double evaluateWinLoss(){
-        long winCount = closeOrderList
+        long winCount = orderSet
                 .parallelStream()
+                .filter(order -> order.getState().equals(SimulationOrder.State.CLOSED))
                 .filter(order -> {
                             double delta = order.getClosingPrice().subtract(order.getOpeningPrice()).doubleValue();
                             if (order.getType()== SimulationOrder.Type.SELL)
@@ -46,7 +42,10 @@ public class SimulationOrdersDAO {
                             return delta > 0;
                         })
                 .count();
-        long closedCount = closeOrderList.size();
+        long closedCount = orderSet
+                .parallelStream()
+                .filter(order -> order.getState().equals(SimulationOrder.State.CLOSED))
+                .count();
         return (double) winCount / (closedCount - winCount);
     }
 
