@@ -1,5 +1,7 @@
 package hse.algosim.server.repo.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import hse.algosim.server.exceptions.ResourceAlreadyExistsException;
 import hse.algosim.server.exceptions.ResourceNotFoundException;
 import hse.algosim.server.model.IdArray;
@@ -13,10 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.io.IOException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Controller
@@ -24,7 +24,10 @@ import java.util.stream.Collectors;
 public class AlgoStatusApiController implements AlgoStatusApi {
 
     private final NativeWebRequest request;
+    private static final ObjectMapper mapper = new ObjectMapper();
+
     private static Map<String,SrcStatus> ids = new HashMap<>();
+    private static Map<Double, Set<String>> top = new TreeMap<>(Collections.reverseOrder());
 
     @org.springframework.beans.factory.annotation.Autowired
     public AlgoStatusApiController(NativeWebRequest request) {
@@ -41,6 +44,17 @@ public class AlgoStatusApiController implements AlgoStatusApi {
         if (ids.containsKey(id.toString()))
             throw new ResourceAlreadyExistsException("Status already uploaded for this UUID");
         ids.put(id.toString(),srcStatus);
+        if(srcStatus.getWinloss()!=null) {
+            try {
+                JsonNode root = mapper.readTree(srcStatus.getWinloss());
+                Double winloss = root.get("winloss").asDouble();
+                Set<String> sameWinLossIds = top.getOrDefault(winloss, new HashSet<>());
+                sameWinLossIds.add(id.toString());
+                top.put(winloss, sameWinLossIds);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -54,29 +68,60 @@ public class AlgoStatusApiController implements AlgoStatusApi {
 
     @Override
     public ResponseEntity<Void> updateAlgorithmStatus(@PathVariable("id") UUID id, @Valid @RequestBody SrcStatus srcStatus) {
-        SrcStatus status = ids.get(id.toString());
-        if (status == null)
+        SrcStatus prevStatus = ids.get(id.toString());
+        if (prevStatus == null)
             throw new ResourceNotFoundException("Status not found for this UUID");
         ids.replace(id.toString(),srcStatus);
+        try {
+            if(prevStatus.getWinloss() != null) {
+                JsonNode prevWinLossNode = mapper.readTree(prevStatus.getWinloss()).get("winloss");
+                if (prevWinLossNode != null) {
+                    Set<String> sameWinLossIds = top.getOrDefault(prevWinLossNode.asDouble(), new HashSet<>());
+                    sameWinLossIds.remove(id.toString());
+                }
+            }
+            if (srcStatus.getWinloss() != null) {
+                JsonNode winLossNode = mapper.readTree(srcStatus.getWinloss()).get("winloss");
+                if (winLossNode != null) {
+                    Set<String> sameWinLossIds = top.getOrDefault(winLossNode.asDouble(), new HashSet<>());
+                    sameWinLossIds.add(id.toString());
+                    top.put(winLossNode.asDouble(), sameWinLossIds);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
     public ResponseEntity<Void> deleteAlgorithmStatus(@PathVariable("id") UUID id) {
-        SrcStatus status = ids.get(id.toString());
-        if (status == null)
+        SrcStatus prevStatus = ids.get(id.toString());
+        if (prevStatus == null)
             throw new ResourceNotFoundException("Status not found for this UUID");
         ids.remove(id.toString());
+        if (prevStatus.getWinloss() != null) {
+            try {
+                JsonNode prevWinLossNode = mapper.readTree(prevStatus.getWinloss()).get("winloss");
+                if (prevWinLossNode != null) {
+                    Set<String> sameWinLossIds = top.getOrDefault(prevWinLossNode.asDouble(), new HashSet<>());
+                    sameWinLossIds.remove(id.toString());
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
     public ResponseEntity<IdArray> getTopCode() {
-        IdArray res = new IdArray().id(
-                ids.keySet()
-                        .stream()
-                        .limit(10)
-                        .collect(Collectors.toList()));
+        IdArray res = new IdArray().id(top.values()
+                .stream()
+                .filter(set -> !set.isEmpty())
+                .limit(10)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList()));
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 }

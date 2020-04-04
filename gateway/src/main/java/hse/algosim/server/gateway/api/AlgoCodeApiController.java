@@ -4,10 +4,10 @@ import hse.algosim.client.api.ApiClient;
 import hse.algosim.client.api.ApiException;
 import hse.algosim.client.compiler.api.CompilerApiClientInstance;
 import hse.algosim.client.executor.api.ExecutorApiClientInstance;
+import hse.algosim.client.model.SrcStatus;
 import hse.algosim.client.repo.api.RepoApiClientInstance;
 import hse.algosim.client.model.IdArray;
-import hse.algosim.client.model.SrcStatus;
-import hse.algosim.client.model.SrcStatus.StatusEnum;
+import hse.algosim.server.gateway.queues.TaskManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -19,11 +19,7 @@ import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
+import java.util.*;
 
 @Controller
 @RequestMapping("${openapi.algosimGateway.base-path:/api}")
@@ -68,11 +64,10 @@ public class AlgoCodeApiController implements AlgoCodeApi {
             IdArray ids = repoApiClient.getTopCode();
             ids.getId().forEach( id -> {
                 try {
-                    File receivedFile = repoApiClient.getAlgorithmCode(UUID.fromString(id));
-                    String firstLine = Files.readAllLines(receivedFile.toPath()).get(0);
-                    System.out.println(firstLine);
-                    res.put(id,firstLine);
-                } catch (ApiException | IOException e) {
+                    SrcStatus status = repoApiClient.getAlgorithmStatus(UUID.fromString(id));
+                    System.out.println(status.toString());
+                    res.put(id,status.toString());
+                } catch (ApiException e) {
                     e.printStackTrace();
                 }
 
