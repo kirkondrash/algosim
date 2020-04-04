@@ -17,6 +17,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import javax.validation.Valid;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.stream.Collectors;
 
 @Controller
@@ -27,7 +28,7 @@ public class AlgoStatusApiController implements AlgoStatusApi {
     private static final ObjectMapper mapper = new ObjectMapper();
 
     private static Map<String,SrcStatus> ids = new HashMap<>();
-    private static Map<Double, Set<String>> top = new TreeMap<>(Collections.reverseOrder());
+    private static Map<Double, Set<String>> top = new ConcurrentSkipListMap<>(Collections.reverseOrder());
 
     @org.springframework.beans.factory.annotation.Autowired
     public AlgoStatusApiController(NativeWebRequest request) {
@@ -48,9 +49,9 @@ public class AlgoStatusApiController implements AlgoStatusApi {
             try {
                 JsonNode root = mapper.readTree(srcStatus.getWinloss());
                 Double winloss = root.get("winloss").asDouble();
-                Set<String> sameWinLossIds = top.getOrDefault(winloss, new HashSet<>());
-                sameWinLossIds.add(id.toString());
-                top.put(winloss, sameWinLossIds);
+                Set<String> newId = new HashSet<>();
+                newId.add(id.toString());
+                top.merge(winloss, newId,(set1,set2)->{set1.addAll(set2);return set1;});
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -76,16 +77,15 @@ public class AlgoStatusApiController implements AlgoStatusApi {
             if(prevStatus.getWinloss() != null) {
                 JsonNode prevWinLossNode = mapper.readTree(prevStatus.getWinloss()).get("winloss");
                 if (prevWinLossNode != null) {
-                    Set<String> sameWinLossIds = top.getOrDefault(prevWinLossNode.asDouble(), new HashSet<>());
-                    sameWinLossIds.remove(id.toString());
+                    top.compute(prevWinLossNode.asDouble(),(key,idSet)->{idSet.remove(id.toString());return idSet;});
                 }
             }
             if (srcStatus.getWinloss() != null) {
                 JsonNode winLossNode = mapper.readTree(srcStatus.getWinloss()).get("winloss");
                 if (winLossNode != null) {
-                    Set<String> sameWinLossIds = top.getOrDefault(winLossNode.asDouble(), new HashSet<>());
-                    sameWinLossIds.add(id.toString());
-                    top.put(winLossNode.asDouble(), sameWinLossIds);
+                    Set<String> newId = new HashSet<>();
+                    newId.add(id.toString());
+                    top.merge(winLossNode.asDouble(), newId,(set1,set2)->{set1.addAll(set2);return set1;});
                 }
             }
         } catch (IOException e) {
@@ -104,8 +104,7 @@ public class AlgoStatusApiController implements AlgoStatusApi {
             try {
                 JsonNode prevWinLossNode = mapper.readTree(prevStatus.getWinloss()).get("winloss");
                 if (prevWinLossNode != null) {
-                    Set<String> sameWinLossIds = top.getOrDefault(prevWinLossNode.asDouble(), new HashSet<>());
-                    sameWinLossIds.remove(id.toString());
+                    top.compute(prevWinLossNode.asDouble(),(key,idSet)->{idSet.remove(id.toString());return idSet;});
                 }
             } catch (IOException e) {
                 e.printStackTrace();

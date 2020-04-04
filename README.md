@@ -2,8 +2,11 @@
 ***
 TODO:
 - для compiler/executor родительский worker-класс с настройками ThreadPool
-- concurrent maps для хранения данных в сервисах; в framework - [concurrent?]map of sets 
-- оптимизация executeOrders?
+- concurrent maps для хранения данных в сервисах;
+- ??? нужна ли ??? оптимизация executeOrders - [concurrent?]map of sets:
+  - для openOrderList - ключ stoploss/makeprofit цены, значение сеты ордеров им соответствующие;
+  - для waitOrderList - ключ opening цены, значение сеты ордеров им соответствующие;
+  - соответственно затем стрим + фильтр ключи между текущим и предыдущим уровнем цены
 Optional TODO:
 - host и basepath сервисов как параметры/файлы пропертей
 - поправить swagger-ui чтоьы выстраивались корректные запросы с учетом envoy-прокси
