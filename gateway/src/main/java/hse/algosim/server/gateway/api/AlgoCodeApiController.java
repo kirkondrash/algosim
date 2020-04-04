@@ -33,6 +33,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     private final static RepoApiClientInstance repoApiClient = new RepoApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/repo/api"));
     private final static CompilerApiClientInstance compilerApiClient = new CompilerApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/compiler/api"));
     private final static ExecutorApiClientInstance executorApiClient = new ExecutorApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/executor/api"));
+    private final static TaskManager taskManager = new TaskManager(repoApiClient,compilerApiClient,executorApiClient);
 
     @org.springframework.beans.factory.annotation.Autowired
     public AlgoCodeApiController(NativeWebRequest request) {
@@ -47,62 +48,17 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     @Override
     public ResponseEntity<Map<String,String>> getAlgorithmCode(@Valid MultipartFile code) {
         UUID id = UUID.randomUUID(); // UUID | UUID of algorithm to fetch
-        File f = new File(id.toString()).getAbsoluteFile();
-        try {
-            code.transferTo(f);
-            System.out.println("Starting demo scenario for id "+id.toString());
-            repoApiClient.uploadAlgorithmCode(id,f);
-            repoApiClient.uploadAlgorithmStatus(id, new SrcStatus().status(StatusEnum.SCHEDULED_FOR_COMPILATION));
-            f.delete();
-        } catch (IOException | ApiException e) {
-            e.printStackTrace();
-        }
-
-        CompletableFuture<Void> demo = CompletableFuture.runAsync(()-> {
-            try {
-                while (true) {
-                    try {
-                        compilerApiClient.compileAlgorithm(id);
-                        break;
-                    } catch (ApiException ae) {
-                        System.out.println("Compiler busy!");
-                        Thread.sleep(2000);
-                    }
-                }
-                SrcStatus srcStatus;
-                do {
-                    srcStatus = repoApiClient.getAlgorithmStatus(id);
-                    Thread.sleep(2000);
-                    System.out.println(String.format("%s was taken by worker for compilation! State: %s",id.toString(), srcStatus.getStatus()));
-                } while (srcStatus.getStatus().compareTo(StatusEnum.COMPILING) == 0
-                        || srcStatus.getStatus().compareTo(StatusEnum.SCHEDULED_FOR_COMPILATION) == 0 );
-                System.out.println(srcStatus.toString());
-                if (srcStatus.getStatus().compareTo(StatusEnum.SUCCESSFULLY_COMPILED)==0){
-                    repoApiClient.replaceAlgorithmStatus(id, srcStatus.status(StatusEnum.SCHEDULED_FOR_EXECUTION));
-                    while (true) {
-                        try {
-                            executorApiClient.executeAlgorithm(id);
-                            break;
-                        } catch (ApiException ae) {
-                            System.out.println("Executor busy!");
-                            Thread.sleep(2000);
-                        }
-                    }
-                    do {
-                        srcStatus = repoApiClient.getAlgorithmStatus(id);
-                        Thread.sleep(2000);
-                        System.out.println(String.format("%s was taken by worker for execution! State: %s",id.toString(), srcStatus.getStatus()));
-                    } while (srcStatus.getStatus().compareTo(StatusEnum.EXECUTING) == 0
-                            || srcStatus.getStatus().compareTo(StatusEnum.SCHEDULED_FOR_EXECUTION) == 0 );
-                    System.out.println(srcStatus.toString());
-                }
-            } catch (Exception e){
-                e.printStackTrace();
-            }
-        });
         Map<String,String> res = new HashMap<>();
         res.put("id",id.toString());
-        return new ResponseEntity<>(res, HttpStatus.OK);
+        try {
+            taskManager.scheduleCodeAnalysis(id, code);
+            return new ResponseEntity<>(res, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            res.put("error",e.getMessage());
+        }
+
+        return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
