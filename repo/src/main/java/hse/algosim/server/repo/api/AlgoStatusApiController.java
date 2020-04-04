@@ -118,8 +118,8 @@ public class AlgoStatusApiController implements AlgoStatusApi {
         IdArray res = new IdArray().id(top.values()
                 .stream()
                 .filter(set -> !set.isEmpty())
-                .limit(10)
                 .flatMap(Collection::stream)
+                .limit(10)
                 .collect(Collectors.toList()));
         return new ResponseEntity<>(res, HttpStatus.OK);
     }

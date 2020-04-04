@@ -19,10 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequestMapping("${openapi.algosimGateway.base-path:/api}")
@@ -64,7 +61,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
 
     @Override
     public ResponseEntity<Map<String,String>> getTop(){
-        Map<String,String> res = new HashMap<>();
+        Map<String,String> res = new LinkedHashMap<>();
         try {
             IdArray ids = repoApiClient.getTopCode();
             ids.getId().forEach( id -> {
