@@ -22,7 +22,7 @@ public class QuotesDAO {
         Stream<String> quoteStream = null;
         try {
             BufferedReader br = new BufferedReader(
-                    new FileReader(String.format("/Users/kirkondrash/Desktop/algosim/quotes/%s.csv", fileName)));
+                    new FileReader(String.format("/quotes/%s.csv", fileName)));
             quoteStream = br.lines().skip(1);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

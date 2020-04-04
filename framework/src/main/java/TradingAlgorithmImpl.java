@@ -14,7 +14,7 @@ public class TradingAlgorithmImpl implements TradingAlgorithm {
     }
 
     public void receiveTick(Tick tick) throws TradingLogicException {
-        System.out.println(Instant.ofEpochSecond(tick.getTimestamp()).toString());
+        //System.out.println(Instant.ofEpochSecond(tick.getTimestamp()).toString());
         CurrencyRate currencyRate = currencyRates.updateAndReturnCurrentRate(tick.getCurrencyPair(),tick.getRate());
 
         /* put you trading logic here */
