@@ -4,7 +4,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.LocalTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ public class QuotesDAO {
         Stream<String> quoteStream = null;
         try {
             BufferedReader br = new BufferedReader(
-                    new FileReader(String.format("/quotes/%s.csv", fileName)));
+                    new FileReader(String.format("/Users/kirkondrash/Desktop/algosim/quotes/%s.csv", fileName)));
             quoteStream = br.lines().skip(1);
         } catch (FileNotFoundException e) {
             e.printStackTrace();

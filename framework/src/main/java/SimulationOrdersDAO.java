@@ -1,7 +1,4 @@
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -19,16 +16,16 @@ public class SimulationOrdersDAO {
     public void executeOrders() {
 
         openOrderList.parallelStream()
-                .filter(order -> order.getAutoClosingPrices().stream().anyMatch(
-                                autoClosingPrice -> isLevelCrossed(order.getCurrencyRate(),autoClosingPrice)))
+                .filter(order -> isLevelCrossed(order.getCurrencyRate(),order.getStopLossPrice()) ||
+                        isLevelCrossed(order.getCurrencyRate(),order.getMakeProfitPrice()))
                 .forEach(order -> {order.close();closeOrderList.add(order);openOrderList.remove(order);});
 
         waitOrderList.parallelStream()
                 .filter(order -> isLevelCrossed(order.getCurrencyRate(), order.getOpeningPrice()))
                 .map(order -> {openOrderList.add(order);waitOrderList.remove(order); return order.open();})
                 // the case of scheduled order when rate went through opening and make-profit level at once
-                .filter(order -> order.getAutoClosingPrices().stream().allMatch(
-                        autoClosingPrice -> isLevelCrossed(order.getCurrencyRate(),autoClosingPrice)))
+                .filter(order -> isLevelCrossed(order.getCurrencyRate(),order.getStopLossPrice()) &&
+                        isLevelCrossed(order.getCurrencyRate(),order.getMakeProfitPrice()))
                 .forEach(order -> {order.close();closeOrderList.add(order);openOrderList.remove(order);});
     }
 

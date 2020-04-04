@@ -1,7 +1,4 @@
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class SimulationOrder extends Order implements OrderOperations<SimulationOrder>{
 
@@ -11,7 +8,8 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
     private State state;
     private Type type;
     private CurrencyRate currencyRate;
-    List<BigDecimal> autoClosingPrices = new ArrayList<>();
+    private BigDecimal stopLossPrice;
+    private BigDecimal makeProfitPrice;
 
     public SimulationOrder(String pair, CurrencyRate currencyRate){
         state = State.WAIT;
@@ -35,8 +33,12 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
         return currencyRate;
     }
 
-    public List<BigDecimal> getAutoClosingPrices() {
-        return autoClosingPrices;
+    public BigDecimal getStopLossPrice() {
+        return stopLossPrice;
+    }
+
+    public BigDecimal getMakeProfitPrice() {
+        return makeProfitPrice;
     }
 
     public SimulationOrder lot(int lot) {
@@ -132,7 +134,7 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
                 throw new TradingLogicException("Something went wrong! Not typed order!");
 
         }
-        autoClosingPrices.add(pips);
+        stopLossPrice = pips;
         return this;
     }
 
@@ -156,7 +158,7 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
                 throw new TradingLogicException("Something went wrong! Not typed order!");
 
         }
-        autoClosingPrices.add(pips);
+        makeProfitPrice = pips;
         return this;
     }
 
@@ -174,20 +176,23 @@ public class SimulationOrder extends Order implements OrderOperations<Simulation
 
     @Override
     public String toString() {
-        return String.format("SimulationOrder{ " +
-                "state=%s, " +
-                "type=%s, " +
-                "pair=%s, " +
-                "lot=%s, " +
-                "openingPrice=%.5f, " +
-                "autoClosingPrices=[%s], " +
-                "closingPrice=%s}",
+        return String.format(
+                "SimulationOrder{ " +
+                        "state=%s, " +
+                        "type=%s, " +
+                        "pair=%s, " +
+                        "lot=%s, " +
+                        "openingPrice=%.5f, " +
+                        "stopLossPrice=%.5f" + stopLossPrice +
+                        "makeProfitPrice=%5f" + makeProfitPrice +
+                        "closingPrice=%s}",
                 state,
                 type,
                 pair,
                 lot,
                 openingPrice,
-                autoClosingPrices.stream().map(d ->String.format("%.5f",d)).collect(Collectors.joining(",")),
+                stopLossPrice,
+                makeProfitPrice,
                 closingPrice);
     }
 }

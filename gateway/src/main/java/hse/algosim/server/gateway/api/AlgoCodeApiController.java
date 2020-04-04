@@ -1,12 +1,14 @@
 package hse.algosim.server.gateway.api;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import hse.algosim.client.api.ApiClient;
 import hse.algosim.client.api.ApiException;
 import hse.algosim.client.compiler.api.CompilerApiClientInstance;
 import hse.algosim.client.executor.api.ExecutorApiClientInstance;
+import hse.algosim.client.model.IdArray;
 import hse.algosim.client.model.SrcStatus;
 import hse.algosim.client.repo.api.RepoApiClientInstance;
-import hse.algosim.client.model.IdArray;
 import hse.algosim.server.gateway.queues.TaskManager;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,16 +18,19 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 @RequestMapping("${openapi.algosimGateway.base-path:/api}")
 public class AlgoCodeApiController implements AlgoCodeApi {
 
     private final NativeWebRequest request;
+    private static final ObjectMapper mapper = new ObjectMapper();
+
     private final static RepoApiClientInstance repoApiClient = new RepoApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/repo/api"));
     private final static CompilerApiClientInstance compilerApiClient = new CompilerApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/compiler/api"));
     private final static ExecutorApiClientInstance executorApiClient = new ExecutorApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/executor/api"));
@@ -66,8 +71,9 @@ public class AlgoCodeApiController implements AlgoCodeApi {
                 try {
                     SrcStatus status = repoApiClient.getAlgorithmStatus(UUID.fromString(id));
                     System.out.println(status.toString());
-                    res.put(id,status.toString());
-                } catch (ApiException e) {
+                    JsonNode winLossNode = mapper.readTree(status.getWinloss()).get("winloss");
+                    res.put(id,winLossNode.asText());
+                } catch (ApiException | IOException e) {
                     e.printStackTrace();
                 }
 
