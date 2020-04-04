@@ -3,7 +3,8 @@
 TODO:
 - для compiler/executor родительский worker-класс с настройками ThreadPool
 - concurrent maps для хранения данных
-- перевести все сравнения double в framework на treshold
+- оптимизация executeOrders?
+- в gateway non-blocking queue для заказов
 Optional TODO:
 - host и basepath сервисов как параметры/файлы пропертей
 - поправить swagger-ui чтоьы выстраивались корректные запросы с учетом envoy-прокси

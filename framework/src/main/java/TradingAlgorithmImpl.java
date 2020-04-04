@@ -1,4 +1,5 @@
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -13,9 +14,11 @@ public class TradingAlgorithmImpl implements TradingAlgorithm {
     }
 
     public void receiveTick(Tick tick) throws TradingLogicException {
+        System.out.println(Instant.ofEpochSecond(tick.getTimestamp()).toString());
         CurrencyRate currencyRate = currencyRates.updateAndReturnCurrentRate(tick.getCurrencyPair(),tick.getRate());
 
         /* put you trading logic here */
+
         if (r.nextBoolean()) { // imitation of favourable conditions
             double stopLoss = 0.001 * r.nextDouble(); // imitation of user choice of stop-loss level
             double makeProfit = 0.001 * r.nextDouble(); // imitation of user choice of make-profit level
