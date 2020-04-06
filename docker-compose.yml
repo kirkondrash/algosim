@@ -1,4 +1,5 @@
-version: '3.7'
+v
+ersion: '3.7'
 
 services:
    repo:
@@ -39,7 +40,7 @@ services:
        target: executor-dist
      volumes:
        - ./configs/envoy-configs/executor-envoy.yaml:/etc/envoy-config.yaml
-       - ~/quotes:/quotes
+       - ./quotes:/quotes
      networks:
        envoymesh:
         aliases:
@@ -68,4 +69,11 @@ services:
      environment:
        - SERVICE_NAME=gateway
 networks:
+
+
+
+
+
+
+
   envoymesh: {}
