@@ -1,5 +1,4 @@
-v
-ersion: '3.7'
+version: '3.7'
 
 services:
    repo:
@@ -69,11 +68,4 @@ services:
      environment:
        - SERVICE_NAME=gateway
 networks:
-
-
-
-
-
-
-
   envoymesh: {}
