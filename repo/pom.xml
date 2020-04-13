@@ -18,7 +18,7 @@
 
     <build>
         <sourceDirectory>src/main/java</sourceDirectory>
-        <finalName>repo-server</finalName>
+        <finalName>app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

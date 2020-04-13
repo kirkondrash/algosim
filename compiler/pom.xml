@@ -11,6 +11,7 @@
     </parent>
 
     <build>
+        <finalName>app</finalName>
         <sourceDirectory>src/main/java</sourceDirectory>
         <plugins>
             <plugin>
