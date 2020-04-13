@@ -1,1 +1,1 @@
-web: java -Xverify:none -Dhttp.port=$PORT -jar repo/target/repo-server.jar
+web: java -Xverify:none -jar repo/target/repo-server.jar
