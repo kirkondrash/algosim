@@ -1,0 +1,1 @@
+web: java -Xverify:none -jar repo/target/repo-server.jar
