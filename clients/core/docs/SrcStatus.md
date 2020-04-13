@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **status** | [**StatusEnum**](#StatusEnum) |  | 
 **errorTrace** | **String** |  |  [optional]
-**winloss** | **String** |  |  [optional]
+**metrics** | **String** |  |  [optional]
 
 
 

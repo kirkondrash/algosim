@@ -43,7 +43,10 @@ public class TradingAlgorithmImpl implements TradingAlgorithm {
 
     @Override
     public void evaluateResult() {
-        System.out.println(String.format("{ \"winloss\": %f}", ordersBase.evaluateWinLoss()));
+        System.out.println(
+                String.format("{ \"winloss\": %f, \"profitloss\": %f}",
+                        ordersBase.evaluateWinLoss(),
+                        ordersBase.evaluateProfitLoss()));
     }
 
 }

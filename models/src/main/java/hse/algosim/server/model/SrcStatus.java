@@ -62,8 +62,8 @@ public class SrcStatus   {
   @JsonProperty("errorTrace")
   private String errorTrace;
 
-  @JsonProperty("winloss")
-  private String winloss;
+  @JsonProperty("metrics")
+  private String metrics;
 
   public SrcStatus status(StatusEnum status) {
     this.status = status;
@@ -106,24 +106,24 @@ public class SrcStatus   {
     this.errorTrace = errorTrace;
   }
 
-  public SrcStatus winloss(String winloss) {
-    this.winloss = winloss;
+  public SrcStatus metrics(String metrics) {
+    this.metrics = metrics;
     return this;
   }
 
   /**
-   * Get winloss
-   * @return winloss
+   * Get metrics
+   * @return metrics
   */
   @ApiModelProperty(example = "+200kk", value = "")
 
 
-  public String getWinloss() {
-    return winloss;
+  public String getMetrics() {
+    return metrics;
   }
 
-  public void setWinloss(String winloss) {
-    this.winloss = winloss;
+  public void setMetrics(String metrics) {
+    this.metrics = metrics;
   }
 
 
@@ -138,12 +138,12 @@ public class SrcStatus   {
     SrcStatus srcStatus = (SrcStatus) o;
     return Objects.equals(this.status, srcStatus.status) &&
         Objects.equals(this.errorTrace, srcStatus.errorTrace) &&
-        Objects.equals(this.winloss, srcStatus.winloss);
+        Objects.equals(this.metrics, srcStatus.metrics);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(status, errorTrace, winloss);
+    return Objects.hash(status, errorTrace, metrics);
   }
 
   @Override
@@ -153,7 +153,7 @@ public class SrcStatus   {
 
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
     sb.append("    errorTrace: ").append(toIndentedString(errorTrace)).append("\n");
-    sb.append("    winloss: ").append(toIndentedString(winloss)).append("\n");
+    sb.append("    metrics: ").append(toIndentedString(metrics)).append("\n");
     sb.append("}");
     return sb.toString();
   }

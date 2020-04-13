@@ -29,7 +29,7 @@ public class ExecutorServer {
             srcStatus = srcStatus
                     .status(SrcStatus.StatusEnum.SUCCESSFULLY_EXECUTED)
                     .errorTrace(pErrorReader.lines().collect(Collectors.joining(System.lineSeparator())))
-                    .winloss(pOutputReader.lines().collect(Collectors.joining(System.lineSeparator())));
+                    .metrics(pOutputReader.lines().collect(Collectors.joining(System.lineSeparator())));
 
             if (p.waitFor() != 0) {
                 srcStatus.setStatus(SrcStatus.StatusEnum.EXECUTION_FAILED);

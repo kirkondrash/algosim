@@ -11,6 +11,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -40,7 +41,7 @@ public interface AlgoCodeApi {
     @RequestMapping(value = "/getTop",
             produces = { "application/json" },
             method = RequestMethod.GET)
-    default ResponseEntity<Map<String,String>> getTop() {
+    default ResponseEntity<List<Map<String,Object>>> getTop() {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

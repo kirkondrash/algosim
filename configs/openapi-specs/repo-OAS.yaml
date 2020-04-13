@@ -393,6 +393,6 @@ components:
             - EXECUTION FAILED
         errorTrace:
           type: string
-        winloss:
+        metrics:
           type: string
-          example: "+200kk"
+          example: "{\"winloss\":1.23,\"profitloss\":4.56}"

@@ -60,16 +60,19 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     }
 
     @Override
-    public ResponseEntity<Map<String,String>> getTop(){
-        Map<String,String> res = new LinkedHashMap<>();
+    public ResponseEntity<List<Map<String,Object>>> getTop(){
+        List<Map<String,Object>> res = new ArrayList<>();
         try {
             IdArray ids = repoApiClient.getTopCode();
             ids.getId().forEach( id -> {
                 try {
                     SrcStatus status = repoApiClient.getAlgorithmStatus(UUID.fromString(id));
                     System.out.println(status.toString());
-                    JsonNode winLossNode = mapper.readTree(status.getWinloss()).get("winloss");
-                    res.put(id,winLossNode.asText());
+                    JsonNode winLossNode = mapper.readTree(status.getMetrics()).get("winloss");
+                    Map<String,Object> node = new HashMap<>();
+                    node.put("id",id);
+                    node.put("score", winLossNode.asDouble());
+                    res.add(node);
                 } catch (ApiException | IOException e) {
                     e.printStackTrace();
                 }

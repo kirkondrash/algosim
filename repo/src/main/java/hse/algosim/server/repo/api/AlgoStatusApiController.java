@@ -45,9 +45,9 @@ public class AlgoStatusApiController implements AlgoStatusApi {
         if (ids.containsKey(id.toString()))
             throw new ResourceAlreadyExistsException("Status already uploaded for this UUID");
         ids.put(id.toString(),srcStatus);
-        if(srcStatus.getWinloss()!=null) {
+        if(srcStatus.getMetrics()!=null) {
             try {
-                JsonNode root = mapper.readTree(srcStatus.getWinloss());
+                JsonNode root = mapper.readTree(srcStatus.getMetrics());
                 Double winloss = root.get("winloss").asDouble();
                 Set<String> newId = new HashSet<>();
                 newId.add(id.toString());
@@ -74,14 +74,14 @@ public class AlgoStatusApiController implements AlgoStatusApi {
             throw new ResourceNotFoundException("Status not found for this UUID");
         ids.replace(id.toString(),srcStatus);
         try {
-            if(prevStatus.getWinloss() != null) {
-                JsonNode prevWinLossNode = mapper.readTree(prevStatus.getWinloss()).get("winloss");
+            if(prevStatus.getMetrics() != null) {
+                JsonNode prevWinLossNode = mapper.readTree(prevStatus.getMetrics()).get("winloss");
                 if (prevWinLossNode != null) {
                     top.compute(prevWinLossNode.asDouble(),(key,idSet)->{idSet.remove(id.toString());return idSet;});
                 }
             }
-            if (srcStatus.getWinloss() != null) {
-                JsonNode winLossNode = mapper.readTree(srcStatus.getWinloss()).get("winloss");
+            if (srcStatus.getMetrics() != null) {
+                JsonNode winLossNode = mapper.readTree(srcStatus.getMetrics()).get("winloss");
                 if (winLossNode != null) {
                     Set<String> newId = new HashSet<>();
                     newId.add(id.toString());
@@ -100,9 +100,9 @@ public class AlgoStatusApiController implements AlgoStatusApi {
         if (prevStatus == null)
             throw new ResourceNotFoundException("Status not found for this UUID");
         ids.remove(id.toString());
-        if (prevStatus.getWinloss() != null) {
+        if (prevStatus.getMetrics() != null) {
             try {
-                JsonNode prevWinLossNode = mapper.readTree(prevStatus.getWinloss()).get("winloss");
+                JsonNode prevWinLossNode = mapper.readTree(prevStatus.getMetrics()).get("winloss");
                 if (prevWinLossNode != null) {
                     top.compute(prevWinLossNode.asDouble(),(key,idSet)->{idSet.remove(id.toString());return idSet;});
                 }

@@ -34,11 +34,11 @@ public class SrcStatusTest {
     }
 
     /**
-     * Test the property 'winloss'
+     * Test the property 'metrics'
      */
     @Test
-    public void winlossTest() {
-        // TODO: test winloss
+    public void metricsTest() {
+        // TODO: test metrics
     }
 
 }

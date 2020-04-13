@@ -82,9 +82,9 @@ public class SrcStatus {
   @SerializedName(SERIALIZED_NAME_ERROR_TRACE)
   private String errorTrace;
 
-  public static final String SERIALIZED_NAME_WINLOSS = "winloss";
-  @SerializedName(SERIALIZED_NAME_WINLOSS)
-  private String winloss;
+  public static final String SERIALIZED_NAME_METRICS = "metrics";
+  @SerializedName(SERIALIZED_NAME_METRICS)
+  private String metrics;
 
 
   public SrcStatus status(StatusEnum status) {
@@ -132,26 +132,26 @@ public class SrcStatus {
   }
 
 
-  public SrcStatus winloss(String winloss) {
+  public SrcStatus metrics(String metrics) {
     
-    this.winloss = winloss;
+    this.metrics = metrics;
     return this;
   }
 
    /**
-   * Get winloss
-   * @return winloss
+   * Get metrics
+   * @return metrics
   **/
   @javax.annotation.Nullable
   @ApiModelProperty(example = "+200kk", value = "")
 
-  public String getWinloss() {
-    return winloss;
+  public String getMetrics() {
+    return metrics;
   }
 
 
-  public void setWinloss(String winloss) {
-    this.winloss = winloss;
+  public void setMetrics(String metrics) {
+    this.metrics = metrics;
   }
 
 
@@ -166,12 +166,12 @@ public class SrcStatus {
     SrcStatus srcStatus = (SrcStatus) o;
     return Objects.equals(this.status, srcStatus.status) &&
         Objects.equals(this.errorTrace, srcStatus.errorTrace) &&
-        Objects.equals(this.winloss, srcStatus.winloss);
+        Objects.equals(this.metrics, srcStatus.metrics);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(status, errorTrace, winloss);
+    return Objects.hash(status, errorTrace, metrics);
   }
 
 
@@ -181,7 +181,7 @@ public class SrcStatus {
     sb.append("class SrcStatus {\n");
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
     sb.append("    errorTrace: ").append(toIndentedString(errorTrace)).append("\n");
-    sb.append("    winloss: ").append(toIndentedString(winloss)).append("\n");
+    sb.append("    metrics: ").append(toIndentedString(metrics)).append("\n");
     sb.append("}");
     return sb.toString();
   }

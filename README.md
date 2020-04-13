@@ -1,8 +1,8 @@
 ![sequence-diagram](configs/algosim-sequence.png "Взаимодействие сервисов")
 ***
 TODO:
-- для compiler/executor родительский worker-класс с настройками ThreadPool
-- concurrent maps для хранения данных в сервисах;
+- synchronized hashmaps во всех сервисах
+- profit&loss по всем валютам с приведением к базовой по курсу закрытия дня
 - ??? нужна ли ??? оптимизация executeOrders - [concurrent?]map of sets:
   - для openOrderList - ключ stoploss/makeprofit цены, значение сеты ордеров им соответствующие;
   - для waitOrderList - ключ opening цены, значение сеты ордеров им соответствующие;
