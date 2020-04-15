@@ -56,7 +56,7 @@ static_resources:
                 address: 0.0.0.0
                 port_value: 8080
   - name: repo
-    connect_timeout: 0.25s
+    connect_timeout: 2s
     type: strict_dns
     lb_policy: round_robin
     http2_protocol_options: {}

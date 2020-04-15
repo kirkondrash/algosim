@@ -10,6 +10,7 @@
   <groupId>hse.algosim.client</groupId>
   <artifactId>core</artifactId>
   <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
   <name>core</name>
 

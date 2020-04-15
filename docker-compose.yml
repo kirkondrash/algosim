@@ -4,10 +4,10 @@ services:
    repo:
      build:
        context: repo
-       dockerfile: Dockerfile-repo
-       target: repo-dist
+       dockerfile: Dockerfile-repo-simple
+       #target: repo-dist
      volumes:
-       - ./configs/envoy-configs/repo-envoy.yaml:/etc/envoy-config.yaml
+       - ./repo/repo-envoy.yaml:/etc/envoy-config.yaml
      networks:
        envoymesh:
         aliases:
@@ -22,7 +22,7 @@ services:
        dockerfile: Dockerfile-compiler
        target: compiler-dist
      volumes:
-       - ./configs/envoy-configs/compiler-envoy.yaml:/etc/envoy-config.yaml
+       - ./compiler/compiler-envoy.yaml:/etc/envoy-config.yaml
        - ~/.m2:/root/.m2
      networks:
        envoymesh:
@@ -38,7 +38,7 @@ services:
        dockerfile: Dockerfile-executor
        target: executor-dist
      volumes:
-       - ./configs/envoy-configs/executor-envoy.yaml:/etc/envoy-config.yaml
+       - ./executor/executor-envoy.yaml:/etc/envoy-config.yaml
        - ./quotes:/quotes
      networks:
        envoymesh:
@@ -56,7 +56,7 @@ services:
        dockerfile: Dockerfile-gateway
        target: gateway-dist
      volumes:
-       - ./configs/envoy-configs/gateway-envoy.yaml:/etc/envoy-config.yaml
+       - ./gateway/gateway-envoy.yaml:/etc/envoy-config.yaml
      networks:
        - envoymesh
      expose:
