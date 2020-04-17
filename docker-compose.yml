@@ -2,70 +2,20 @@ version: '3.7'
 
 services:
    repo:
-     build:
-       context: repo
-       dockerfile: Dockerfile-repo-simple
-       #target: repo-dist
-     volumes:
-       - ./repo/repo-envoy.yaml:/etc/envoy-config.yaml
-     networks:
-       envoymesh:
-        aliases:
-          - repo
-     expose:
-       - "8000"
-     environment:
-       - SERVICE_NAME=repo
+     image: repo-server
+     command: --server.port=8080
    compiler:
-     build:
-       context: compiler
-       dockerfile: Dockerfile-compiler
-       target: compiler-dist
+     image: compiler-server
+     command: --server.port=8080
      volumes:
-       - ./compiler/compiler-envoy.yaml:/etc/envoy-config.yaml
        - ~/.m2:/root/.m2
-     networks:
-       envoymesh:
-        aliases:
-          - compiler
-     expose:
-       - "8000"
-     environment:
-       - SERVICE_NAME=compiler
    executor:
-     build:
-       context: executor
-       dockerfile: Dockerfile-executor
-       target: executor-dist
+     image: executor-server
+     command: --server.port=8080
      volumes:
-       - ./executor/executor-envoy.yaml:/etc/envoy-config.yaml
        - ./quotes:/quotes
-     networks:
-       envoymesh:
-        aliases:
-          - executor
-     expose:
-       - "8000"
-     environment:
-       - SERVICE_NAME=executor
    gateway:
-     depends_on:
-       - repo
-     build:
-       context: gateway
-       dockerfile: Dockerfile-gateway
-       target: gateway-dist
-     volumes:
-       - ./gateway/gateway-envoy.yaml:/etc/envoy-config.yaml
-     networks:
-       - envoymesh
-     expose:
-       - "8000"
-       - "8001"
+     image: gateway-server
+     command: --server.port=8080
      ports:
-       - "8000:8000"
-       - "8001:8001"
-     environment:
-       - SERVICE_NAME=gateway
-networks:
-  envoymesh: {}
+       - 8080:8080

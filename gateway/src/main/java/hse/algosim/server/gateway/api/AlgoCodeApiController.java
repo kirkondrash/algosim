@@ -28,9 +28,9 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     private final NativeWebRequest request;
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    private final static RepoApiClientInstance repoApiClient = new RepoApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/repo/api"));
-    private final static CompilerApiClientInstance compilerApiClient = new CompilerApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/compiler/api"));
-    private final static ExecutorApiClientInstance executorApiClient = new ExecutorApiClientInstance(new ApiClient().setBasePath("http://localhost:8000/executor/api"));
+    private final static RepoApiClientInstance repoApiClient = new RepoApiClientInstance(new ApiClient().setBasePath(System.getProperty("repoUrl","http://repo:8080/api")));
+    private final static CompilerApiClientInstance compilerApiClient = new CompilerApiClientInstance(new ApiClient().setBasePath(System.getProperty("compilerUrl","http://compiler:8080/api")));
+    private final static ExecutorApiClientInstance executorApiClient = new ExecutorApiClientInstance(new ApiClient().setBasePath(System.getProperty("executorUrl","http://executor:8080/api")));
     private final static TaskManager taskManager = new TaskManager(repoApiClient,compilerApiClient,executorApiClient);
 
     @org.springframework.beans.factory.annotation.Autowired
