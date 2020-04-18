@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.NativeWebRequest;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.RejectedExecutionException;
@@ -34,7 +35,7 @@ public class CompilerApiController extends FiniteQueueExecutor implements Compil
         try {
             singleThreadExecutor.submit(()-> CompilerServer.runCompilation(repoApiClient,id));
         }catch (RejectedExecutionException re){
-            System.out.println("Compilation queue full for " + id.toString());
+            System.out.println(String.format("Compilation queue full for %s on %s",id.toString(),hostname));
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
         }
 

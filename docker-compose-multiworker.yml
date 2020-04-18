@@ -1,0 +1,62 @@
+version: '3.7'
+
+services:
+   repo:
+     image: repo-server
+     command:
+       - "--server.port=8080"
+       - "--server.address=0.0.0.0"
+     networks:
+       envoymesh:
+         aliases:
+           - repo
+   compiler:
+     image: compiler-server
+     command:
+       - "--server.port=8080"
+       - "--server.address=0.0.0.0"
+       - "--pathToFramework=/framework"
+       - "--repoUrl=http://router:8080/repo/api"
+     volumes:
+       - ~/.m2:/root/.m2
+     networks:
+       envoymesh:
+         aliases:
+           - compiler
+   executor:
+     image: executor-server
+     command:
+       - "--server.port=8080"
+       - "--server.address=0.0.0.0"
+       - "--pathToQuotes=/quotes"
+       - "--repoUrl=http://router:8080/repo/api"
+     networks:
+       envoymesh:
+         aliases:
+           - executor
+   gateway:
+     image: gateway-server
+     command:
+       - "--server.port=8080"
+       - "--server.address=0.0.0.0"
+       - "--repoUrl=http://router:8080/repo/api"
+       - "--compilerUrl=http://router:8080/compiler/api"
+       - "--executorUrl=http://router:8080/executor/api"
+     networks:
+       envoymesh:
+         aliases:
+           - gateway
+   router:
+     image: envoyproxy/envoy-alpine:v1.14.1
+     ports:
+       - 8000:8000
+       - 8001:8001
+     volumes:
+       - ./envoy-config.yaml:/etc/envoy/envoy.yaml
+     networks:
+       envoymesh:
+         aliases:
+           - router
+networks:
+  envoymesh: {}
+

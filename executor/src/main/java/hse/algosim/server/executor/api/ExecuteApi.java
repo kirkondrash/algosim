@@ -31,4 +31,22 @@ public interface ExecuteApi {
 
     }
 
+    /**
+     * GET /ready
+     * Returns readiness of the host for execution
+     *
+     * @return Ready (status code 200)
+     *         or Busy (status code 503)
+     */
+    @ApiOperation(value = "", nickname = "getReadiness", notes = "Returns readiness of the host for compilation")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Ready"),
+            @ApiResponse(code = 503, message = "Busy") })
+    @RequestMapping(value = "/ready",
+            method = RequestMethod.GET)
+    default ResponseEntity<Void> getReadiness() {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
 }
