@@ -26,7 +26,7 @@ import java.util.UUID;
 public class AlgoCodeApiController implements AlgoCodeApi {
 
     private final NativeWebRequest request;
-    private static Map<String,File> ids = new HashMap<>();
+    private static final Map<String,File> codeFiles = new HashMap<>();
 
     @org.springframework.beans.factory.annotation.Autowired
     public AlgoCodeApiController(NativeWebRequest request) {
@@ -40,9 +40,11 @@ public class AlgoCodeApiController implements AlgoCodeApi {
 
     @Override
     public ResponseEntity<Void> createAlgorithmCode(@PathVariable("id") UUID id, @Valid MultipartFile code) {
-        if (ids.containsKey(id.toString()))
-            throw new ResourceAlreadyExistsException("Source code already uploaded for this UUID");
-        saveFile(id.toString(),code);
+        synchronized (codeFiles) {
+            if (codeFiles.containsKey(id.toString()))
+                throw new ResourceAlreadyExistsException("Source code already uploaded for this UUID");
+            saveFile(id.toString(), code);
+        }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -58,22 +60,26 @@ public class AlgoCodeApiController implements AlgoCodeApi {
 
     @Override
     public ResponseEntity<Void> updateAlgorithmCode(@PathVariable("id") UUID id, @Valid MultipartFile code) {
-        File oldCode = getFile(id.toString());
-        oldCode.delete();
-        saveFile(id.toString(),code);
+        synchronized (codeFiles) {
+            File oldCode = getFile(id.toString());
+            oldCode.delete();
+            saveFile(id.toString(), code);
+        }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
     public ResponseEntity<Void> deleteAlgorithmCode(@PathVariable("id") UUID id) {
-        File code = getFile(id.toString());
-        code.delete();
-        ids.remove(id.toString());
+        synchronized (codeFiles) {
+            File code = getFile(id.toString());
+            code.delete();
+            codeFiles.remove(id.toString());
+        }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     public File getFile(String id){
-        File code = ids.get(id);
+        File code = codeFiles.get(id);
         if (code == null)
             throw new ResourceNotFoundException("Source code not found for this UUID");
         return code;
@@ -83,7 +89,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
         try {
             File receivedFile = new File("files/"+ id).getAbsoluteFile();
             receivedFile.getParentFile().mkdirs();
-            ids.put(id,receivedFile);
+            codeFiles.put(id,receivedFile);
             code.transferTo(receivedFile);
         } catch (IOException e) {
             e.printStackTrace();

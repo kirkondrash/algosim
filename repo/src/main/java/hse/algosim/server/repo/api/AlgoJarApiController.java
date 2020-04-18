@@ -26,7 +26,7 @@ import java.util.UUID;
 public class AlgoJarApiController implements AlgoJarApi {
 
     private final NativeWebRequest request;
-    private static Map<String,File> ids = new HashMap<>();
+    private static final Map<String,File> artifactFiles = new HashMap<>();
 
     @org.springframework.beans.factory.annotation.Autowired
     public AlgoJarApiController(NativeWebRequest request) {
@@ -40,9 +40,11 @@ public class AlgoJarApiController implements AlgoJarApi {
 
     @Override
     public ResponseEntity<Void> createAlgorithmJar(@PathVariable("id") UUID id, @Valid MultipartFile jar) {
-        if (ids.containsKey(id.toString()))
-            throw new ResourceAlreadyExistsException("Artifact already uploaded for this UUID");
-        saveFile(id.toString(),jar);
+        synchronized (artifactFiles) {
+            if (artifactFiles.containsKey(id.toString()))
+                throw new ResourceAlreadyExistsException("Artifact already uploaded for this UUID");
+            saveFile(id.toString(), jar);
+        }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -58,22 +60,26 @@ public class AlgoJarApiController implements AlgoJarApi {
 
     @Override
     public ResponseEntity<Void> updateAlgorithmJar(@PathVariable("id") UUID id, @Valid MultipartFile jar) {
-        File oldJar = getFile(id.toString());
-        oldJar.delete();
-        saveFile(id.toString(),jar);
+        synchronized (artifactFiles) {
+            File oldJar = getFile(id.toString());
+            oldJar.delete();
+            saveFile(id.toString(), jar);
+        }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
     public ResponseEntity<Void> deleteAlgorithmJar(@PathVariable("id") UUID id) {
-        File jar = getFile(id.toString());
-        jar.delete();
-        ids.remove(id.toString());
+        synchronized (artifactFiles) {
+            File jar = getFile(id.toString());
+            jar.delete();
+            artifactFiles.remove(id.toString());
+        }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     public File getFile(String id){
-        File jar = ids.get(id);
+        File jar = artifactFiles.get(id);
         if (jar == null)
             throw new ResourceNotFoundException("Artifact not found for this UUID");
         return jar;
@@ -83,7 +89,7 @@ public class AlgoJarApiController implements AlgoJarApi {
         try {
             File receivedArtifact = new File("artifacts/"+ id).getAbsoluteFile();
             receivedArtifact.getParentFile().mkdirs();
-            ids.put(id,receivedArtifact);
+            artifactFiles.put(id,receivedArtifact);
             jar.transferTo(receivedArtifact);
         } catch (IOException e) {
             e.printStackTrace();
