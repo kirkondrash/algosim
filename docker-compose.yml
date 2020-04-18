@@ -3,19 +3,32 @@ version: '3.7'
 services:
    repo:
      image: repo-server
-     command: --server.port=8080
+     command:
+       - "--server.port=8080"
+       - "--server.address=0.0.0.0"
    compiler:
      image: compiler-server
-     command: --server.port=8080
+     command:
+       - "--server.port=8080"
+       - "--server.address=0.0.0.0"
+       - "--pathToFramework=/framework"
+       - "--repoUrl=http://repo:8080/api"
      volumes:
        - ~/.m2:/root/.m2
    executor:
      image: executor-server
-     command: --server.port=8080
-     volumes:
-       - ./quotes:/quotes
+     command:
+       - "--server.port=8080"
+       - "--server.address=0.0.0.0"
+       - "--pathToQuotes=/quotes"
+       - "--repoUrl=http://repo:8080/api"
    gateway:
      image: gateway-server
-     command: --server.port=8080
+     command:
+       - "--server.port=8080"
+       - "--server.address=0.0.0.0"
+       - "--repoUrl=http://repo:8080/api"
+       - "--compilerUrl=http://compiler:8080/api"
+       - "--executorUrl=http://executor:8080/api"
      ports:
        - 8080:8080

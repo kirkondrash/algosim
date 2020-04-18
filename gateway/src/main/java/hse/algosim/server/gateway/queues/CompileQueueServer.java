@@ -25,10 +25,10 @@ public class CompileQueueServer{
                     compilationQueue.remove();
                     executionQueue.add(id);
                 } catch (ApiException ae) {
-                    if (ae.getCode()==409) {
+                    if (ae.getCode()==503) {
                         System.out.println("Compiler busy!");
                     } else {
-                        System.out.println(ae.getMessage());
+                        System.out.println(ae.getLocalizedMessage());
                     }
                 }
             }

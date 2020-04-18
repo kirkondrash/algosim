@@ -29,13 +29,13 @@
     </parent>
 
     <modules>
-        <module>repo</module>
+        <module>models</module>
         <module>clients</module>
+        <module>repo</module>
         <module>compiler</module>
         <module>executor</module>
-        <module>framework</module>
         <module>gateway</module>
-        <module>models</module>
+        <module>framework</module>
     </modules>
 
     <dependencyManagement>

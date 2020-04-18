@@ -21,7 +21,7 @@ public class QuotesDAO {
         Stream<String> quoteStream = null;
         try {
             BufferedReader br = new BufferedReader(
-                    new FileReader(String.format("/quotes/%s.csv", fileName)));
+                    new FileReader(String.format("%s/%s.csv",System.getProperty("pathToQuotes","/quotes"), fileName)));
             quoteStream = br.lines().skip(1);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -34,7 +34,7 @@ public class QuotesDAO {
         long nextClose = 0;
         try {
             BufferedReader br = new BufferedReader(
-                    new FileReader(String.format("/quotes/%s.csv", fileName)));
+                    new FileReader(String.format("%s/%s.csv", System.getProperty("pathToQuotes","/quotes"), fileName)));
             br.readLine();
             String[] lineValues = br.readLine().split(",");
             nextClose = Instant.from(DateTimeFormatter

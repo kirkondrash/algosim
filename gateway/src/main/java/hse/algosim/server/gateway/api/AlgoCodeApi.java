@@ -30,7 +30,7 @@ public interface AlgoCodeApi {
         produces = { "application/json" }, 
         consumes = { "multipart/form-data" },
         method = RequestMethod.POST)
-    default ResponseEntity<Map<String,String>> getAlgorithmCode(@ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile code) {
+    default ResponseEntity<Map<String,String>> getAlgorithmCode(@ApiParam(value = "file detail") @Valid @RequestPart("code") MultipartFile code) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

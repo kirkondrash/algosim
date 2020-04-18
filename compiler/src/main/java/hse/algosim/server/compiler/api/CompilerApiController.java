@@ -34,7 +34,7 @@ public class CompilerApiController extends FiniteQueueExecutor implements Compil
         try {
             singleThreadExecutor.submit(()-> CompilerServer.runCompilation(repoApiClient,id));
         }catch (RejectedExecutionException re){
-            System.out.println("Caught RejectedExecutionException" + id.toString());
+            System.out.println("Compilation queue full for " + id.toString());
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
         }
 

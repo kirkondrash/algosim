@@ -33,7 +33,7 @@ public class CompilerServer {
             repoApiClient.replaceAlgorithmStatus(
                     id,
                     new SrcStatus().status(SrcStatus.StatusEnum.COMPILING));
-            copyFolder(Paths.get("/framework"),projectDir.toPath());
+            copyFolder(Paths.get(System.getProperty("pathToFramework","/framework")),projectDir.toPath());
             Files.move(
                     repoApiClient.getAlgorithmCode(id).toPath(),
                     Paths.get(projectDirName + "/src/main/java/TradingAlgorithmImpl.java"),
@@ -50,7 +50,7 @@ public class CompilerServer {
             InvocationResult res = mavenInvoker.execute( mavenInvocationRequest );
             if (res.getExitCode() == 0){
                 srcStatus.setStatus(SrcStatus.StatusEnum.SUCCESSFULLY_COMPILED);
-                repoApiClient.uploadAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-0.0.1.jar"));
+                repoApiClient.uploadAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
             }
             else {
                 if (res.getExecutionException()!=null){

@@ -34,7 +34,7 @@ public interface AlgoCodeApi {
             consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE },
             method = RequestMethod.POST)
-    default ResponseEntity<Void> createAlgorithmCode(@ApiParam(value = "UUID of algorithm to upload",required=true) @PathVariable("id") UUID id, @ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile code) {
+    default ResponseEntity<Void> createAlgorithmCode(@ApiParam(value = "UUID of algorithm to upload",required=true) @PathVariable("id") UUID id, @ApiParam(value = "file detail") @Valid @RequestPart("code") MultipartFile code) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
@@ -59,7 +59,7 @@ public interface AlgoCodeApi {
             consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE },
             method = RequestMethod.PUT)
-    default ResponseEntity<Void> updateAlgorithmCode(@ApiParam(value = "UUID of algorithm to replace",required=true) @PathVariable("id") UUID id, @ApiParam(value = "file detail") @Valid @RequestPart("file") MultipartFile code) {
+    default ResponseEntity<Void> updateAlgorithmCode(@ApiParam(value = "UUID of algorithm to replace",required=true) @PathVariable("id") UUID id, @ApiParam(value = "file detail") @Valid @RequestPart("code") MultipartFile code) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 

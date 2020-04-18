@@ -34,7 +34,7 @@ public class ExecuteApiController extends FiniteQueueExecutor implements Execute
         try {
             singleThreadExecutor.submit(()-> ExecutorServer.runExecution(repoApiClient,id));
         }catch (RejectedExecutionException re){
-            System.out.println("Caught RejectedExecutionException" + id.toString());
+            System.out.println("Execution queue full for " + id.toString());
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
         }
 

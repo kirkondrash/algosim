@@ -36,18 +36,52 @@
             <build>
                 <plugins>
                     <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-resources-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>copy-resources</id>
+                                <!-- here the phase you need -->
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>copy-resources</goal>
+                                </goals>
+                                <configuration>
+                                    <outputDirectory>${project.build.directory}/jib-extra-directory/quotes</outputDirectory>
+                                    <resources>
+                                        <resource>
+                                            <directory>../quotes</directory>
+                                        </resource>
+                                    </resources>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
                         <groupId>com.google.cloud.tools</groupId>
                         <artifactId>jib-maven-plugin</artifactId>
                         <version>2.2.0</version>
                         <configuration>
+                            <from>
+                                <image>openjdk:8-jre-slim</image>
+                            </from>
                             <to>
                                 <image>${project.artifactId}</image>
                             </to>
                             <container>
+                                <jvmFlags>
+                                    <jvmFlag>-Xverify:none</jvmFlag>
+                                </jvmFlags>
                                 <ports>
                                     <port>8080</port>
                                 </ports>
                             </container>
+                            <extraDirectories>
+                                <paths>
+                                    <path>${project.build.directory}/jib-extra-directory/</path>
+                                </paths>
+                            </extraDirectories>
                         </configuration>
                         <executions>
                             <execution>

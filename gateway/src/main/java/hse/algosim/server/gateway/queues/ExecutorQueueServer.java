@@ -47,11 +47,11 @@ class ExecutorQueueServer{
                             throw new RuntimeException("This status should not be in queue for execution!");
                     }
                 } catch (ApiException ae) {
-                    if (ae.getCode()==409) {
+                    if (ae.getCode()==503) {
                         System.out.println("Executor busy!");
                         executionQueue.add(id);
                     } else {
-                        System.out.println(ae.getMessage());
+                        System.out.println(ae.getLocalizedMessage());
                     }
                 }
             }

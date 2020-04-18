@@ -1,4 +1,4 @@
-![sequence-diagram](configs/algosim-sequence.png "Взаимодействие сервисов")
+![sequence-diagram](algosim-sequence.png "Взаимодействие сервисов")
 ***
 TODO:
 - synchronized hashmaps во всех сервисах
@@ -8,27 +8,41 @@ TODO:
   - для waitOrderList - ключ opening цены, значение сеты ордеров им соответствующие;
   - соответственно затем стрим + фильтр ключи между текущим и предыдущим уровнем цены
 Optional TODO:
-- host и basepath сервисов как параметры/файлы пропертей
 - поправить swagger-ui чтоьы выстраивались корректные запросы с учетом envoy-прокси
 - BUG: запросы работают либо без Accept, либо с "Accept: application/json, application/octet-stream"; c "Accept: application/octet-stream, application/json" НЕ работают, разобраться почему
 - перейти на единый формат сериализации (gson/jackson) в клиентах и серверах, сделать единый артефакт с моделями
 ***
 Структура репо:
-- Dockerfile-base, Dockerfile-dist-{jdk,jre}, start-service.sh - для сборки базовых образов. В base (он с jdk,maven, исходным кодом клиентов) собирается артефакт сервиса, в dist (тонкий образ, alpine+envoy+(jre|jdk)) он запускается.
 - docker-compose.yml
-- configs/:
-  - algosim-sequnce.{png,txt} - последовательность взаимодействия сервисов 
-  - envoy-configs/ - конфигурационные файлы маршрутизации
-  - openapi-specs/ - openapi спецификации всех сервисов
-  - generator-configs/ - конфиги для генерации заглушек серверов/клиентов сервисов. По факту всё уже сгенерировано и лежит в соответствующих папках
+- algosim-sequnce.{png,txt} - последовательность взаимодействия сервисов 
 - framework/ - непосредственно код логики трейдинга
-- clients/ - сгенерированные  и допиленные клиенты ко всем сервисам
-- {gateway,repo,compiler,executor}/ - сгенерированные сервисы
+- clients/ - сгенерированные  и допиленные клиенты ко всем серверам
+- {gateway,repo,compiler,executor}/ - сервера-компоненты платформы
+- models/ - модели и переиспользуемые классы всех серверов
+- quotes/ - тестовый набор данных 
 ***
-Порядок действий (из корня проекта):
-1. Сначала собрать algosim-base (там все клиенты), algosim-dist-{jre,jdk} (envoy+jre для финальных контейнеров). Почему-то не кэшируетсяв мультистейдже, приходится отдельно, потом разберусь. 
-  - `docker build -t algosim-base -f Dockerfile-base .`
-  - `docker build -t algosim-dist-jre -f Dockerfile-dist-jre .`
-  - `docker build -t algosim-dist-jdk -f Dockerfile-dist-jdk .`
-2. Потом уже собрать  и запустить сервисы по `docker-compose up --build`. Для того чтобы запустить сборку без использования закэшированных слоев (если вам кажется, что что-то не подхватывается при сборке) - `docker-compose build --no-cache`.
-3. Несолько compiler-worker'ов - `docker-compose up --scale compiler=3`
+Запуск платформы в контейнерах:
+1. `mvn clean package -P docker`
+2. `docker-compose up`
+3. Несолько compiler-worker'ов - `docker-compose up --scale compiler=3`. В таком случае на хостнеймах компонент платформы должен стоять loab-balancer.
+***
+Запуск jar-артефактов:
+1. `mvn clean package -P boot` 
+***
+Аргументы артефактов (параметры):
+
+Oбщие:
++ `--server.port=8080`
++ `--server.address=0.0.0.0`
++ `--repoUrl=http://repo:8080/api`
+
+В compiler'e:
++ `--pathToFramework=/framework`
+
+В executor'e:
++ `-pathToQuotes=/quotes`
+
+В gateway'e:
++ `--compilerUrl=http://compiler:8080/api`
++ `--executorUrl=http://executor:8080/api`
+

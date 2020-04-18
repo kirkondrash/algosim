@@ -53,7 +53,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
             return new ResponseEntity<>(res, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
-            res.put("error",e.getMessage());
+            res.put("error",e.getLocalizedMessage());
         }
 
         return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
