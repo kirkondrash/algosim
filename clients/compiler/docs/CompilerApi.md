@@ -30,7 +30,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     CompilerApiClientInstance apiInstance = new CompilerApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm to fetch
+    String id = "a";
     try {
       apiInstance.compileAlgorithm(id);
     } catch (ApiException e) {
@@ -48,7 +48,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm to fetch |
+ **id** | [**String**](.md)| id of algorithm to fetch |
 
 ### Return type
 
@@ -67,5 +67,5 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Successfully compiled |  -  |
-**404** | Source code not found for this UUID |  -  |
+**404** | Source code not found for this id |  -  |
 

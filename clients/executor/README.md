@@ -76,7 +76,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     ExecutorApiClientInstance apiInstance = new ExecutorApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm to fetch
+    String id = new "a";
     try {
       apiInstance.executeAlgorithm(id);
     } catch (ApiException e) {

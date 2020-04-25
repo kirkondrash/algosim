@@ -3,8 +3,6 @@ package hse.algosim.server.gateway.queues;
 import hse.algosim.client.api.ApiException;
 import hse.algosim.client.compiler.api.CompilerApiClientInstance;
 
-import java.util.LinkedList;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class CompileQueueServer{
@@ -15,9 +13,9 @@ public class CompileQueueServer{
         this.compilerApiClient = compilerApiClient;
     }
 
-    public void run(ConcurrentLinkedQueue<UUID> compilationQueue, LinkedList<UUID> executionQueue) {
+    public void run(ConcurrentLinkedQueue<String> compilationQueue, ConcurrentLinkedQueue<String> executionQueue) {
         while (true) {
-            UUID id = compilationQueue.peek();
+            String id = compilationQueue.peek();
             if (id != null) {
                 try {
                     compilerApiClient.compileAlgorithm(id);

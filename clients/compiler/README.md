@@ -76,7 +76,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     CompilerApiClientInstance apiInstance = new CompilerApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm to fetch
+    String id = "a"; 
     try {
       apiInstance.compileAlgorithm(id);
     } catch (ApiException e) {

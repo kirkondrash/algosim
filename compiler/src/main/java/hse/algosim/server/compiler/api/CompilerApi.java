@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Validated
 @Api(value = "Compiler", description = "the Compiler API", tags={ "compiler"})
@@ -24,17 +23,17 @@ public interface CompilerApi {
      * POST /compile/{id}
      * Gets the sources from the db and compiles them
      *
-     * @param id UUID of algorithm to fetch (required)
+     * @param id id of algorithm to fetch (required)
      * @return Successfully compiled (status code 200)
-     *         or Source code not found for this UUID (status code 404)
+     *         or Source code not found for this id (status code 404)
      */
     @ApiOperation(value = "", nickname = "compileAlgorithm", notes = "Gets the sources from the db and compiles them")
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successfully compiled"),
-        @ApiResponse(code = 404, message = "Source code not found for this UUID") })
+        @ApiResponse(code = 404, message = "Source code not found for this id") })
     @RequestMapping(value = "/compile/{id}",
         method = RequestMethod.POST)
-    default ResponseEntity<Void> compileAlgorithm(@ApiParam(value = "UUID of algorithm to fetch",required=true) @PathVariable("id") UUID id) {
+    default ResponseEntity<Void> compileAlgorithm(@ApiParam(value = "id of algorithm to fetch",required=true) @PathVariable("id") String id) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }

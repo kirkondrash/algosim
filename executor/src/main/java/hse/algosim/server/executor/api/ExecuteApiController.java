@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.RejectedExecutionException;
 
 @Controller
@@ -30,11 +29,11 @@ public class ExecuteApiController extends FiniteQueueExecutor implements Execute
     }
 
     @Override
-    public ResponseEntity<Void> executeAlgorithm(@PathVariable("id") UUID id) {
+    public ResponseEntity<Void> executeAlgorithm(@PathVariable("id") String id) {
         try {
             singleThreadExecutor.submit(()-> ExecutorServer.runExecution(repoApiClient,id));
         }catch (RejectedExecutionException re){
-            System.out.println(String.format("Execution queue full for %s on %s",id.toString(),hostname));
+            System.out.println(String.format("Execution queue full for %s on %s", id,hostname));
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
         }
 

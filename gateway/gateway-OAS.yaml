@@ -12,7 +12,7 @@ servers:
 paths:
   /algoCode:
     post:
-      description: Gets code loaded by user, assigns the UUID to it. The code will later be compiled and executed
+      description: Gets code loaded by user, assigns the id to it. The code will later be compiled and executed
       operationId: getAlgorithmCode
       requestBody:
         description: Source code to be uploaded
@@ -28,7 +28,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SrcId'
+security:
+  - basicAuth: []  # <-- use the same name here
+
 components:
+  securitySchemes:
+    basicAuth:     # <-- arbitrary name for the security scheme
+      type: http
+      scheme: basic
   schemas:
     SrcCode:
       type: object
@@ -38,4 +45,3 @@ components:
           format: binary
     SrcId:
       type: string
-      format: uuid

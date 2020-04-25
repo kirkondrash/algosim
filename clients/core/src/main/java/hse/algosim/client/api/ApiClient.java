@@ -85,6 +85,7 @@ public class ApiClient {
         setUserAgent("OpenAPI-Generator/0.0.1/java");
 
         authentications = new HashMap<String, Authentication>();
+        authentications.put("basicAuth", new HttpBasicAuth());
     }
 
     /**
@@ -263,11 +264,11 @@ public class ApiClient {
      *
      * @param username Username
      */
-    public void setUsername(String username) {
+    public ApiClient setUsername(String username) {
         for (Authentication auth : authentications.values()) {
             if (auth instanceof HttpBasicAuth) {
                 ((HttpBasicAuth) auth).setUsername(username);
-                return;
+                return this;
             }
         }
         throw new RuntimeException("No HTTP basic authentication configured!");
@@ -278,11 +279,11 @@ public class ApiClient {
      *
      * @param password Password
      */
-    public void setPassword(String password) {
+    public ApiClient setPassword(String password) {
         for (Authentication auth : authentications.values()) {
             if (auth instanceof HttpBasicAuth) {
                 ((HttpBasicAuth) auth).setPassword(password);
-                return;
+                return this;
             }
         }
         throw new RuntimeException("No HTTP basic authentication configured!");

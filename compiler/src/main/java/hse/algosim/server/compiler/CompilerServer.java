@@ -14,7 +14,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.UUID;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
@@ -22,11 +21,11 @@ public class CompilerServer {
 
     private final static Invoker mavenInvoker = new DefaultInvoker().setMavenHome(new File(System.getenv("MAVEN_HOME")));
 
-    public static void runCompilation(RepoApiClientInstance repoApiClient, UUID id) {
+    public static void runCompilation(RepoApiClientInstance repoApiClient, String id) {
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
         SrcStatus srcStatus = new SrcStatus();
-        String projectDirName = String.format("projects/%s", id.toString());
+        String projectDirName = String.format("projects/%s", id);
         File projectDir = new File(projectDirName);
         projectDir.mkdirs();
         try{
@@ -40,6 +39,8 @@ public class CompilerServer {
                     REPLACE_EXISTING);
 
             InvocationRequest mavenInvocationRequest = new DefaultInvocationRequest();
+            mavenInvocationRequest.setThreads("2.0C");
+            mavenInvocationRequest.setBatchMode(true);
             mavenInvocationRequest.setGoals( Arrays.asList( "clean", "package", "-P package-target") );
             mavenInvocationRequest.setBaseDirectory(projectDir);
 
@@ -50,7 +51,13 @@ public class CompilerServer {
             InvocationResult res = mavenInvoker.execute( mavenInvocationRequest );
             if (res.getExitCode() == 0){
                 srcStatus.setStatus(SrcStatus.StatusEnum.SUCCESSFULLY_COMPILED);
-                repoApiClient.uploadAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
+                try {
+                    repoApiClient.uploadAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
+                } catch (ApiException e) {
+                    if (e.getCode() == 409) {
+                        repoApiClient.replaceAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
+                    }
+                }
             }
             else {
                 if (res.getExecutionException()!=null){

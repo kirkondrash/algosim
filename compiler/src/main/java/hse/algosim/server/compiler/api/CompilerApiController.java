@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.NativeWebRequest;
 
-import java.io.IOException;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.concurrent.RejectedExecutionException;
 
 @Controller
@@ -31,11 +29,11 @@ public class CompilerApiController extends FiniteQueueExecutor implements Compil
     }
 
     @Override
-    public ResponseEntity<Void> compileAlgorithm(@PathVariable("id") UUID id) {
+    public ResponseEntity<Void> compileAlgorithm(@PathVariable("id") String id) {
         try {
             singleThreadExecutor.submit(()-> CompilerServer.runCompilation(repoApiClient,id));
         }catch (RejectedExecutionException re){
-            System.out.println(String.format("Compilation queue full for %s on %s",id.toString(),hostname));
+            System.out.println(String.format("Compilation queue full for %s on %s", id,hostname));
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
         }
 

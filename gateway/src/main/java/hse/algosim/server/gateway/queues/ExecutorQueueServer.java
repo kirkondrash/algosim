@@ -1,13 +1,10 @@
 package hse.algosim.server.gateway.queues;
 
 import hse.algosim.client.api.ApiException;
-import hse.algosim.client.compiler.api.CompilerApiClientInstance;
 import hse.algosim.client.executor.api.ExecutorApiClientInstance;
 import hse.algosim.client.model.SrcStatus;
 import hse.algosim.client.repo.api.RepoApiClientInstance;
 
-import java.util.LinkedList;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 class ExecutorQueueServer{
@@ -20,9 +17,9 @@ class ExecutorQueueServer{
         this.executorApiClient = executorApiClient;
     }
 
-    public void run(LinkedList<UUID> executionQueue, LinkedList<UUID> resultQueue) {
+    public void run(ConcurrentLinkedQueue<String> executionQueue, ConcurrentLinkedQueue<String> resultQueue) {
         while (true) {
-            UUID id = executionQueue.poll();
+            String id = executionQueue.poll();
             if (id != null) {
                 try {
                     SrcStatus srcStatus = repoApiClient.getAlgorithmStatus(id);
@@ -36,7 +33,7 @@ class ExecutorQueueServer{
                         }
                         case SCHEDULED_FOR_COMPILATION:
                         case COMPILING: {
-                            executionQueue.addLast(id);
+                            executionQueue.add(id);
                             break;
                         }
                         case COMPILATION_FAILED: {

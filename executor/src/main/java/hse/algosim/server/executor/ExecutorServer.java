@@ -6,12 +6,12 @@ import hse.algosim.client.repo.api.RepoApiClientInstance;
 
 import java.io.*;
 import java.util.Arrays;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class ExecutorServer {
+    private final static ProcessBuilder pb = new ProcessBuilder();
 
-    public static void runExecution(RepoApiClientInstance repoApiClient, UUID id){
+    public static void runExecution(RepoApiClientInstance repoApiClient, String id){
         SrcStatus srcStatus = new SrcStatus();
         File jar = null;
         try {
@@ -20,7 +20,7 @@ public class ExecutorServer {
                     new SrcStatus().status(SrcStatus.StatusEnum.EXECUTING));
             jar = repoApiClient.getAlgorithmJar(id);
 
-            Process p = new ProcessBuilder()
+            Process p = pb
                     .command(Arrays.asList("java", "-jar", jar.getAbsolutePath()))
                     .start();
             BufferedReader pErrorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));

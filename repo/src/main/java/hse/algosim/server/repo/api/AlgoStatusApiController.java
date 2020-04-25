@@ -42,18 +42,18 @@ public class AlgoStatusApiController implements AlgoStatusApi {
     }
 
     @Override
-    public ResponseEntity<Void> createAlgorithmStatus(@PathVariable("id") UUID id, @Valid @RequestBody SrcStatus srcStatus) {
+    public ResponseEntity<Void> createAlgorithmStatus(@PathVariable("id") String id, @Valid @RequestBody SrcStatus srcStatus) {
         synchronized (algorithmStatuses) {
-            if (algorithmStatuses.containsKey(id.toString()))
-                throw new ResourceAlreadyExistsException("Status already uploaded for this UUID");
-            algorithmStatuses.put(id.toString(), srcStatus);
+            if (algorithmStatuses.containsKey(id))
+                throw new ResourceAlreadyExistsException("Status already uploaded for this id");
+            algorithmStatuses.put(id, srcStatus);
         }
         if(srcStatus.getMetrics()!=null) {
             try {
                 JsonNode root = mapper.readTree(srcStatus.getMetrics());
                 String winloss = root.get("winloss").asText();
                 Set<String> newId = new HashSet<>();
-                newId.add(id.toString());
+                newId.add(id);
                 topAlgorithms.merge(new BigDecimal(winloss), newId,(set1, set2)->{set1.addAll(set2);return set1;});
             } catch (IOException e) {
                 e.printStackTrace();
@@ -63,34 +63,34 @@ public class AlgoStatusApiController implements AlgoStatusApi {
     }
 
     @Override
-    public ResponseEntity<SrcStatus> readAlgorithmStatus(@PathVariable("id") UUID id) {
-        SrcStatus status = algorithmStatuses.get(id.toString());
+    public ResponseEntity<SrcStatus> readAlgorithmStatus(@PathVariable("id") String id) {
+        SrcStatus status = algorithmStatuses.get(id);
         if (status == null)
-            throw new ResourceNotFoundException("Status not found for this UUID");
+            throw new ResourceNotFoundException("Status not found for this id");
         return new ResponseEntity<>(status, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> updateAlgorithmStatus(@PathVariable("id") UUID id, @Valid @RequestBody SrcStatus srcStatus) {
+    public ResponseEntity<Void> updateAlgorithmStatus(@PathVariable("id") String id, @Valid @RequestBody SrcStatus srcStatus) {
         SrcStatus prevStatus;
         synchronized (algorithmStatuses) {
-            prevStatus = algorithmStatuses.get(id.toString());
+            prevStatus = algorithmStatuses.get(id);
             if (prevStatus == null)
-                throw new ResourceNotFoundException("Status not found for this UUID");
-            algorithmStatuses.replace(id.toString(), srcStatus);
+                throw new ResourceNotFoundException("Status not found for this id");
+            algorithmStatuses.replace(id, srcStatus);
         }
         try {
             if(prevStatus.getMetrics() != null) {
                 JsonNode prevWinLossNode = mapper.readTree(prevStatus.getMetrics()).get("winloss");
                 if (prevWinLossNode != null) {
-                    topAlgorithms.compute(new BigDecimal(prevWinLossNode.asText()),(key, idSet)->{idSet.remove(id.toString());return idSet;});
+                    topAlgorithms.compute(new BigDecimal(prevWinLossNode.asText()),(key, idSet)->{idSet.remove(id);return idSet;});
                 }
             }
             if (srcStatus.getMetrics() != null) {
                 JsonNode winLossNode = mapper.readTree(srcStatus.getMetrics()).get("winloss");
                 if (winLossNode != null) {
                     Set<String> newId = new HashSet<>();
-                    newId.add(id.toString());
+                    newId.add(id);
                     topAlgorithms.merge(new BigDecimal(winLossNode.asText()), newId,(set1, set2)->{set1.addAll(set2);return set1;});
                 }
             }
@@ -101,19 +101,19 @@ public class AlgoStatusApiController implements AlgoStatusApi {
     }
 
     @Override
-    public ResponseEntity<Void> deleteAlgorithmStatus(@PathVariable("id") UUID id) {
+    public ResponseEntity<Void> deleteAlgorithmStatus(@PathVariable("id") String id) {
         SrcStatus prevStatus;
         synchronized (algorithmStatuses) {
-            prevStatus = algorithmStatuses.get(id.toString());
+            prevStatus = algorithmStatuses.get(id);
             if (prevStatus == null)
-                throw new ResourceNotFoundException("Status not found for this UUID");
-            algorithmStatuses.remove(id.toString());
+                throw new ResourceNotFoundException("Status not found for this id");
+            algorithmStatuses.remove(id);
         }
         if (prevStatus.getMetrics() != null) {
             try {
                 JsonNode prevWinLossNode = mapper.readTree(prevStatus.getMetrics()).get("winloss");
                 if (prevWinLossNode != null) {
-                    topAlgorithms.compute(new BigDecimal(prevWinLossNode.asText()),(key, idSet)->{idSet.remove(id.toString());return idSet;});
+                    topAlgorithms.compute(new BigDecimal(prevWinLossNode.asText()),(key, idSet)->{idSet.remove(id);return idSet;});
                 }
             } catch (IOException e) {
                 e.printStackTrace();

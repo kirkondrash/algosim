@@ -5,8 +5,7 @@ import hse.algosim.client.api.ApiException;
 import hse.algosim.client.model.SrcStatus;
 import hse.algosim.client.repo.api.RepoApiClientInstance;
 
-import java.util.LinkedList;
-import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 class ResultsQueueServer{
 
@@ -17,9 +16,9 @@ class ResultsQueueServer{
         this.repoApiClient = repoApiClient;
     }
 
-    public void run(LinkedList<UUID> resultQueue) {
+    public void run(ConcurrentLinkedQueue<String> resultQueue) {
         while (true) {
-            UUID id = resultQueue.poll();
+            String id = resultQueue.poll();
             if (id != null) {
                 try {
                     SrcStatus srcStatus = repoApiClient.getAlgorithmStatus(id);
@@ -31,7 +30,7 @@ class ResultsQueueServer{
                         }
                         case SCHEDULED_FOR_EXECUTION:
                         case EXECUTING: {
-                            resultQueue.addLast(id);
+                            resultQueue.add(id);
                             break;
                         }
                         default:

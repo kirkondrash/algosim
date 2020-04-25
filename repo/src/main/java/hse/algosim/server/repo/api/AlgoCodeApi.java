@@ -15,7 +15,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.Optional;
-import java.util.UUID;
 
 @Validated
 @Api(value = "algoCode", description = "the algoCode API", tags={ "source code"})
@@ -28,49 +27,49 @@ public interface AlgoCodeApi {
     @ApiOperation(value = "", nickname = "createAlgorithmCode", notes = "Uploads the algorithm source")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Source code successfully uploaded"),
-            @ApiResponse(code = 409, message = "Source code already uploaded for this UUID")
+            @ApiResponse(code = 409, message = "Source code already uploaded for this id")
     })
     @RequestMapping(value = "/algoCode/{id}",
             consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE },
             method = RequestMethod.POST)
-    default ResponseEntity<Void> createAlgorithmCode(@ApiParam(value = "UUID of algorithm to upload",required=true) @PathVariable("id") UUID id, @ApiParam(value = "file detail") @Valid @RequestPart("code") MultipartFile code) {
+    default ResponseEntity<Void> createAlgorithmCode(@ApiParam(value = "id of algorithm to upload",required=true) @PathVariable("id") String id, @ApiParam(value = "file detail") @Valid @RequestPart("code") MultipartFile code) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @ApiOperation(value = "", nickname = "readAlgorithmCode", notes = "Returns algorithm source", response = Resource.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Source code successfully fetched", response = Resource.class),
-            @ApiResponse(code = 404, message = "Source code not found for this UUID")
+            @ApiResponse(code = 404, message = "Source code not found for this id")
     })
     @RequestMapping(value = "/algoCode/{id}",
             produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_OCTET_STREAM_VALUE },
             method = RequestMethod.GET)
-    default ResponseEntity<Resource> readAlgorithmCode(@ApiParam(value = "UUID of algorithm to fetch",required=true) @PathVariable("id") UUID id) {
+    default ResponseEntity<Resource> readAlgorithmCode(@ApiParam(value = "id of algorithm to fetch",required=true) @PathVariable("id") String id) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @ApiOperation(value = "", nickname = "updateAlgorithmCode", notes = "Replaces the algorithm source")
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "Source code successfully replaced"),
-            @ApiResponse(code = 404, message = "Source code not found for this UUID")
+            @ApiResponse(code = 404, message = "Source code not found for this id")
     })
     @RequestMapping(value = "/algoCode/{id}",
             consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE },
             method = RequestMethod.PUT)
-    default ResponseEntity<Void> updateAlgorithmCode(@ApiParam(value = "UUID of algorithm to replace",required=true) @PathVariable("id") UUID id, @ApiParam(value = "file detail") @Valid @RequestPart("code") MultipartFile code) {
+    default ResponseEntity<Void> updateAlgorithmCode(@ApiParam(value = "id of algorithm to replace",required=true) @PathVariable("id") String id, @ApiParam(value = "file detail") @Valid @RequestPart("code") MultipartFile code) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
     @ApiOperation(value = "", nickname = "deleteAlgorithmCode", notes = "Deletes algorithm source")
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "Source code successfully deleted"),
-            @ApiResponse(code = 404, message = "Source code not found for this UUID") })
+            @ApiResponse(code = 404, message = "Source code not found for this id") })
     @RequestMapping(value = "/algoCode/{id}",
             produces = { MediaType.APPLICATION_JSON_VALUE },
             method = RequestMethod.DELETE)
-    default ResponseEntity<Void> deleteAlgorithmCode(@ApiParam(value = "UUID of algorithm to delete",required=true) @PathVariable("id") UUID id) {
+    default ResponseEntity<Void> deleteAlgorithmCode(@ApiParam(value = "id of algorithm to delete",required=true) @PathVariable("id") String id) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 }

@@ -4,8 +4,6 @@ import hse.algosim.client.api.ApiException;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import java.util.UUID;
-
 /**
  * API tests for DefaultApi
  */
@@ -25,7 +23,7 @@ public class CompilerApiClientInstanceTest {
      */
     @Test
     public void compileAlgorithmTest() throws ApiException {
-        UUID id = null;
+        String id = null;
         api.compileAlgorithm(id);
 
         // TODO: test validations

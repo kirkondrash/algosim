@@ -7,7 +7,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
-import java.util.UUID;
 
 /**
  * API tests for DefaultApi
@@ -28,7 +27,7 @@ public class RepoApiClientInstanceTest {
      */
     @Test
     public void replaceAlgorithmStatusTest() throws ApiException {
-        UUID id = null;
+        String id = null;
         SrcStatus srcStatus = null;
         api.replaceAlgorithmStatus(id, srcStatus);
 
@@ -38,14 +37,14 @@ public class RepoApiClientInstanceTest {
     /**
      * 
      *
-     * Deletes algorithm sources based on the UUID supplied
+     * Deletes algorithm sources based on the id supplied
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
     public void deleteAlgorithmCodeTest() throws ApiException {
-        UUID id = null;
+        String id = null;
         api.deleteAlgorithmCode(id);
 
         // TODO: test validations
@@ -54,14 +53,14 @@ public class RepoApiClientInstanceTest {
     /**
      * 
      *
-     * deletes the algorithm jar based on the UUID supplied
+     * deletes the algorithm jar based on the id supplied
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
     public void deleteAlgorithmJarTest() throws ApiException {
-        UUID id = null;
+        String id = null;
         api.deleteAlgorithmJar(id);
 
         // TODO: test validations
@@ -77,7 +76,7 @@ public class RepoApiClientInstanceTest {
      */
     @Test
     public void deleteAlgorithmMetaTest() throws ApiException {
-        UUID id = null;
+        String id = null;
         api.deleteAlgorithmMeta(id);
 
         // TODO: test validations
@@ -93,7 +92,7 @@ public class RepoApiClientInstanceTest {
      */
     @Test
     public void deleteAlgorithmStatusTest() throws ApiException {
-        UUID id = null;
+        String id = null;
         api.deleteAlgorithmStatus(id);
 
         // TODO: test validations
@@ -102,14 +101,14 @@ public class RepoApiClientInstanceTest {
     /**
      * 
      *
-     * Returns algorithm sources based on UUID supplied
+     * Returns algorithm sources based on id supplied
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
     public void getAlgorithmCodeTest() throws ApiException {
-        UUID id = null;
+        String id = null;
         File response = api.getAlgorithmCode(id);
 
         // TODO: test validations
@@ -125,7 +124,7 @@ public class RepoApiClientInstanceTest {
      */
     @Test
     public void getAlgorithmJarTest() throws ApiException {
-        UUID id = null;
+        String id = null;
         File response = api.getAlgorithmJar(id);
 
         // TODO: test validations
@@ -141,7 +140,7 @@ public class RepoApiClientInstanceTest {
      */
     @Test
     public void getAlgorithmMetaTest() throws ApiException {
-        UUID id = null;
+        String id = null;
         SrcMeta response = api.getAlgorithmMeta(id);
 
         // TODO: test validations
@@ -157,7 +156,7 @@ public class RepoApiClientInstanceTest {
      */
     @Test
     public void getAlgorithmStatusTest() throws ApiException {
-        UUID id = null;
+        String id = null;
         SrcStatus response = api.getAlgorithmStatus(id);
 
         // TODO: test validations
@@ -166,14 +165,14 @@ public class RepoApiClientInstanceTest {
     /**
      * 
      *
-     * Uploads the algorithm sources based on UUID supplied
+     * Uploads the algorithm sources based on id supplied
      *
      * @throws ApiException
      *          if the Api call fails
      */
     @Test
     public void uploadAlgorithmCodeTest() throws ApiException {
-        UUID id = null;
+        String id = null;
         File code = null;
         api.uploadAlgorithmCode(id, code);
 
@@ -190,7 +189,7 @@ public class RepoApiClientInstanceTest {
      */
     @Test
     public void uploadAlgorithmJarTest() throws ApiException {
-        UUID id = null;
+        String id = null;
         File jar = null;
         api.uploadAlgorithmJar(id, jar);
 
@@ -207,7 +206,7 @@ public class RepoApiClientInstanceTest {
      */
     @Test
     public void uploadAlgorithmMetaTest() throws ApiException {
-        UUID id = null;
+        String id = null;
         SrcMeta srcMeta = null;
         api.uploadAlgorithmMeta(id, srcMeta);
 
@@ -224,7 +223,7 @@ public class RepoApiClientInstanceTest {
      */
     @Test
     public void uploadAlgorithmStatusTest() throws ApiException {
-        UUID id = null;
+        String id = null;
         SrcStatus srcStatus = null;
         api.uploadAlgorithmStatus(id, srcStatus);
 

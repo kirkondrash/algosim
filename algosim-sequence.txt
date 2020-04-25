@@ -4,7 +4,7 @@ actor User
 
 User->GW: POST /algoCode: load zip(?) with sources
 
-note over GW:UUID assigned to sources
+note over GW:id assigned to sources
 
 GW->Repo: POST /algoCode/{id}
 activate Repo

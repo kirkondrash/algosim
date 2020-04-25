@@ -17,7 +17,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm to fetch
+          description: id of algorithm to fetch
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -25,9 +25,15 @@ paths:
         '200':
           description: Successfully executed
         '404':
-          description: Artifact not found for this UUID
+          description: Artifact not found for this id
+security:
+  - basicAuth: []  # <-- use the same name here
+
 components:
+  securitySchemes:
+    basicAuth:     # <-- arbitrary name for the security scheme
+      type: http
+      scheme: basic
   schemas:
     SrcId:
       type: string
-      format: uuid

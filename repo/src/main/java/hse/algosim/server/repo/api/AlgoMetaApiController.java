@@ -1,8 +1,8 @@
 package hse.algosim.server.repo.api;
 
-import hse.algosim.server.model.SrcMeta;
 import hse.algosim.server.exceptions.ResourceAlreadyExistsException;
 import hse.algosim.server.exceptions.ResourceNotFoundException;
+import hse.algosim.server.model.SrcMeta;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -15,7 +15,6 @@ import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("${openapi.algosimRepo.base-path:/api}")
@@ -35,41 +34,41 @@ public class AlgoMetaApiController implements AlgoMetaApi {
     }
 
     @Override
-    public ResponseEntity<Void> createAlgorithmMeta(@PathVariable("id") UUID id, @RequestBody @Valid SrcMeta srcMeta) {
+    public ResponseEntity<Void> createAlgorithmMeta(@PathVariable("id") String id, @RequestBody @Valid SrcMeta srcMeta) {
         synchronized (algorithmMeta) {
-            if (algorithmMeta.containsKey(id.toString()))
-                throw new ResourceAlreadyExistsException("Metadata already uploaded for this UUID");
-            algorithmMeta.put(id.toString(), srcMeta);
+            if (algorithmMeta.containsKey(id))
+                throw new ResourceAlreadyExistsException("Metadata already uploaded for this id");
+            algorithmMeta.put(id, srcMeta);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @Override
-    public ResponseEntity<SrcMeta> readAlgorithmMeta(@PathVariable("id") UUID id) {
-        SrcMeta meta = algorithmMeta.get(id.toString());
+    public ResponseEntity<SrcMeta> readAlgorithmMeta(@PathVariable("id") String id) {
+        SrcMeta meta = algorithmMeta.get(id);
         if (meta == null)
-            throw new ResourceNotFoundException("Metadata not found for this UUID");
+            throw new ResourceNotFoundException("Metadata not found for this id");
         return new ResponseEntity<>(meta, HttpStatus.OK);
     }
 
     @Override
-    public ResponseEntity<Void> updateAlgorithmMeta(@PathVariable("id") UUID id, @Valid SrcMeta srcMeta) {
+    public ResponseEntity<Void> updateAlgorithmMeta(@PathVariable("id") String id, @Valid SrcMeta srcMeta) {
         synchronized (algorithmMeta) {
-            SrcMeta meta = algorithmMeta.get(id.toString());
+            SrcMeta meta = algorithmMeta.get(id);
             if (meta == null)
-                throw new ResourceNotFoundException("Metadata not found for this UUID");
-            algorithmMeta.replace(id.toString(), srcMeta);
+                throw new ResourceNotFoundException("Metadata not found for this id");
+            algorithmMeta.replace(id, srcMeta);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @Override
-    public ResponseEntity<Void> deleteAlgorithmMeta(@PathVariable("id") UUID id) {
+    public ResponseEntity<Void> deleteAlgorithmMeta(@PathVariable("id") String id) {
         synchronized (algorithmMeta) {
-            SrcMeta meta = algorithmMeta.get(id.toString());
+            SrcMeta meta = algorithmMeta.get(id);
             if (meta == null)
-                throw new ResourceNotFoundException("Metadata not found for this UUID");
-            algorithmMeta.remove(id.toString());
+                throw new ResourceNotFoundException("Metadata not found for this id");
+            algorithmMeta.remove(id);
         }
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

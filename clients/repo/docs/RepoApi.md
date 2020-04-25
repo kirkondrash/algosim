@@ -46,7 +46,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm to delete
+    String id = "a"; 
     try {
       apiInstance.deleteAlgorithmCode(id);
     } catch (ApiException e) {
@@ -64,7 +64,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm to delete |
+ **id** | [**String**](.md)| id of algorithm to delete |
 
 ### Return type
 
@@ -83,7 +83,7 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **204** | Source code successfully deleted |  -  |
-**404** | Source code not found for this UUID |  -  |
+**404** | Source code not found for this id |  -  |
 
 <a name="deleteAlgorithmJar"></a>
 # **deleteAlgorithmJar**
@@ -91,7 +91,7 @@ No authorization required
 
 
 
-deletes the algorithm jar based on the UUID supplied
+deletes the algorithm jar based on the id supplied
 
 ### Example
 ```java
@@ -107,7 +107,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm to delete
+    String id = "a";
     try {
       apiInstance.deleteAlgorithmJar(id);
     } catch (ApiException e) {
@@ -125,7 +125,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm to delete |
+ **id** | [**String**](.md)| id of algorithm to delete |
 
 ### Return type
 
@@ -144,7 +144,7 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **204** | Artifact successfully deleted |  -  |
-**404** | Artifact not found for this UUID |  -  |
+**404** | Artifact not found for this id |  -  |
 
 <a name="deleteAlgorithmMeta"></a>
 # **deleteAlgorithmMeta**
@@ -152,7 +152,7 @@ No authorization required
 
 
 
-Deletes algorithm metadata based on the UUID supplied
+Deletes algorithm metadata based on the id supplied
 
 ### Example
 ```java
@@ -169,7 +169,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm which metadata will be deleted
+    String id = "a"; 
     try {
       apiInstance.deleteAlgorithmMeta(id);
     } catch (ApiException e) {
@@ -187,7 +187,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm which metadata will be deleted |
+ **id** | [**String**](.md)| id of algorithm which metadata will be deleted |
 
 ### Return type
 
@@ -206,7 +206,7 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **204** | Metadata successfully deleted |  -  |
-**404** | Metadata not found for this UUID |  -  |
+**404** | Metadata not found for this id |  -  |
 
 <a name="deleteAlgorithmStatus"></a>
 # **deleteAlgorithmStatus**
@@ -230,7 +230,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm which status will be deleted
+    String id = "a";
     try {
       apiInstance.deleteAlgorithmStatus(id);
     } catch (ApiException e) {
@@ -248,7 +248,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm which status will be deleted |
+ **id** | [**String**](.md)| id of algorithm which status will be deleted |
 
 ### Return type
 
@@ -267,7 +267,7 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Status successfully deleted |  -  |
-**404** | Status not found for this UUID |  -  |
+**404** | Status not found for this id |  -  |
 
 <a name="getAlgorithmCode"></a>
 # **getAlgorithmCode**
@@ -291,7 +291,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm to fetch
+    String id = "a"; 
     try {
       File result = apiInstance.getAlgorithmCode(id);
       System.out.println(result);
@@ -310,7 +310,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm to fetch |
+ **id** | [**String**](.md)| id of algorithm to fetch |
 
 ### Return type
 
@@ -354,7 +354,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm which jar will be fetched
+    String id = "a";
     try {
       File result = apiInstance.getAlgorithmJar(id);
       System.out.println(result);
@@ -373,7 +373,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm which jar will be fetched |
+ **id** | [**String**](.md)| id of algorithm which jar will be fetched |
 
 ### Return type
 
@@ -392,7 +392,7 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Artifact successfully fetched |  -  |
-**404** | Artifact not found for this UUID |  -  |
+**404** | Artifact not found for this id |  -  |
 
 <a name="getAlgorithmMeta"></a>
 # **getAlgorithmMeta**
@@ -416,7 +416,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm which metadata is fetched
+    String id = "a"; 
     try {
       SrcMeta result = apiInstance.getAlgorithmMeta(id);
       System.out.println(result);
@@ -435,7 +435,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm which metadata is fetched |
+ **id** | [**String**](.md)| id of algorithm which metadata is fetched |
 
 ### Return type
 
@@ -454,7 +454,7 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Metadata successfully fetched |  -  |
-**404** | Metadata not found for this UUID |  -  |
+**404** | Metadata not found for this id |  -  |
 
 <a name="getAlgorithmStatus"></a>
 # **getAlgorithmStatus**
@@ -478,7 +478,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm which status will be fetched
+    String id = "a"; 
     try {
       SrcStatus result = apiInstance.getAlgorithmStatus(id);
       System.out.println(result);
@@ -497,7 +497,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm which status will be fetched |
+ **id** | [**String**](.md)| id of algorithm which status will be fetched |
 
 ### Return type
 
@@ -516,7 +516,7 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Status successfully fetched |  -  |
-**404** | Status not found for this UUID |  -  |
+**404** | Status not found for this id |  -  |
 
 <a name="getTopCode"></a>
 # **getTopCode**
@@ -597,7 +597,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm to replace
+    String id = "a";
     File code = new File("/path/to/file"); // File | 
     try {
       apiInstance.replaceAlgorithmCode(id, code);
@@ -616,7 +616,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm to replace |
+ **id** | [**String**](.md)| id of algorithm to replace |
  **code** | **File**|  | [optional]
 
 ### Return type
@@ -659,7 +659,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm which jar is uploaded
+    String id = "a";
     File jar = new File("/path/to/file"); // File | 
     try {
       apiInstance.replaceAlgorithmJar(id, jar);
@@ -678,7 +678,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm which jar is uploaded |
+ **id** | [**String**](.md)| id of algorithm which jar is uploaded |
  **jar** | **File**|  | [optional]
 
 ### Return type
@@ -698,7 +698,7 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Artifact successfully replaced |  -  |
-**404** | Source code / artifact not found for this UUID |  -  |
+**404** | Source code / artifact not found for this id |  -  |
 
 <a name="replaceAlgorithmMeta"></a>
 # **replaceAlgorithmMeta**
@@ -722,7 +722,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm which metadata is replaced
+    String id = "a"; 
     SrcMeta srcMeta = new SrcMeta(); // SrcMeta | Metadata to be uploaded
     try {
       apiInstance.replaceAlgorithmMeta(id, srcMeta);
@@ -741,7 +741,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm which metadata is replaced |
+ **id** | [**String**](.md)| id of algorithm which metadata is replaced |
  **srcMeta** | [**SrcMeta**](../../core/docs/SrcMeta.md)| Metadata to be uploaded |
 
 ### Return type
@@ -761,7 +761,7 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Metadata successfully replaced |  -  |
-**404** | Source code / metadata not found for this UUID |  -  |
+**404** | Source code / metadata not found for this id |  -  |
 
 <a name="replaceAlgorithmStatus"></a>
 # **replaceAlgorithmStatus**
@@ -786,7 +786,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm which status will be replaced
+    String id = "a";
     SrcStatus srcStatus = new SrcStatus(); // SrcStatus | Status to be uploaded
     try {
       apiInstance.replaceAlgorithmStatus(id, srcStatus);
@@ -805,7 +805,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm which status will be replaced |
+ **id** | [**String**](.md)| id of algorithm which status will be replaced |
  **srcStatus** | [**SrcStatus**](../../core/docs/SrcStatus.md)| Status to be uploaded |
 
 ### Return type
@@ -825,7 +825,7 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Status successfully replaced |  -  |
-**404** | Source code / status not found for this UUID |  -  |
+**404** | Source code / status not found for this id |  -  |
 
 <a name="uploadAlgorithmCode"></a>
 # **uploadAlgorithmCode**
@@ -849,7 +849,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm to upload
+    String id = "a";
     File code = new File("/path/to/file"); // File | 
     try {
       apiInstance.uploadAlgorithmCode(id, code);
@@ -868,7 +868,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm to upload |
+ **id** | [**String**](.md)| id of algorithm to upload |
  **code** | **File**|  | [optional]
 
 ### Return type
@@ -911,7 +911,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm which jar is uploaded
+    String id = "a";
     File jar = new File("/path/to/file"); // File | 
     try {
       apiInstance.uploadAlgorithmJar(id, jar);
@@ -930,7 +930,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm which jar is uploaded |
+ **id** | [**String**](.md)| id of algorithm which jar is uploaded |
  **jar** | **File**|  | [optional]
 
 ### Return type
@@ -950,7 +950,7 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **201** | Artifact successfully uploaded |  -  |
-**404** | Source code not found for this UUID |  -  |
+**404** | Source code not found for this id |  -  |
 
 <a name="uploadAlgorithmMeta"></a>
 # **uploadAlgorithmMeta**
@@ -974,7 +974,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm which metadata is uploaded
+    String id = "a"; 
     SrcMeta srcMeta = new SrcMeta(); // SrcMeta | Metadata to be uploaded
     try {
       apiInstance.uploadAlgorithmMeta(id, srcMeta);
@@ -993,7 +993,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm which metadata is uploaded |
+ **id** | [**String**](.md)| id of algorithm which metadata is uploaded |
  **srcMeta** | [**SrcMeta**](../../core/docs/SrcMeta.md)| Metadata to be uploaded |
 
 ### Return type
@@ -1013,7 +1013,7 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **201** | Metadata successfully uploaded |  -  |
-**404** | Source not found for this UUID |  -  |
+**404** | Source not found for this id |  -  |
 
 <a name="uploadAlgorithmStatus"></a>
 # **uploadAlgorithmStatus**
@@ -1037,7 +1037,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm which status will be uploaded
+    String id = "a"; 
     SrcStatus srcStatus = new SrcStatus(); // SrcStatus | Status to be uploaded
     try {
       apiInstance.uploadAlgorithmStatus(id, srcStatus);
@@ -1056,7 +1056,7 @@ public class Example {
 
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
- **id** | [**UUID**](.md)| UUID of algorithm which status will be uploaded |
+ **id** | [**String**](.md)| id of algorithm which status will be uploaded |
  **srcStatus** | [**SrcStatus**](../../core/docs/SrcStatus.md)| Status to be uploaded |
 
 ### Return type
@@ -1076,5 +1076,5 @@ No authorization required
 | Status code | Description | Response headers |
 |-------------|-------------|------------------|
 **200** | Status successfully uploaded |  -  |
-**404** | Source code not found for this UUID |  -  |
+**404** | Source code not found for this id |  -  |
 

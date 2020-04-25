@@ -19,5 +19,5 @@ public class FiniteQueueExecutor {
             TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>(2));
 
-    public final static RepoApiClientInstance repoApiClient = new RepoApiClientInstance(new ApiClient().setBasePath(System.getProperty("repoUrl","http://repo:8080/api")));
+    public final static RepoApiClientInstance repoApiClient = new RepoApiClientInstance(new ApiClient().setBasePath(System.getProperty("repoUrl","http://repo:8080/api")).setUsername("user").setPassword("password"));
 }

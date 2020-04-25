@@ -4,6 +4,7 @@ import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -23,19 +24,31 @@ public interface AlgoCodeApi {
         return Optional.empty();
     }
 
-    @ApiOperation(value = "", nickname = "getAlgorithmCode", notes = "Gets code loaded by user, assigns the UUID to it. The code will later be compiled and executed", response = Map.class)
+    @ApiOperation(value = "", nickname = "newBenchmark", notes = "Gets code loaded by user, assigns the UUID to it. The code will later be compiled and executed", response = Map.class, authorizations = {@Authorization(value = "basicAuth")})
     @ApiResponses(value = { 
         @ApiResponse(code = 201, message = "Source code was uploaded successfully", response = Map.class) })
     @RequestMapping(value = "/algoCode",
         produces = { "application/json" }, 
         consumes = { "multipart/form-data" },
         method = RequestMethod.POST)
-    default ResponseEntity<Map<String,String>> getAlgorithmCode(@ApiParam(value = "file detail") @Valid @RequestPart("code") MultipartFile code) {
+    default ResponseEntity<Map<String,String>> newBenchmark(@ApiParam(value = "file detail") @Valid @RequestPart("code") MultipartFile code) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
 
-    @ApiOperation(value = "", nickname = "getTop", notes = "Gets some 10 algos ids and first line of files", response = Map.class)
+    @ApiOperation(value = "", nickname = "redoBenchmark", notes = "Gets code and id loaded by user (from previous session). The code will later be compiled and executed", response = Map.class, authorizations = {@Authorization(value = "basicAuth")})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Source code was uploaded successfully", response = Map.class) })
+    @RequestMapping(value = "/algoCode/{id}",
+            produces = { "application/json" },
+            consumes = { "multipart/form-data" },
+            method = RequestMethod.POST)
+    default ResponseEntity<Map<String,String>> redoBenchmark(@PathVariable("id") String id, @ApiParam(value = "file detail") @Valid @RequestPart("code") MultipartFile code) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+
+    }
+
+    @ApiOperation(value = "", nickname = "getTop", notes = "Gets some 10 algos ids and first line of files", response = Map.class, authorizations = {@Authorization(value = "basicAuth")})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = Map.class) })
     @RequestMapping(value = "/getTop",

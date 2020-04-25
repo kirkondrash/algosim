@@ -76,7 +76,7 @@ public class Example {
     defaultClient.setBasePath("http://localhost:8080/api");
 
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
-    UUID id = new UUID(); // UUID | UUID of algorithm to fetch
+    String id = "a";
     SrcStatus srcStatus = new SrcStatus(); // SrcStatus | Status to be uploaded
     try {
       apiInstance.changeAlgorithmStatus(id, srcStatus);

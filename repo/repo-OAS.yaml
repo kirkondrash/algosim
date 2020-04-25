@@ -30,7 +30,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm to upload
+          description: id of algorithm to upload
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -50,7 +50,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm to replace
+          description: id of algorithm to replace
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -70,7 +70,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm to fetch
+          description: id of algorithm to fetch
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -90,7 +90,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm to delete
+          description: id of algorithm to delete
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -98,7 +98,7 @@ paths:
         '204':
           description: Source code successfully deleted
         '404':
-          description: Source code not found for this UUID
+          description: Source code not found for this id
   /algoMeta/{id}:
     post:
       description: Upoads algorithm metadata like description or author
@@ -106,7 +106,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm which metadata is uploaded
+          description: id of algorithm which metadata is uploaded
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -121,14 +121,14 @@ paths:
         '201':
           description: Metadata successfully uploaded
         '404':
-          description: Source not found for this UUID
+          description: Source not found for this id
     put:
       description: Replaces algorithm metadata like description or author
       operationId: replaceAlgorithmMeta
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm which metadata is replaced
+          description: id of algorithm which metadata is replaced
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -143,14 +143,14 @@ paths:
         '200':
           description: Metadata successfully replaced
         '404':
-          description: Source code / metadata not found for this UUID
+          description: Source code / metadata not found for this id
     get:
       description: Returns algorithm metadata
       operationId: getAlgorithmMeta
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm which metadata is fetched
+          description: id of algorithm which metadata is fetched
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -162,14 +162,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/SrcMeta'
         '404':
-          description: Metadata not found for this UUID
+          description: Metadata not found for this id
     delete:
-      description: Deletes algorithm metadata based on the UUID supplied
+      description: Deletes algorithm metadata based on the id supplied
       operationId: deleteAlgorithmMeta
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm which metadata will be deleted
+          description: id of algorithm which metadata will be deleted
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -177,7 +177,7 @@ paths:
         '204':
           description: Metadata successfully deleted
         '404':
-          description: Metadata not found for this UUID
+          description: Metadata not found for this id
   /algoJar/{id}:
     post:
       description: Uploads algorithm artifact
@@ -185,7 +185,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm which jar is uploaded
+          description: id of algorithm which jar is uploaded
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -200,14 +200,14 @@ paths:
         '201':
           description: Artifact successfully uploaded
         '404':
-          description: Source code not found for this UUID
+          description: Source code not found for this id
     put:
       description: Replaces algorithm artifact
       operationId: replaceAlgorithmJar
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm which jar is uploaded
+          description: id of algorithm which jar is uploaded
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -222,14 +222,14 @@ paths:
         '200':
           description: Artifact successfully replaced
         '404':
-          description: Source code / artifact not found for this UUID
+          description: Source code / artifact not found for this id
     get:
       description: Returns algorithm jar
       operationId: getAlgorithmJar
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm which jar will be fetched
+          description: id of algorithm which jar will be fetched
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -242,14 +242,14 @@ paths:
                 type: string
                 format: binary
         '404':
-          description: Artifact not found for this UUID
+          description: Artifact not found for this id
     delete:
-      description: deletes the algorithm jar based on the UUID supplied
+      description: deletes the algorithm jar based on the id supplied
       operationId: deleteAlgorithmJar
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm to delete
+          description: id of algorithm to delete
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -257,7 +257,7 @@ paths:
         '204':
           description: Artifact successfully deleted
         '404':
-          description: Artifact not found for this UUID
+          description: Artifact not found for this id
   /algoStatus/{id}:
     post:
       description: Uploads the algorithm status and/or benchmarks 
@@ -265,7 +265,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm which status will be uploaded
+          description: id of algorithm which status will be uploaded
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -280,14 +280,14 @@ paths:
         '200':
           description: Status successfully uploaded
         '404':
-          description: Source code not found for this UUID
+          description: Source code not found for this id
     put:
       description: Replaces the algorithm status and/or benchmarks 
       operationId: replaceAlgorithmStatus
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm which status will be replaced
+          description: id of algorithm which status will be replaced
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -302,14 +302,14 @@ paths:
         '200':
           description: Status successfully replaced
         '404':
-          description: Source code / status not found for this UUID
+          description: Source code / status not found for this id
     get:
       description: Returns an algorithm status 
       operationId: getAlgorithmStatus
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm which status will be fetched
+          description: id of algorithm which status will be fetched
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -321,14 +321,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/SrcStatus'
         '404':
-          description: Status not found for this UUID
+          description: Status not found for this id
     delete:
       description: Returns an algorithm status
       operationId: deleteAlgorithmStatus
       parameters:
         - name: id
           in: path
-          description: UUID of algorithm which status will be deleted
+          description: id of algorithm which status will be deleted
           required: true
           schema:
             $ref: '#/components/schemas/SrcId'
@@ -336,8 +336,16 @@ paths:
         '200':
           description: Status successfully deleted
         '404':
-          description: Status not found for this UUID
+          description: Status not found for this id
+
+security:
+  - basicAuth: []  # <-- use the same name here
+
 components:
+  securitySchemes:
+    basicAuth:     # <-- arbitrary name for the security scheme
+      type: http
+      scheme: basic
   schemas:
     IdArray:
       type: object
@@ -373,7 +381,6 @@ components:
 
     SrcId:
       type: string
-      format: uuid
       
     SrcStatus:
       type: object

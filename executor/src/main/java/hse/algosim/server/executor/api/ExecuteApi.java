@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.context.request.NativeWebRequest;
 
 import java.util.Optional;
-import java.util.UUID;
 
 @Validated
 @Api(value = "execute", description = "the execute API", tags={ "executor" })
@@ -23,10 +22,10 @@ public interface ExecuteApi {
     @ApiOperation(value = "", nickname = "executeAlgorithm", notes = "Gets the artifact from nexus, executes and benchmarks it")
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Successfully executed"),
-        @ApiResponse(code = 404, message = "Artifact not found for this UUID") })
+        @ApiResponse(code = 404, message = "Artifact not found for this id") })
     @RequestMapping(value = "/execute/{id}",
         method = RequestMethod.POST)
-    default ResponseEntity<Void> executeAlgorithm(@ApiParam(value = "UUID of algorithm to fetch",required=true) @PathVariable("id") UUID id) {
+    default ResponseEntity<Void> executeAlgorithm(@ApiParam(value = "id of algorithm to fetch",required=true) @PathVariable("id") String id) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
