@@ -29,12 +29,12 @@ public class CompilerServer {
         File projectDir = new File(projectDirName);
         projectDir.mkdirs();
         try{
-            repoApiClient.replaceAlgorithmStatus(
+            repoApiClient.updateAlgorithmStatus(
                     id,
                     new SrcStatus().status(SrcStatus.StatusEnum.COMPILING));
             copyFolder(Paths.get(System.getProperty("pathToFramework","/framework")),projectDir.toPath());
             Files.move(
-                    repoApiClient.getAlgorithmCode(id).toPath(),
+                    repoApiClient.readAlgorithmCode(id).toPath(),
                     Paths.get(projectDirName + "/src/main/java/TradingAlgorithmImpl.java"),
                     REPLACE_EXISTING);
 
@@ -52,10 +52,10 @@ public class CompilerServer {
             if (res.getExitCode() == 0){
                 srcStatus.setStatus(SrcStatus.StatusEnum.SUCCESSFULLY_COMPILED);
                 try {
-                    repoApiClient.uploadAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
+                    repoApiClient.createAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
                 } catch (ApiException e) {
                     if (e.getCode() == 409) {
-                        repoApiClient.replaceAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
+                        repoApiClient.updateAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
                     }
                 }
             }
@@ -71,7 +71,7 @@ public class CompilerServer {
         } finally {
             try {
                 deleteFolder(projectDir.toPath());
-                repoApiClient.replaceAlgorithmStatus(
+                repoApiClient.updateAlgorithmStatus(
                         id,
                         srcStatus);
             } catch (ApiException | IOException e) {

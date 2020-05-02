@@ -102,19 +102,19 @@ Class | Method | HTTP request | Description
 *RepoApiClientInstance* | [**deleteAlgorithmJar**](docs/RepoApi.md#deletealgorithmjar) | **DELETE** /algoJar/{id} | 
 *RepoApiClientInstance* | [**deleteAlgorithmMeta**](docs/RepoApi.md#deletealgorithmmeta) | **DELETE** /algoMeta/{id} | 
 *RepoApiClientInstance* | [**deleteAlgorithmStatus**](docs/RepoApi.md#deletealgorithmstatus) | **DELETE** /algoStatus/{id} | 
-*RepoApiClientInstance* | [**getAlgorithmCode**](docs/RepoApi.md#getalgorithmcode) | **GET** /algoCode/{id} | 
-*RepoApiClientInstance* | [**getAlgorithmJar**](docs/RepoApi.md#getalgorithmjar) | **GET** /algoJar/{id} | 
-*RepoApiClientInstance* | [**getAlgorithmMeta**](docs/RepoApi.md#getalgorithmmeta) | **GET** /algoMeta/{id} | 
-*RepoApiClientInstance* | [**getAlgorithmStatus**](docs/RepoApi.md#getalgorithmstatus) | **GET** /algoStatus/{id} | 
+*RepoApiClientInstance* | [**readAlgorithmCode**](docs/RepoApi.md#readAlgorithmCode) | **GET** /algoCode/{id} | 
+*RepoApiClientInstance* | [**readAlgorithmJar**](docs/RepoApi.md#readAlgorithmJar) | **GET** /algoJar/{id} | 
+*RepoApiClientInstance* | [**readAlgorithmMeta**](docs/RepoApi.md#readAlgorithmMeta) | **GET** /algoMeta/{id} | 
+*RepoApiClientInstance* | [**readAlgorithmStatus**](docs/RepoApi.md#readAlgorithmStatus) | **GET** /algoStatus/{id} | 
 *RepoApiClientInstance* | [**getTopCode**](docs/RepoApi.md#gettopcode) | **GET** /getTopCode | 
-*RepoApiClientInstance* | [**replaceAlgorithmCode**](docs/RepoApi.md#replacealgorithmcode) | **PUT** /algoCode/{id} | 
-*RepoApiClientInstance* | [**replaceAlgorithmJar**](docs/RepoApi.md#replacealgorithmjar) | **PUT** /algoJar/{id} | 
-*RepoApiClientInstance* | [**replaceAlgorithmMeta**](docs/RepoApi.md#replacealgorithmmeta) | **PUT** /algoMeta/{id} | 
-*RepoApiClientInstance* | [**replaceAlgorithmStatus**](docs/RepoApi.md#replacealgorithmstatus) | **PUT** /algoStatus/{id} | 
-*RepoApiClientInstance* | [**uploadAlgorithmCode**](docs/RepoApi.md#uploadalgorithmcode) | **POST** /algoCode/{id} | 
-*RepoApiClientInstance* | [**uploadAlgorithmJar**](docs/RepoApi.md#uploadalgorithmjar) | **POST** /algoJar/{id} | 
-*RepoApiClientInstance* | [**uploadAlgorithmMeta**](docs/RepoApi.md#uploadalgorithmmeta) | **POST** /algoMeta/{id} | 
-*RepoApiClientInstance* | [**uploadAlgorithmStatus**](docs/RepoApi.md#uploadalgorithmstatus) | **POST** /algoStatus/{id} | 
+*RepoApiClientInstance* | [**updateAlgorithmCode**](docs/RepoApi.md#updateAlgorithmCode) | **PUT** /algoCode/{id} | 
+*RepoApiClientInstance* | [**updateAlgorithmJar**](docs/RepoApi.md#updateAlgorithmJar) | **PUT** /algoJar/{id} | 
+*RepoApiClientInstance* | [**updateAlgorithmMeta**](docs/RepoApi.md#updateAlgorithmMeta) | **PUT** /algoMeta/{id} | 
+*RepoApiClientInstance* | [**updateAlgorithmStatus**](docs/RepoApi.md#updateAlgorithmStatus) | **PUT** /algoStatus/{id} | 
+*RepoApiClientInstance* | [**createAlgorithmCode**](docs/RepoApi.md#createAlgorithmCode) | **POST** /algoCode/{id} | 
+*RepoApiClientInstance* | [**createAlgorithmJar**](docs/RepoApi.md#createAlgorithmJar) | **POST** /algoJar/{id} | 
+*RepoApiClientInstance* | [**createAlgorithmMeta**](docs/RepoApi.md#createAlgorithmMeta) | **POST** /algoMeta/{id} | 
+*RepoApiClientInstance* | [**createAlgorithmStatus**](docs/RepoApi.md#createAlgorithmStatus) | **POST** /algoStatus/{id} | 
 
 
 ## Documentation for Models

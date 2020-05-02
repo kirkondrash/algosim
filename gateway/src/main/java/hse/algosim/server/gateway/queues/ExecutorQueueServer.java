@@ -22,10 +22,10 @@ class ExecutorQueueServer{
             String id = executionQueue.poll();
             if (id != null) {
                 try {
-                    SrcStatus srcStatus = repoApiClient.getAlgorithmStatus(id);
+                    SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id);
                     switch (srcStatus.getStatus()){
                         case SUCCESSFULLY_COMPILED: {
-                            repoApiClient.replaceAlgorithmStatus(id, srcStatus.status(SrcStatus.StatusEnum.SCHEDULED_FOR_EXECUTION));
+                            repoApiClient.updateAlgorithmStatus(id, srcStatus.status(SrcStatus.StatusEnum.SCHEDULED_FOR_EXECUTION));
                             executorApiClient.executeAlgorithm(id);
                             System.out.println(id+ " sent to worker for execution");
                             resultQueue.add(id);

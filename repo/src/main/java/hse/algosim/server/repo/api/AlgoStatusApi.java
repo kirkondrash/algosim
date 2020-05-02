@@ -71,7 +71,7 @@ public interface AlgoStatusApi {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
-    @ApiOperation(value = "", nickname = "getTopCode", notes = "Returns some 10 algos ids", response = IdArray.class)
+    @ApiOperation(value = "", nickname = "getTopCode", notes = "Returns top 10 algos ids", response = IdArray.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Source code ids", response = IdArray.class) })
     @RequestMapping(value = "/getTopCode",

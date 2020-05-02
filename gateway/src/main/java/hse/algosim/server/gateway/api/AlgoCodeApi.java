@@ -5,7 +5,10 @@ import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,7 +42,7 @@ public interface AlgoCodeApi {
     }
 
 
-    @ApiOperation(value = "", nickname = "getTop", notes = "Gets some 10 algos ids and first line of files", response = Map.class, authorizations = {@Authorization(value = "basicAuth")})
+    @ApiOperation(value = "", nickname = "getTop", notes = "Gets top 10 algos ids and winloss scores", response = Map.class, authorizations = {@Authorization(value = "basicAuth")})
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "OK", response = Map.class) })
     @RequestMapping(value = "/getTop",

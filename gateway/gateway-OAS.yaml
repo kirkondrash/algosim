@@ -8,12 +8,14 @@ info:
     email: kirkondrash@yandex.ru
 servers:
   - url: http://localhost:8080/api
-      
+
 paths:
   /algoCode:
     post:
+      tags:
+        - gateway
       description: Gets code loaded by user, assigns the id to it. The code will later be compiled and executed
-      operationId: getAlgorithmCode
+      operationId: codeBenchmark
       requestBody:
         description: Source code to be uploaded
         required: true
@@ -28,12 +30,25 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/UserCodeInfo'
+  /getTop:
+    get:
+      tags:
+        - gateway
+      description: Gets top 10 algos ids and winloss scores
+      operationId: getTop
+      responses:
+        '200':
+          description: Source code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultArray'
 security:
-  - basicAuth: []  # <-- use the same name here
+  - basicAuth: []
 
 components:
   securitySchemes:
-    basicAuth:     # <-- arbitrary name for the security scheme
+    basicAuth:
       type: http
       scheme: basic
   schemas:
@@ -55,3 +70,12 @@ components:
           example: "kirkondrash_newalgo"
         info:
           type: string
+    ResultArray:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          score:
+            type: string

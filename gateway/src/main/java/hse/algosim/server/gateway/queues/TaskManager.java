@@ -42,12 +42,12 @@ public class TaskManager {
         File f = new File(id).getAbsoluteFile();
         try {
             code.transferTo(f);
-            repoApiClient.uploadAlgorithmCode(id,f);
-            repoApiClient.uploadAlgorithmStatus(id, new SrcStatus().status(SrcStatus.StatusEnum.SCHEDULED_FOR_COMPILATION));
+            repoApiClient.createAlgorithmCode(id,f);
+            repoApiClient.createAlgorithmStatus(id, new SrcStatus().status(SrcStatus.StatusEnum.SCHEDULED_FOR_COMPILATION));
         } catch (ApiException ae){
             if (ae.getCode() == 409){
-                repoApiClient.replaceAlgorithmCode(id,f);
-                repoApiClient.replaceAlgorithmStatus(id, new SrcStatus().status(SrcStatus.StatusEnum.SCHEDULED_FOR_COMPILATION));
+                repoApiClient.updateAlgorithmCode(id,f);
+                repoApiClient.updateAlgorithmStatus(id, new SrcStatus().status(SrcStatus.StatusEnum.SCHEDULED_FOR_COMPILATION));
             } else {
                 throw ae;
             }

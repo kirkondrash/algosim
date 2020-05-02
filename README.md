@@ -1,10 +1,7 @@
 ![sequence-diagram](algosim-sequence.png "Взаимодействие сервисов")
 ***
 TODO:
-- проверить весь dependencyManagement (mvn dependency:analyze)
-- проверить соответствие nickname'ов
-- optimize imports везде
-- ExceptionHandler и общие конфиги в server models
+- как разобраться с зависимостями?
 - repoUrl как передавать в образ для docker-multiworker
 - улучшить сообщения об ошибках
 - перейти на единый формат сериализации (gson/jackson) в клиентах и серверах, сделать единый артефакт с моделями
@@ -17,6 +14,7 @@ TODO:
 - пояснить что пока что без кредитных плечей итд
 Optional TODO:
 - поправить swagger-ui чтоьы выстраивались корректные запросы с учетом envoy-прокси
+- swagger-ui отображает query вместо formData
 - BUG: запросы работают либо без Accept, либо с "Accept: application/json, application/octet-stream"; c "Accept: application/octet-stream, application/json" НЕ работают, разобраться почему
 ***
 Структура репо:

@@ -1,8 +1,8 @@
 package hse.algosim.client.api;
 
+import hse.algosim.client.api.auth.ApiKeyAuth;
 import hse.algosim.client.api.auth.Authentication;
 import hse.algosim.client.api.auth.HttpBasicAuth;
-import hse.algosim.client.api.auth.ApiKeyAuth;
 import okhttp3.*;
 import okhttp3.internal.http.HttpMethod;
 import okhttp3.internal.tls.OkHostnameVerifier;

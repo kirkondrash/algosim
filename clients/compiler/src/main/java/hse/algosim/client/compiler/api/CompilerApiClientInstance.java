@@ -2,7 +2,10 @@ package hse.algosim.client.compiler.api;
 
 import hse.algosim.client.api.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class CompilerApiClientInstance {
     private ApiClient localVarApiClient;

@@ -1,6 +1,7 @@
 package hse.algosim.client.api.auth;
 
 import hse.algosim.client.api.Pair;
+
 import java.util.List;
 import java.util.Map;
 

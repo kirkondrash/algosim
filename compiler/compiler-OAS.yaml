@@ -29,7 +29,7 @@ paths:
           description: Source code not found for this id
   /ready:
     get:
-      tags: 
+      tags:
         - compiler
       description: Returns readiness of the host for compilation
       operationId: getReadiness
@@ -40,11 +40,11 @@ paths:
           description: Busy
 
 security:
-  - basicAuth: []  # <-- use the same name here
+  - basicAuth: []
 
 components:
   securitySchemes:
-    basicAuth:     # <-- arbitrary name for the security scheme
+    basicAuth:
       type: http
       scheme: basic
   schemas:

@@ -14,7 +14,9 @@ servers:
 paths:
   /getTopCode:
     get:
-      description: Returns some 10 algos ids
+      tags:
+        - repo
+      description: Returns top 10 algos ids
       operationId: getTopCode
       responses:
         '200':
@@ -25,8 +27,10 @@ paths:
                 $ref: '#/components/schemas/IdArray'
   /algoCode/{id}:
     post:
+      tags:
+        - repo
       description: Uploads the algorithm source 
-      operationId: uploadAlgorithmCode
+      operationId: createAlgorithmCode
       parameters:
         - name: id
           in: path
@@ -46,7 +50,7 @@ paths:
           description: Source code successfully uploaded
     put:
       description: Replaces the algorithm source
-      operationId: replaceAlgorithmCode
+      operationId: updateAlgorithmCode
       parameters:
         - name: id
           in: path
@@ -66,7 +70,7 @@ paths:
           description: Source code successfully replaced
     get:
       description: Returns algorithm source
-      operationId: getAlgorithmCode
+      operationId: readAlgorithmCode
       parameters:
         - name: id
           in: path
@@ -102,7 +106,7 @@ paths:
   /algoMeta/{id}:
     post:
       description: Upoads algorithm metadata like description or author
-      operationId: uploadAlgorithmMeta
+      operationId: createAlgorithmMeta
       parameters:
         - name: id
           in: path
@@ -124,7 +128,7 @@ paths:
           description: Source not found for this id
     put:
       description: Replaces algorithm metadata like description or author
-      operationId: replaceAlgorithmMeta
+      operationId: updateAlgorithmMeta
       parameters:
         - name: id
           in: path
@@ -146,7 +150,7 @@ paths:
           description: Source code / metadata not found for this id
     get:
       description: Returns algorithm metadata
-      operationId: getAlgorithmMeta
+      operationId: readAlgorithmMeta
       parameters:
         - name: id
           in: path
@@ -181,7 +185,7 @@ paths:
   /algoJar/{id}:
     post:
       description: Uploads algorithm artifact
-      operationId: uploadAlgorithmJar
+      operationId: createAlgorithmJar
       parameters:
         - name: id
           in: path
@@ -203,7 +207,7 @@ paths:
           description: Source code not found for this id
     put:
       description: Replaces algorithm artifact
-      operationId: replaceAlgorithmJar
+      operationId: updateAlgorithmJar
       parameters:
         - name: id
           in: path
@@ -225,7 +229,7 @@ paths:
           description: Source code / artifact not found for this id
     get:
       description: Returns algorithm jar
-      operationId: getAlgorithmJar
+      operationId: readAlgorithmJar
       parameters:
         - name: id
           in: path
@@ -261,7 +265,7 @@ paths:
   /algoStatus/{id}:
     post:
       description: Uploads the algorithm status and/or benchmarks 
-      operationId: uploadAlgorithmStatus
+      operationId: createAlgorithmStatus
       parameters:
         - name: id
           in: path
@@ -283,7 +287,7 @@ paths:
           description: Source code not found for this id
     put:
       description: Replaces the algorithm status and/or benchmarks 
-      operationId: replaceAlgorithmStatus
+      operationId: updateAlgorithmStatus
       parameters:
         - name: id
           in: path
@@ -305,7 +309,7 @@ paths:
           description: Source code / status not found for this id
     get:
       description: Returns an algorithm status 
-      operationId: getAlgorithmStatus
+      operationId: readAlgorithmStatus
       parameters:
         - name: id
           in: path
@@ -339,11 +343,11 @@ paths:
           description: Status not found for this id
 
 security:
-  - basicAuth: []  # <-- use the same name here
+  - basicAuth: []
 
 components:
   securitySchemes:
-    basicAuth:     # <-- arbitrary name for the security scheme
+    basicAuth:
       type: http
       scheme: basic
   schemas:

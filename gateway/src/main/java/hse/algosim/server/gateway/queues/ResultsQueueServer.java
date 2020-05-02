@@ -21,7 +21,7 @@ class ResultsQueueServer{
             String id = resultQueue.poll();
             if (id != null) {
                 try {
-                    SrcStatus srcStatus = repoApiClient.getAlgorithmStatus(id);
+                    SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id);
                     switch (srcStatus.getStatus()){
                         case SUCCESSFULLY_EXECUTED:
                         case EXECUTION_FAILED: {

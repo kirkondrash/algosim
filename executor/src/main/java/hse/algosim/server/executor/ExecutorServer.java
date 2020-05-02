@@ -15,10 +15,10 @@ public class ExecutorServer {
         SrcStatus srcStatus = new SrcStatus();
         File jar = null;
         try {
-            repoApiClient.replaceAlgorithmStatus(
+            repoApiClient.updateAlgorithmStatus(
                     id,
                     new SrcStatus().status(SrcStatus.StatusEnum.EXECUTING));
-            jar = repoApiClient.getAlgorithmJar(id);
+            jar = repoApiClient.readAlgorithmJar(id);
 
             Process p = pb
                     .command(Arrays.asList("java", "-jar", jar.getAbsolutePath()))
@@ -45,7 +45,7 @@ public class ExecutorServer {
                 jar.delete();
             }
             try {
-                repoApiClient.replaceAlgorithmStatus(
+                repoApiClient.updateAlgorithmStatus(
                         id,
                         srcStatus);
             } catch (ApiException e) {

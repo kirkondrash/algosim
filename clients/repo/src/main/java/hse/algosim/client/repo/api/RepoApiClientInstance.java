@@ -8,7 +8,10 @@ import hse.algosim.client.model.SrcStatus;
 
 import java.io.File;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class RepoApiClientInstance {
     private ApiClient localVarApiClient;
@@ -474,7 +477,7 @@ public class RepoApiClientInstance {
         return localVarCall;
     }
     /**
-     * Build call for getAlgorithmCode
+     * Build call for readAlgorithmCode
      * @param id id of algorithm to fetch (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -486,7 +489,7 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code not found for this UUI </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getAlgorithmCodeCall(String id, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call readAlgorithmCodeCall(String id, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -517,15 +520,15 @@ public class RepoApiClientInstance {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call getAlgorithmCodeValidateBeforeCall(String id, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call readAlgorithmCodeValidateBeforeCall(String id, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling getAlgorithmCode(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling readAlgorithmCode(Async)");
         }
         
 
-        okhttp3.Call localVarCall = getAlgorithmCodeCall(id, _callback);
+        okhttp3.Call localVarCall = readAlgorithmCodeCall(id, _callback);
         return localVarCall;
 
     }
@@ -543,8 +546,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code not found for this UUI </td><td>  -  </td></tr>
      </table>
      */
-    public File getAlgorithmCode(String id) throws ApiException {
-        ApiResponse<File> localVarResp = getAlgorithmCodeWithHttpInfo(id);
+    public File readAlgorithmCode(String id) throws ApiException {
+        ApiResponse<File> localVarResp = readAlgorithmCodeWithHttpInfo(id);
         return localVarResp.getData();
     }
 
@@ -561,8 +564,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code not found for this UUI </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<File> getAlgorithmCodeWithHttpInfo(String id) throws ApiException {
-        okhttp3.Call localVarCall = getAlgorithmCodeValidateBeforeCall(id, null);
+    public ApiResponse<File> readAlgorithmCodeWithHttpInfo(String id) throws ApiException {
+        okhttp3.Call localVarCall = readAlgorithmCodeValidateBeforeCall(id, null);
         Type localVarReturnType = new TypeToken<File>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -581,15 +584,15 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code not found for this UUI </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getAlgorithmCodeAsync(String id, final ApiCallback<File> _callback) throws ApiException {
+    public okhttp3.Call readAlgorithmCodeAsync(String id, final ApiCallback<File> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = getAlgorithmCodeValidateBeforeCall(id, _callback);
+        okhttp3.Call localVarCall = readAlgorithmCodeValidateBeforeCall(id, _callback);
         Type localVarReturnType = new TypeToken<File>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
     /**
-     * Build call for getAlgorithmJar
+     * Build call for readAlgorithmJar
      * @param id id of algorithm which jar will be fetched (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -601,7 +604,7 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Artifact not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getAlgorithmJarCall(String id, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call readAlgorithmJarCall(String id, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -632,15 +635,15 @@ public class RepoApiClientInstance {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call getAlgorithmJarValidateBeforeCall(String id, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call readAlgorithmJarValidateBeforeCall(String id, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling getAlgorithmJar(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling readAlgorithmJar(Async)");
         }
         
 
-        okhttp3.Call localVarCall = getAlgorithmJarCall(id, _callback);
+        okhttp3.Call localVarCall = readAlgorithmJarCall(id, _callback);
         return localVarCall;
 
     }
@@ -658,8 +661,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Artifact not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public File getAlgorithmJar(String id) throws ApiException {
-        ApiResponse<File> localVarResp = getAlgorithmJarWithHttpInfo(id);
+    public File readAlgorithmJar(String id) throws ApiException {
+        ApiResponse<File> localVarResp = readAlgorithmJarWithHttpInfo(id);
         return localVarResp.getData();
     }
 
@@ -676,8 +679,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Artifact not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<File> getAlgorithmJarWithHttpInfo(String id) throws ApiException {
-        okhttp3.Call localVarCall = getAlgorithmJarValidateBeforeCall(id, null);
+    public ApiResponse<File> readAlgorithmJarWithHttpInfo(String id) throws ApiException {
+        okhttp3.Call localVarCall = readAlgorithmJarValidateBeforeCall(id, null);
         Type localVarReturnType = new TypeToken<File>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -696,15 +699,15 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Artifact not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getAlgorithmJarAsync(String id, final ApiCallback<File> _callback) throws ApiException {
+    public okhttp3.Call readAlgorithmJarAsync(String id, final ApiCallback<File> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = getAlgorithmJarValidateBeforeCall(id, _callback);
+        okhttp3.Call localVarCall = readAlgorithmJarValidateBeforeCall(id, _callback);
         Type localVarReturnType = new TypeToken<File>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
     /**
-     * Build call for getAlgorithmMeta
+     * Build call for readAlgorithmMeta
      * @param id id of algorithm which metadata is fetched (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -716,7 +719,7 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Metadata not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getAlgorithmMetaCall(String id, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call readAlgorithmMetaCall(String id, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -747,15 +750,15 @@ public class RepoApiClientInstance {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call getAlgorithmMetaValidateBeforeCall(String id, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call readAlgorithmMetaValidateBeforeCall(String id, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling getAlgorithmMeta(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling readAlgorithmMeta(Async)");
         }
         
 
-        okhttp3.Call localVarCall = getAlgorithmMetaCall(id, _callback);
+        okhttp3.Call localVarCall = readAlgorithmMetaCall(id, _callback);
         return localVarCall;
 
     }
@@ -773,8 +776,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Metadata not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public SrcMeta getAlgorithmMeta(String id) throws ApiException {
-        ApiResponse<SrcMeta> localVarResp = getAlgorithmMetaWithHttpInfo(id);
+    public SrcMeta readAlgorithmMeta(String id) throws ApiException {
+        ApiResponse<SrcMeta> localVarResp = readAlgorithmMetaWithHttpInfo(id);
         return localVarResp.getData();
     }
 
@@ -791,8 +794,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Metadata not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<SrcMeta> getAlgorithmMetaWithHttpInfo(String id) throws ApiException {
-        okhttp3.Call localVarCall = getAlgorithmMetaValidateBeforeCall(id, null);
+    public ApiResponse<SrcMeta> readAlgorithmMetaWithHttpInfo(String id) throws ApiException {
+        okhttp3.Call localVarCall = readAlgorithmMetaValidateBeforeCall(id, null);
         Type localVarReturnType = new TypeToken<SrcMeta>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -811,15 +814,15 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Metadata not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getAlgorithmMetaAsync(String id, final ApiCallback<SrcMeta> _callback) throws ApiException {
+    public okhttp3.Call readAlgorithmMetaAsync(String id, final ApiCallback<SrcMeta> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = getAlgorithmMetaValidateBeforeCall(id, _callback);
+        okhttp3.Call localVarCall = readAlgorithmMetaValidateBeforeCall(id, _callback);
         Type localVarReturnType = new TypeToken<SrcMeta>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
     /**
-     * Build call for getAlgorithmStatus
+     * Build call for readAlgorithmStatus
      * @param id id of algorithm which status will be fetched (required)
      * @param _callback Callback for upload/download progress
      * @return Call to execute
@@ -831,7 +834,7 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Status not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getAlgorithmStatusCall(String id, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call readAlgorithmStatusCall(String id, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -862,15 +865,15 @@ public class RepoApiClientInstance {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call getAlgorithmStatusValidateBeforeCall(String id, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call readAlgorithmStatusValidateBeforeCall(String id, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling getAlgorithmStatus(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling readAlgorithmStatus(Async)");
         }
         
 
-        okhttp3.Call localVarCall = getAlgorithmStatusCall(id, _callback);
+        okhttp3.Call localVarCall = readAlgorithmStatusCall(id, _callback);
         return localVarCall;
 
     }
@@ -888,8 +891,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Status not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public SrcStatus getAlgorithmStatus(String id) throws ApiException {
-        ApiResponse<SrcStatus> localVarResp = getAlgorithmStatusWithHttpInfo(id);
+    public SrcStatus readAlgorithmStatus(String id) throws ApiException {
+        ApiResponse<SrcStatus> localVarResp = readAlgorithmStatusWithHttpInfo(id);
         return localVarResp.getData();
     }
 
@@ -906,8 +909,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Status not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<SrcStatus> getAlgorithmStatusWithHttpInfo(String id) throws ApiException {
-        okhttp3.Call localVarCall = getAlgorithmStatusValidateBeforeCall(id, null);
+    public ApiResponse<SrcStatus> readAlgorithmStatusWithHttpInfo(String id) throws ApiException {
+        okhttp3.Call localVarCall = readAlgorithmStatusValidateBeforeCall(id, null);
         Type localVarReturnType = new TypeToken<SrcStatus>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
@@ -926,9 +929,9 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Status not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call getAlgorithmStatusAsync(String id, final ApiCallback<SrcStatus> _callback) throws ApiException {
+    public okhttp3.Call readAlgorithmStatusAsync(String id, final ApiCallback<SrcStatus> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = getAlgorithmStatusValidateBeforeCall(id, _callback);
+        okhttp3.Call localVarCall = readAlgorithmStatusValidateBeforeCall(id, _callback);
         Type localVarReturnType = new TypeToken<SrcStatus>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
@@ -1035,7 +1038,7 @@ public class RepoApiClientInstance {
         return localVarCall;
     }
     /**
-     * Build call for replaceAlgorithmCode
+     * Build call for updateAlgorithmCode
      * @param id id of algorithm to replace (required)
      * @param code  (optional)
      * @param _callback Callback for upload/download progress
@@ -1047,7 +1050,7 @@ public class RepoApiClientInstance {
         <tr><td> 200 </td><td> Source code successfully replaced </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call replaceAlgorithmCodeCall(String id, File code, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call updateAlgorithmCodeCall(String id, File code, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -1082,15 +1085,15 @@ public class RepoApiClientInstance {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call replaceAlgorithmCodeValidateBeforeCall(String id, File code, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call updateAlgorithmCodeValidateBeforeCall(String id, File code, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling replaceAlgorithmCode(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling updateAlgorithmCode(Async)");
         }
         
 
-        okhttp3.Call localVarCall = replaceAlgorithmCodeCall(id, code, _callback);
+        okhttp3.Call localVarCall = updateAlgorithmCodeCall(id, code, _callback);
         return localVarCall;
 
     }
@@ -1107,8 +1110,8 @@ public class RepoApiClientInstance {
         <tr><td> 200 </td><td> Source code successfully replaced </td><td>  -  </td></tr>
      </table>
      */
-    public void replaceAlgorithmCode(String id, File code) throws ApiException {
-        replaceAlgorithmCodeWithHttpInfo(id, code);
+    public void updateAlgorithmCode(String id, File code) throws ApiException {
+        updateAlgorithmCodeWithHttpInfo(id, code);
     }
 
     /**
@@ -1124,8 +1127,8 @@ public class RepoApiClientInstance {
         <tr><td> 200 </td><td> Source code successfully replaced </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Void> replaceAlgorithmCodeWithHttpInfo(String id, File code) throws ApiException {
-        okhttp3.Call localVarCall = replaceAlgorithmCodeValidateBeforeCall(id, code, null);
+    public ApiResponse<Void> updateAlgorithmCodeWithHttpInfo(String id, File code) throws ApiException {
+        okhttp3.Call localVarCall = updateAlgorithmCodeValidateBeforeCall(id, code, null);
         return localVarApiClient.execute(localVarCall);
     }
 
@@ -1143,14 +1146,14 @@ public class RepoApiClientInstance {
         <tr><td> 200 </td><td> Source code successfully replaced </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call replaceAlgorithmCodeAsync(String id, File code, final ApiCallback<Void> _callback) throws ApiException {
+    public okhttp3.Call updateAlgorithmCodeAsync(String id, File code, final ApiCallback<Void> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = replaceAlgorithmCodeValidateBeforeCall(id, code, _callback);
+        okhttp3.Call localVarCall = updateAlgorithmCodeValidateBeforeCall(id, code, _callback);
         localVarApiClient.executeAsync(localVarCall, _callback);
         return localVarCall;
     }
     /**
-     * Build call for replaceAlgorithmJar
+     * Build call for updateAlgorithmJar
      * @param id id of algorithm which jar is uploaded (required)
      * @param jar  (optional)
      * @param _callback Callback for upload/download progress
@@ -1163,7 +1166,7 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code / artifact not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call replaceAlgorithmJarCall(String id, File jar, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call updateAlgorithmJarCall(String id, File jar, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -1198,15 +1201,15 @@ public class RepoApiClientInstance {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call replaceAlgorithmJarValidateBeforeCall(String id, File jar, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call updateAlgorithmJarValidateBeforeCall(String id, File jar, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling replaceAlgorithmJar(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling updateAlgorithmJar(Async)");
         }
         
 
-        okhttp3.Call localVarCall = replaceAlgorithmJarCall(id, jar, _callback);
+        okhttp3.Call localVarCall = updateAlgorithmJarCall(id, jar, _callback);
         return localVarCall;
 
     }
@@ -1224,8 +1227,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code / artifact not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public void replaceAlgorithmJar(String id, File jar) throws ApiException {
-        replaceAlgorithmJarWithHttpInfo(id, jar);
+    public void updateAlgorithmJar(String id, File jar) throws ApiException {
+        updateAlgorithmJarWithHttpInfo(id, jar);
     }
 
     /**
@@ -1242,8 +1245,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code / artifact not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Void> replaceAlgorithmJarWithHttpInfo(String id, File jar) throws ApiException {
-        okhttp3.Call localVarCall = replaceAlgorithmJarValidateBeforeCall(id, jar, null);
+    public ApiResponse<Void> updateAlgorithmJarWithHttpInfo(String id, File jar) throws ApiException {
+        okhttp3.Call localVarCall = updateAlgorithmJarValidateBeforeCall(id, jar, null);
         return localVarApiClient.execute(localVarCall);
     }
 
@@ -1262,14 +1265,14 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code / artifact not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call replaceAlgorithmJarAsync(String id, File jar, final ApiCallback<Void> _callback) throws ApiException {
+    public okhttp3.Call updateAlgorithmJarAsync(String id, File jar, final ApiCallback<Void> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = replaceAlgorithmJarValidateBeforeCall(id, jar, _callback);
+        okhttp3.Call localVarCall = updateAlgorithmJarValidateBeforeCall(id, jar, _callback);
         localVarApiClient.executeAsync(localVarCall, _callback);
         return localVarCall;
     }
     /**
-     * Build call for replaceAlgorithmMeta
+     * Build call for updateAlgorithmMeta
      * @param id id of algorithm which metadata is replaced (required)
      * @param srcMeta Metadata to be uploaded (required)
      * @param _callback Callback for upload/download progress
@@ -1282,7 +1285,7 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code / metadata not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call replaceAlgorithmMetaCall(String id, SrcMeta srcMeta, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call updateAlgorithmMetaCall(String id, SrcMeta srcMeta, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = srcMeta;
 
         // create path and map variables
@@ -1313,20 +1316,20 @@ public class RepoApiClientInstance {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call replaceAlgorithmMetaValidateBeforeCall(String id, SrcMeta srcMeta, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call updateAlgorithmMetaValidateBeforeCall(String id, SrcMeta srcMeta, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling replaceAlgorithmMeta(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling updateAlgorithmMeta(Async)");
         }
         
         // verify the required parameter 'srcMeta' is set
         if (srcMeta == null) {
-            throw new ApiException("Missing the required parameter 'srcMeta' when calling replaceAlgorithmMeta(Async)");
+            throw new ApiException("Missing the required parameter 'srcMeta' when calling updateAlgorithmMeta(Async)");
         }
         
 
-        okhttp3.Call localVarCall = replaceAlgorithmMetaCall(id, srcMeta, _callback);
+        okhttp3.Call localVarCall = updateAlgorithmMetaCall(id, srcMeta, _callback);
         return localVarCall;
 
     }
@@ -1344,8 +1347,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code / metadata not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public void replaceAlgorithmMeta(String id, SrcMeta srcMeta) throws ApiException {
-        replaceAlgorithmMetaWithHttpInfo(id, srcMeta);
+    public void updateAlgorithmMeta(String id, SrcMeta srcMeta) throws ApiException {
+        updateAlgorithmMetaWithHttpInfo(id, srcMeta);
     }
 
     /**
@@ -1362,8 +1365,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code / metadata not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Void> replaceAlgorithmMetaWithHttpInfo(String id, SrcMeta srcMeta) throws ApiException {
-        okhttp3.Call localVarCall = replaceAlgorithmMetaValidateBeforeCall(id, srcMeta, null);
+    public ApiResponse<Void> updateAlgorithmMetaWithHttpInfo(String id, SrcMeta srcMeta) throws ApiException {
+        okhttp3.Call localVarCall = updateAlgorithmMetaValidateBeforeCall(id, srcMeta, null);
         return localVarApiClient.execute(localVarCall);
     }
 
@@ -1382,14 +1385,14 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code / metadata not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call replaceAlgorithmMetaAsync(String id, SrcMeta srcMeta, final ApiCallback<Void> _callback) throws ApiException {
+    public okhttp3.Call updateAlgorithmMetaAsync(String id, SrcMeta srcMeta, final ApiCallback<Void> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = replaceAlgorithmMetaValidateBeforeCall(id, srcMeta, _callback);
+        okhttp3.Call localVarCall = updateAlgorithmMetaValidateBeforeCall(id, srcMeta, _callback);
         localVarApiClient.executeAsync(localVarCall, _callback);
         return localVarCall;
     }
     /**
-     * Build call for replaceAlgorithmStatus
+     * Build call for updateAlgorithmStatus
      * @param id id of algorithm which status will be replaced (required)
      * @param srcStatus Status to be uploaded (required)
      * @param _callback Callback for upload/download progress
@@ -1402,7 +1405,7 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code / status not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call replaceAlgorithmStatusCall(String id, SrcStatus srcStatus, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call updateAlgorithmStatusCall(String id, SrcStatus srcStatus, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = srcStatus;
 
         // create path and map variables
@@ -1433,20 +1436,20 @@ public class RepoApiClientInstance {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call replaceAlgorithmStatusValidateBeforeCall(String id, SrcStatus srcStatus, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call updateAlgorithmStatusValidateBeforeCall(String id, SrcStatus srcStatus, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling replaceAlgorithmStatus(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling updateAlgorithmStatus(Async)");
         }
         
         // verify the required parameter 'srcStatus' is set
         if (srcStatus == null) {
-            throw new ApiException("Missing the required parameter 'srcStatus' when calling replaceAlgorithmStatus(Async)");
+            throw new ApiException("Missing the required parameter 'srcStatus' when calling updateAlgorithmStatus(Async)");
         }
         
 
-        okhttp3.Call localVarCall = replaceAlgorithmStatusCall(id, srcStatus, _callback);
+        okhttp3.Call localVarCall = updateAlgorithmStatusCall(id, srcStatus, _callback);
         return localVarCall;
 
     }
@@ -1464,8 +1467,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code / status not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public void replaceAlgorithmStatus(String id, SrcStatus srcStatus) throws ApiException {
-        replaceAlgorithmStatusWithHttpInfo(id, srcStatus);
+    public void updateAlgorithmStatus(String id, SrcStatus srcStatus) throws ApiException {
+        updateAlgorithmStatusWithHttpInfo(id, srcStatus);
     }
 
     /**
@@ -1482,8 +1485,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code / status not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Void> replaceAlgorithmStatusWithHttpInfo(String id, SrcStatus srcStatus) throws ApiException {
-        okhttp3.Call localVarCall = replaceAlgorithmStatusValidateBeforeCall(id, srcStatus, null);
+    public ApiResponse<Void> updateAlgorithmStatusWithHttpInfo(String id, SrcStatus srcStatus) throws ApiException {
+        okhttp3.Call localVarCall = updateAlgorithmStatusValidateBeforeCall(id, srcStatus, null);
         return localVarApiClient.execute(localVarCall);
     }
 
@@ -1502,14 +1505,14 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code / status not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call replaceAlgorithmStatusAsync(String id, SrcStatus srcStatus, final ApiCallback<Void> _callback) throws ApiException {
+    public okhttp3.Call updateAlgorithmStatusAsync(String id, SrcStatus srcStatus, final ApiCallback<Void> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = replaceAlgorithmStatusValidateBeforeCall(id, srcStatus, _callback);
+        okhttp3.Call localVarCall = updateAlgorithmStatusValidateBeforeCall(id, srcStatus, _callback);
         localVarApiClient.executeAsync(localVarCall, _callback);
         return localVarCall;
     }
     /**
-     * Build call for uploadAlgorithmCode
+     * Build call for createAlgorithmCode
      * @param id id of algorithm to upload (required)
      * @param code  (optional)
      * @param _callback Callback for upload/download progress
@@ -1521,7 +1524,7 @@ public class RepoApiClientInstance {
         <tr><td> 201 </td><td> Source code successfully uploaded </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call uploadAlgorithmCodeCall(String id, File code, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call createAlgorithmCodeCall(String id, File code, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -1556,15 +1559,15 @@ public class RepoApiClientInstance {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call uploadAlgorithmCodeValidateBeforeCall(String id, File code, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call createAlgorithmCodeValidateBeforeCall(String id, File code, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling uploadAlgorithmCode(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling createAlgorithmCode(Async)");
         }
         
 
-        okhttp3.Call localVarCall = uploadAlgorithmCodeCall(id, code, _callback);
+        okhttp3.Call localVarCall = createAlgorithmCodeCall(id, code, _callback);
         return localVarCall;
 
     }
@@ -1581,8 +1584,8 @@ public class RepoApiClientInstance {
         <tr><td> 201 </td><td> Source code successfully uploaded </td><td>  -  </td></tr>
      </table>
      */
-    public void uploadAlgorithmCode(String id, File code) throws ApiException {
-        uploadAlgorithmCodeWithHttpInfo(id, code);
+    public void createAlgorithmCode(String id, File code) throws ApiException {
+        createAlgorithmCodeWithHttpInfo(id, code);
     }
 
     /**
@@ -1598,8 +1601,8 @@ public class RepoApiClientInstance {
         <tr><td> 201 </td><td> Source code successfully uploaded </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Void> uploadAlgorithmCodeWithHttpInfo(String id, File code) throws ApiException {
-        okhttp3.Call localVarCall = uploadAlgorithmCodeValidateBeforeCall(id, code, null);
+    public ApiResponse<Void> createAlgorithmCodeWithHttpInfo(String id, File code) throws ApiException {
+        okhttp3.Call localVarCall = createAlgorithmCodeValidateBeforeCall(id, code, null);
         return localVarApiClient.execute(localVarCall);
     }
 
@@ -1617,14 +1620,14 @@ public class RepoApiClientInstance {
         <tr><td> 201 </td><td> Source code successfully uploaded </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call uploadAlgorithmCodeAsync(String id, File code, final ApiCallback<Void> _callback) throws ApiException {
+    public okhttp3.Call createAlgorithmCodeAsync(String id, File code, final ApiCallback<Void> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = uploadAlgorithmCodeValidateBeforeCall(id, code, _callback);
+        okhttp3.Call localVarCall = createAlgorithmCodeValidateBeforeCall(id, code, _callback);
         localVarApiClient.executeAsync(localVarCall, _callback);
         return localVarCall;
     }
     /**
-     * Build call for uploadAlgorithmJar
+     * Build call for createAlgorithmJar
      * @param id id of algorithm which jar is uploaded (required)
      * @param jar  (optional)
      * @param _callback Callback for upload/download progress
@@ -1637,7 +1640,7 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call uploadAlgorithmJarCall(String id, File jar, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call createAlgorithmJarCall(String id, File jar, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = null;
 
         // create path and map variables
@@ -1672,15 +1675,15 @@ public class RepoApiClientInstance {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call uploadAlgorithmJarValidateBeforeCall(String id, File jar, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call createAlgorithmJarValidateBeforeCall(String id, File jar, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling uploadAlgorithmJar(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling createAlgorithmJar(Async)");
         }
         
 
-        okhttp3.Call localVarCall = uploadAlgorithmJarCall(id, jar, _callback);
+        okhttp3.Call localVarCall = createAlgorithmJarCall(id, jar, _callback);
         return localVarCall;
 
     }
@@ -1698,8 +1701,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public void uploadAlgorithmJar(String id, File jar) throws ApiException {
-        uploadAlgorithmJarWithHttpInfo(id, jar);
+    public void createAlgorithmJar(String id, File jar) throws ApiException {
+        createAlgorithmJarWithHttpInfo(id, jar);
     }
 
     /**
@@ -1716,8 +1719,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Void> uploadAlgorithmJarWithHttpInfo(String id, File jar) throws ApiException {
-        okhttp3.Call localVarCall = uploadAlgorithmJarValidateBeforeCall(id, jar, null);
+    public ApiResponse<Void> createAlgorithmJarWithHttpInfo(String id, File jar) throws ApiException {
+        okhttp3.Call localVarCall = createAlgorithmJarValidateBeforeCall(id, jar, null);
         return localVarApiClient.execute(localVarCall);
     }
 
@@ -1736,14 +1739,14 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call uploadAlgorithmJarAsync(String id, File jar, final ApiCallback<Void> _callback) throws ApiException {
+    public okhttp3.Call createAlgorithmJarAsync(String id, File jar, final ApiCallback<Void> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = uploadAlgorithmJarValidateBeforeCall(id, jar, _callback);
+        okhttp3.Call localVarCall = createAlgorithmJarValidateBeforeCall(id, jar, _callback);
         localVarApiClient.executeAsync(localVarCall, _callback);
         return localVarCall;
     }
     /**
-     * Build call for uploadAlgorithmMeta
+     * Build call for createAlgorithmMeta
      * @param id id of algorithm which metadata is uploaded (required)
      * @param srcMeta Metadata to be uploaded (required)
      * @param _callback Callback for upload/download progress
@@ -1756,7 +1759,7 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call uploadAlgorithmMetaCall(String id, SrcMeta srcMeta, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call createAlgorithmMetaCall(String id, SrcMeta srcMeta, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = srcMeta;
 
         // create path and map variables
@@ -1787,20 +1790,20 @@ public class RepoApiClientInstance {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call uploadAlgorithmMetaValidateBeforeCall(String id, SrcMeta srcMeta, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call createAlgorithmMetaValidateBeforeCall(String id, SrcMeta srcMeta, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling uploadAlgorithmMeta(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling createAlgorithmMeta(Async)");
         }
         
         // verify the required parameter 'srcMeta' is set
         if (srcMeta == null) {
-            throw new ApiException("Missing the required parameter 'srcMeta' when calling uploadAlgorithmMeta(Async)");
+            throw new ApiException("Missing the required parameter 'srcMeta' when calling createAlgorithmMeta(Async)");
         }
         
 
-        okhttp3.Call localVarCall = uploadAlgorithmMetaCall(id, srcMeta, _callback);
+        okhttp3.Call localVarCall = createAlgorithmMetaCall(id, srcMeta, _callback);
         return localVarCall;
 
     }
@@ -1818,8 +1821,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public void uploadAlgorithmMeta(String id, SrcMeta srcMeta) throws ApiException {
-        uploadAlgorithmMetaWithHttpInfo(id, srcMeta);
+    public void createAlgorithmMeta(String id, SrcMeta srcMeta) throws ApiException {
+        createAlgorithmMetaWithHttpInfo(id, srcMeta);
     }
 
     /**
@@ -1836,8 +1839,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Void> uploadAlgorithmMetaWithHttpInfo(String id, SrcMeta srcMeta) throws ApiException {
-        okhttp3.Call localVarCall = uploadAlgorithmMetaValidateBeforeCall(id, srcMeta, null);
+    public ApiResponse<Void> createAlgorithmMetaWithHttpInfo(String id, SrcMeta srcMeta) throws ApiException {
+        okhttp3.Call localVarCall = createAlgorithmMetaValidateBeforeCall(id, srcMeta, null);
         return localVarApiClient.execute(localVarCall);
     }
 
@@ -1856,14 +1859,14 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call uploadAlgorithmMetaAsync(String id, SrcMeta srcMeta, final ApiCallback<Void> _callback) throws ApiException {
+    public okhttp3.Call createAlgorithmMetaAsync(String id, SrcMeta srcMeta, final ApiCallback<Void> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = uploadAlgorithmMetaValidateBeforeCall(id, srcMeta, _callback);
+        okhttp3.Call localVarCall = createAlgorithmMetaValidateBeforeCall(id, srcMeta, _callback);
         localVarApiClient.executeAsync(localVarCall, _callback);
         return localVarCall;
     }
     /**
-     * Build call for uploadAlgorithmStatus
+     * Build call for createAlgorithmStatus
      * @param id id of algorithm which status will be uploaded (required)
      * @param srcStatus Status to be uploaded (required)
      * @param _callback Callback for upload/download progress
@@ -1876,7 +1879,7 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call uploadAlgorithmStatusCall(String id, SrcStatus srcStatus, final ApiCallback _callback) throws ApiException {
+    public okhttp3.Call createAlgorithmStatusCall(String id, SrcStatus srcStatus, final ApiCallback _callback) throws ApiException {
         Object localVarPostBody = srcStatus;
 
         // create path and map variables
@@ -1907,20 +1910,20 @@ public class RepoApiClientInstance {
     }
 
     @SuppressWarnings("rawtypes")
-    private okhttp3.Call uploadAlgorithmStatusValidateBeforeCall(String id, SrcStatus srcStatus, final ApiCallback _callback) throws ApiException {
+    private okhttp3.Call createAlgorithmStatusValidateBeforeCall(String id, SrcStatus srcStatus, final ApiCallback _callback) throws ApiException {
         
         // verify the required parameter 'id' is set
         if (id == null) {
-            throw new ApiException("Missing the required parameter 'id' when calling uploadAlgorithmStatus(Async)");
+            throw new ApiException("Missing the required parameter 'id' when calling createAlgorithmStatus(Async)");
         }
         
         // verify the required parameter 'srcStatus' is set
         if (srcStatus == null) {
-            throw new ApiException("Missing the required parameter 'srcStatus' when calling uploadAlgorithmStatus(Async)");
+            throw new ApiException("Missing the required parameter 'srcStatus' when calling createAlgorithmStatus(Async)");
         }
         
 
-        okhttp3.Call localVarCall = uploadAlgorithmStatusCall(id, srcStatus, _callback);
+        okhttp3.Call localVarCall = createAlgorithmStatusCall(id, srcStatus, _callback);
         return localVarCall;
 
     }
@@ -1938,8 +1941,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public void uploadAlgorithmStatus(String id, SrcStatus srcStatus) throws ApiException {
-        uploadAlgorithmStatusWithHttpInfo(id, srcStatus);
+    public void createAlgorithmStatus(String id, SrcStatus srcStatus) throws ApiException {
+        createAlgorithmStatusWithHttpInfo(id, srcStatus);
     }
 
     /**
@@ -1956,8 +1959,8 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<Void> uploadAlgorithmStatusWithHttpInfo(String id, SrcStatus srcStatus) throws ApiException {
-        okhttp3.Call localVarCall = uploadAlgorithmStatusValidateBeforeCall(id, srcStatus, null);
+    public ApiResponse<Void> createAlgorithmStatusWithHttpInfo(String id, SrcStatus srcStatus) throws ApiException {
+        okhttp3.Call localVarCall = createAlgorithmStatusValidateBeforeCall(id, srcStatus, null);
         return localVarApiClient.execute(localVarCall);
     }
 
@@ -1976,9 +1979,9 @@ public class RepoApiClientInstance {
         <tr><td> 404 </td><td> Source code not found for this id </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call uploadAlgorithmStatusAsync(String id, SrcStatus srcStatus, final ApiCallback<Void> _callback) throws ApiException {
+    public okhttp3.Call createAlgorithmStatusAsync(String id, SrcStatus srcStatus, final ApiCallback<Void> _callback) throws ApiException {
 
-        okhttp3.Call localVarCall = uploadAlgorithmStatusValidateBeforeCall(id, srcStatus, _callback);
+        okhttp3.Call localVarCall = createAlgorithmStatusValidateBeforeCall(id, srcStatus, _callback);
         localVarApiClient.executeAsync(localVarCall, _callback);
         return localVarCall;
     }

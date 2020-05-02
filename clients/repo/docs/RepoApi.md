@@ -8,19 +8,19 @@ Method | HTTP request | Description
 [**deleteAlgorithmJar**](RepoApi.md#deletealgorithmjar) | **DELETE** /algoJar/{id} | 
 [**deleteAlgorithmMeta**](RepoApi.md#deletealgorithmmeta) | **DELETE** /algoMeta/{id} | 
 [**deleteAlgorithmStatus**](RepoApi.md#deletealgorithmstatus) | **DELETE** /algoStatus/{id} | 
-[**getAlgorithmCode**](RepoApi.md#getalgorithmcode) | **GET** /algoCode/{id} | 
-[**getAlgorithmJar**](RepoApi.md#getalgorithmjar) | **GET** /algoJar/{id} | 
-[**getAlgorithmMeta**](RepoApi.md#getalgorithmmeta) | **GET** /algoMeta/{id} | 
-[**getAlgorithmStatus**](RepoApi.md#getalgorithmstatus) | **GET** /algoStatus/{id} | 
+[**readAlgorithmCode**](RepoApi.md#readAlgorithmCode) | **GET** /algoCode/{id} | 
+[**readAlgorithmJar**](RepoApi.md#readAlgorithmJar) | **GET** /algoJar/{id} | 
+[**readAlgorithmMeta**](RepoApi.md#readAlgorithmMeta) | **GET** /algoMeta/{id} | 
+[**readAlgorithmStatus**](RepoApi.md#readAlgorithmStatus) | **GET** /algoStatus/{id} | 
 [**getTopCode**](RepoApi.md#gettopcode) | **GET** /getTopCode | 
-[**replaceAlgorithmCode**](RepoApi.md#replacealgorithmcode) | **PUT** /algoCode/{id} | 
-[**replaceAlgorithmJar**](RepoApi.md#replacealgorithmjar) | **PUT** /algoJar/{id} | 
-[**replaceAlgorithmMeta**](RepoApi.md#replacealgorithmmeta) | **PUT** /algoMeta/{id} | 
-[**replaceAlgorithmStatus**](RepoApi.md#replacealgorithmstatus) | **PUT** /algoStatus/{id} | 
-[**uploadAlgorithmCode**](RepoApi.md#uploadalgorithmcode) | **POST** /algoCode/{id} | 
-[**uploadAlgorithmJar**](RepoApi.md#uploadalgorithmjar) | **POST** /algoJar/{id} | 
-[**uploadAlgorithmMeta**](RepoApi.md#uploadalgorithmmeta) | **POST** /algoMeta/{id} | 
-[**uploadAlgorithmStatus**](RepoApi.md#uploadalgorithmstatus) | **POST** /algoStatus/{id} | 
+[**updateAlgorithmCode**](RepoApi.md#updateAlgorithmCode) | **PUT** /algoCode/{id} | 
+[**updateAlgorithmJar**](RepoApi.md#updateAlgorithmJar) | **PUT** /algoJar/{id} | 
+[**updateAlgorithmMeta**](RepoApi.md#updateAlgorithmMeta) | **PUT** /algoMeta/{id} | 
+[**updateAlgorithmStatus**](RepoApi.md#updateAlgorithmStatus) | **PUT** /algoStatus/{id} | 
+[**createAlgorithmCode**](RepoApi.md#createAlgorithmCode) | **POST** /algoCode/{id} | 
+[**createAlgorithmJar**](RepoApi.md#createAlgorithmJar) | **POST** /algoJar/{id} | 
+[**createAlgorithmMeta**](RepoApi.md#createAlgorithmMeta) | **POST** /algoMeta/{id} | 
+[**createAlgorithmStatus**](RepoApi.md#createAlgorithmStatus) | **POST** /algoStatus/{id} | 
 
 
 <a name="deleteAlgorithmCode"></a>
@@ -269,9 +269,9 @@ No authorization required
 **200** | Status successfully deleted |  -  |
 **404** | Status not found for this id |  -  |
 
-<a name="getAlgorithmCode"></a>
-# **getAlgorithmCode**
-> File getAlgorithmCode(id)
+<a name="readAlgorithmCode"></a>
+# **readAlgorithmCode**
+> File readAlgorithmCode(id)
 
 
 
@@ -293,10 +293,10 @@ public class Example {
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     String id = "a"; 
     try {
-      File result = apiInstance.getAlgorithmCode(id);
+      File result = apiInstance.readAlgorithmCode(id);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling RepoApiClientInstance#getAlgorithmCode");
+      System.err.println("Exception when calling RepoApiClientInstance#readAlgorithmCode");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -331,9 +331,9 @@ No authorization required
 **200** | Source code successfully fetched |  -  |
 **404** | Source code not found for this UUI |  -  |
 
-<a name="getAlgorithmJar"></a>
-# **getAlgorithmJar**
-> File getAlgorithmJar(id)
+<a name="readAlgorithmJar"></a>
+# **readAlgorithmJar**
+> File readAlgorithmJar(id)
 
 
 
@@ -356,10 +356,10 @@ public class Example {
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     String id = "a";
     try {
-      File result = apiInstance.getAlgorithmJar(id);
+      File result = apiInstance.readAlgorithmJar(id);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling RepoApiClientInstance#getAlgorithmJar");
+      System.err.println("Exception when calling RepoApiClientInstance#readAlgorithmJar");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -394,9 +394,9 @@ No authorization required
 **200** | Artifact successfully fetched |  -  |
 **404** | Artifact not found for this id |  -  |
 
-<a name="getAlgorithmMeta"></a>
-# **getAlgorithmMeta**
-> SrcMeta getAlgorithmMeta(id)
+<a name="readAlgorithmMeta"></a>
+# **readAlgorithmMeta**
+> SrcMeta readAlgorithmMeta(id)
 
 
 
@@ -418,10 +418,10 @@ public class Example {
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     String id = "a"; 
     try {
-      SrcMeta result = apiInstance.getAlgorithmMeta(id);
+      SrcMeta result = apiInstance.readAlgorithmMeta(id);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling RepoApiClientInstance#getAlgorithmMeta");
+      System.err.println("Exception when calling RepoApiClientInstance#readAlgorithmMeta");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -456,9 +456,9 @@ No authorization required
 **200** | Metadata successfully fetched |  -  |
 **404** | Metadata not found for this id |  -  |
 
-<a name="getAlgorithmStatus"></a>
-# **getAlgorithmStatus**
-> SrcStatus getAlgorithmStatus(id)
+<a name="readAlgorithmStatus"></a>
+# **readAlgorithmStatus**
+> SrcStatus readAlgorithmStatus(id)
 
 
 
@@ -480,10 +480,10 @@ public class Example {
     RepoApiClientInstance apiInstance = new RepoApiClientInstance(defaultClient);
     String id = "a"; 
     try {
-      SrcStatus result = apiInstance.getAlgorithmStatus(id);
+      SrcStatus result = apiInstance.readAlgorithmStatus(id);
       System.out.println(result);
     } catch (ApiException e) {
-      System.err.println("Exception when calling RepoApiClientInstance#getAlgorithmStatus");
+      System.err.println("Exception when calling RepoApiClientInstance#readAlgorithmStatus");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -575,9 +575,9 @@ No authorization required
 |-------------|-------------|------------------|
 **200** | Source code |  -  |
 
-<a name="replaceAlgorithmCode"></a>
-# **replaceAlgorithmCode**
-> replaceAlgorithmCode(id, code)
+<a name="updateAlgorithmCode"></a>
+# **updateAlgorithmCode**
+> updateAlgorithmCode(id, code)
 
 
 
@@ -600,9 +600,9 @@ public class Example {
     String id = "a";
     File code = new File("/path/to/file"); // File | 
     try {
-      apiInstance.replaceAlgorithmCode(id, code);
+      apiInstance.updateAlgorithmCode(id, code);
     } catch (ApiException e) {
-      System.err.println("Exception when calling RepoApiClientInstance#replaceAlgorithmCode");
+      System.err.println("Exception when calling RepoApiClientInstance#updateAlgorithmCode");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -637,9 +637,9 @@ No authorization required
 |-------------|-------------|------------------|
 **200** | Source code successfully replaced |  -  |
 
-<a name="replaceAlgorithmJar"></a>
-# **replaceAlgorithmJar**
-> replaceAlgorithmJar(id, jar)
+<a name="updateAlgorithmJar"></a>
+# **updateAlgorithmJar**
+> updateAlgorithmJar(id, jar)
 
 
 
@@ -662,9 +662,9 @@ public class Example {
     String id = "a";
     File jar = new File("/path/to/file"); // File | 
     try {
-      apiInstance.replaceAlgorithmJar(id, jar);
+      apiInstance.updateAlgorithmJar(id, jar);
     } catch (ApiException e) {
-      System.err.println("Exception when calling RepoApiClientInstance#replaceAlgorithmJar");
+      System.err.println("Exception when calling RepoApiClientInstance#updateAlgorithmJar");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -700,9 +700,9 @@ No authorization required
 **200** | Artifact successfully replaced |  -  |
 **404** | Source code / artifact not found for this id |  -  |
 
-<a name="replaceAlgorithmMeta"></a>
-# **replaceAlgorithmMeta**
-> replaceAlgorithmMeta(id, srcMeta)
+<a name="updateAlgorithmMeta"></a>
+# **updateAlgorithmMeta**
+> updateAlgorithmMeta(id, srcMeta)
 
 
 
@@ -725,9 +725,9 @@ public class Example {
     String id = "a"; 
     SrcMeta srcMeta = new SrcMeta(); // SrcMeta | Metadata to be uploaded
     try {
-      apiInstance.replaceAlgorithmMeta(id, srcMeta);
+      apiInstance.updateAlgorithmMeta(id, srcMeta);
     } catch (ApiException e) {
-      System.err.println("Exception when calling RepoApiClientInstance#replaceAlgorithmMeta");
+      System.err.println("Exception when calling RepoApiClientInstance#updateAlgorithmMeta");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -763,9 +763,9 @@ No authorization required
 **200** | Metadata successfully replaced |  -  |
 **404** | Source code / metadata not found for this id |  -  |
 
-<a name="replaceAlgorithmStatus"></a>
-# **replaceAlgorithmStatus**
-> replaceAlgorithmStatus(id, srcStatus)
+<a name="updateAlgorithmStatus"></a>
+# **updateAlgorithmStatus**
+> updateAlgorithmStatus(id, srcStatus)
 
 
 
@@ -789,9 +789,9 @@ public class Example {
     String id = "a";
     SrcStatus srcStatus = new SrcStatus(); // SrcStatus | Status to be uploaded
     try {
-      apiInstance.replaceAlgorithmStatus(id, srcStatus);
+      apiInstance.updateAlgorithmStatus(id, srcStatus);
     } catch (ApiException e) {
-      System.err.println("Exception when calling RepoApiClientInstance#replaceAlgorithmStatus");
+      System.err.println("Exception when calling RepoApiClientInstance#updateAlgorithmStatus");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -827,9 +827,9 @@ No authorization required
 **200** | Status successfully replaced |  -  |
 **404** | Source code / status not found for this id |  -  |
 
-<a name="uploadAlgorithmCode"></a>
-# **uploadAlgorithmCode**
-> uploadAlgorithmCode(id, code)
+<a name="createAlgorithmCode"></a>
+# **createAlgorithmCode**
+> createAlgorithmCode(id, code)
 
 
 
@@ -852,9 +852,9 @@ public class Example {
     String id = "a";
     File code = new File("/path/to/file"); // File | 
     try {
-      apiInstance.uploadAlgorithmCode(id, code);
+      apiInstance.createAlgorithmCode(id, code);
     } catch (ApiException e) {
-      System.err.println("Exception when calling RepoApiClientInstance#uploadAlgorithmCode");
+      System.err.println("Exception when calling RepoApiClientInstance#createAlgorithmCode");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -889,9 +889,9 @@ No authorization required
 |-------------|-------------|------------------|
 **201** | Source code successfully uploaded |  -  |
 
-<a name="uploadAlgorithmJar"></a>
-# **uploadAlgorithmJar**
-> uploadAlgorithmJar(id, jar)
+<a name="createAlgorithmJar"></a>
+# **createAlgorithmJar**
+> createAlgorithmJar(id, jar)
 
 
 
@@ -914,9 +914,9 @@ public class Example {
     String id = "a";
     File jar = new File("/path/to/file"); // File | 
     try {
-      apiInstance.uploadAlgorithmJar(id, jar);
+      apiInstance.createAlgorithmJar(id, jar);
     } catch (ApiException e) {
-      System.err.println("Exception when calling RepoApiClientInstance#uploadAlgorithmJar");
+      System.err.println("Exception when calling RepoApiClientInstance#createAlgorithmJar");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -952,9 +952,9 @@ No authorization required
 **201** | Artifact successfully uploaded |  -  |
 **404** | Source code not found for this id |  -  |
 
-<a name="uploadAlgorithmMeta"></a>
-# **uploadAlgorithmMeta**
-> uploadAlgorithmMeta(id, srcMeta)
+<a name="createAlgorithmMeta"></a>
+# **createAlgorithmMeta**
+> createAlgorithmMeta(id, srcMeta)
 
 
 
@@ -977,9 +977,9 @@ public class Example {
     String id = "a"; 
     SrcMeta srcMeta = new SrcMeta(); // SrcMeta | Metadata to be uploaded
     try {
-      apiInstance.uploadAlgorithmMeta(id, srcMeta);
+      apiInstance.createAlgorithmMeta(id, srcMeta);
     } catch (ApiException e) {
-      System.err.println("Exception when calling RepoApiClientInstance#uploadAlgorithmMeta");
+      System.err.println("Exception when calling RepoApiClientInstance#createAlgorithmMeta");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());
@@ -1015,9 +1015,9 @@ No authorization required
 **201** | Metadata successfully uploaded |  -  |
 **404** | Source not found for this id |  -  |
 
-<a name="uploadAlgorithmStatus"></a>
-# **uploadAlgorithmStatus**
-> uploadAlgorithmStatus(id, srcStatus)
+<a name="createAlgorithmStatus"></a>
+# **createAlgorithmStatus**
+> createAlgorithmStatus(id, srcStatus)
 
 
 
@@ -1040,9 +1040,9 @@ public class Example {
     String id = "a"; 
     SrcStatus srcStatus = new SrcStatus(); // SrcStatus | Status to be uploaded
     try {
-      apiInstance.uploadAlgorithmStatus(id, srcStatus);
+      apiInstance.createAlgorithmStatus(id, srcStatus);
     } catch (ApiException e) {
-      System.err.println("Exception when calling RepoApiClientInstance#uploadAlgorithmStatus");
+      System.err.println("Exception when calling RepoApiClientInstance#createAlgorithmStatus");
       System.err.println("Status code: " + e.getCode());
       System.err.println("Reason: " + e.getResponseBody());
       System.err.println("Response headers: " + e.getResponseHeaders());

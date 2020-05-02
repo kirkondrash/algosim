@@ -12,6 +12,8 @@ servers:
 paths:
   /execute/{id}:
     post:
+      tags:
+        - executor
       description: Gets the artifact from nexus, executes and benchmarks it
       operationId: executeAlgorithm
       parameters:
@@ -26,12 +28,23 @@ paths:
           description: Successfully executed
         '404':
           description: Artifact not found for this id
+  /ready:
+    get:
+      tags:
+        - executor
+      description: Returns readiness of the host for execution
+      operationId: getReadiness
+      responses:
+        '200':
+          description: Ready
+        '503':
+          description: Busy
 security:
-  - basicAuth: []  # <-- use the same name here
+  - basicAuth: []
 
 components:
   securitySchemes:
-    basicAuth:     # <-- arbitrary name for the security scheme
+    basicAuth:
       type: http
       scheme: basic
   schemas:

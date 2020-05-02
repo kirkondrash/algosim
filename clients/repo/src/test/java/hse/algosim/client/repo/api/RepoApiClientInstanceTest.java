@@ -26,10 +26,10 @@ public class RepoApiClientInstanceTest {
      *          if the Api call fails
      */
     @Test
-    public void replaceAlgorithmStatusTest() throws ApiException {
+    public void updateAlgorithmStatusTest() throws ApiException {
         String id = null;
         SrcStatus srcStatus = null;
-        api.replaceAlgorithmStatus(id, srcStatus);
+        api.updateAlgorithmStatus(id, srcStatus);
 
         // TODO: test validations
     }
@@ -107,9 +107,9 @@ public class RepoApiClientInstanceTest {
      *          if the Api call fails
      */
     @Test
-    public void getAlgorithmCodeTest() throws ApiException {
+    public void readAlgorithmCodeTest() throws ApiException {
         String id = null;
-        File response = api.getAlgorithmCode(id);
+        File response = api.readAlgorithmCode(id);
 
         // TODO: test validations
     }
@@ -123,9 +123,9 @@ public class RepoApiClientInstanceTest {
      *          if the Api call fails
      */
     @Test
-    public void getAlgorithmJarTest() throws ApiException {
+    public void readAlgorithmJarTest() throws ApiException {
         String id = null;
-        File response = api.getAlgorithmJar(id);
+        File response = api.readAlgorithmJar(id);
 
         // TODO: test validations
     }
@@ -139,9 +139,9 @@ public class RepoApiClientInstanceTest {
      *          if the Api call fails
      */
     @Test
-    public void getAlgorithmMetaTest() throws ApiException {
+    public void readAlgorithmMetaTest() throws ApiException {
         String id = null;
-        SrcMeta response = api.getAlgorithmMeta(id);
+        SrcMeta response = api.readAlgorithmMeta(id);
 
         // TODO: test validations
     }
@@ -155,9 +155,9 @@ public class RepoApiClientInstanceTest {
      *          if the Api call fails
      */
     @Test
-    public void getAlgorithmStatusTest() throws ApiException {
+    public void readAlgorithmStatusTest() throws ApiException {
         String id = null;
-        SrcStatus response = api.getAlgorithmStatus(id);
+        SrcStatus response = api.readAlgorithmStatus(id);
 
         // TODO: test validations
     }
@@ -171,10 +171,10 @@ public class RepoApiClientInstanceTest {
      *          if the Api call fails
      */
     @Test
-    public void uploadAlgorithmCodeTest() throws ApiException {
+    public void createAlgorithmCodeTest() throws ApiException {
         String id = null;
         File code = null;
-        api.uploadAlgorithmCode(id, code);
+        api.createAlgorithmCode(id, code);
 
         // TODO: test validations
     }
@@ -188,10 +188,10 @@ public class RepoApiClientInstanceTest {
      *          if the Api call fails
      */
     @Test
-    public void uploadAlgorithmJarTest() throws ApiException {
+    public void createAlgorithmJarTest() throws ApiException {
         String id = null;
         File jar = null;
-        api.uploadAlgorithmJar(id, jar);
+        api.createAlgorithmJar(id, jar);
 
         // TODO: test validations
     }
@@ -205,10 +205,10 @@ public class RepoApiClientInstanceTest {
      *          if the Api call fails
      */
     @Test
-    public void uploadAlgorithmMetaTest() throws ApiException {
+    public void createAlgorithmMetaTest() throws ApiException {
         String id = null;
         SrcMeta srcMeta = null;
-        api.uploadAlgorithmMeta(id, srcMeta);
+        api.createAlgorithmMeta(id, srcMeta);
 
         // TODO: test validations
     }
@@ -222,10 +222,10 @@ public class RepoApiClientInstanceTest {
      *          if the Api call fails
      */
     @Test
-    public void uploadAlgorithmStatusTest() throws ApiException {
+    public void createAlgorithmStatusTest() throws ApiException {
         String id = null;
         SrcStatus srcStatus = null;
-        api.uploadAlgorithmStatus(id, srcStatus);
+        api.createAlgorithmStatus(id, srcStatus);
 
         // TODO: test validations
     }
