@@ -1,13 +1,11 @@
 package hse.algosim.server.gateway.api;
 
+import hse.algosim.server.model.UserCodeInfo;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,29 +22,22 @@ public interface AlgoCodeApi {
         return Optional.empty();
     }
 
-    @ApiOperation(value = "", nickname = "newBenchmark", notes = "Gets code loaded by user, assigns the UUID to it. The code will later be compiled and executed", response = Map.class, authorizations = {@Authorization(value = "basicAuth")})
+    @ApiOperation(value = "", nickname = "codeBenchmark", notes = "Gets code loaded by user, assigns the UUID to it. The code will later be compiled and executed", response = Map.class, authorizations = {@Authorization(value = "basicAuth")})
     @ApiResponses(value = { 
-        @ApiResponse(code = 201, message = "Source code was uploaded successfully", response = Map.class) })
+        @ApiResponse(code = 200, message = "Source code was uploaded successfully", response = UserCodeInfo.class) })
     @RequestMapping(value = "/algoCode",
         produces = { "application/json" }, 
         consumes = { "multipart/form-data" },
         method = RequestMethod.POST)
-    default ResponseEntity<Map<String,String>> newBenchmark(@ApiParam(value = "file detail") @Valid @RequestPart("code") MultipartFile code) {
+    default ResponseEntity<UserCodeInfo> codeBenchmark(
+            @ApiParam(value = "code") @Valid @RequestPart("code") MultipartFile code,
+            @ApiParam(value = "user id", required=true) @RequestParam(value="userId", required=true)  String userId,
+            @ApiParam(value = "user's name of algorithm", required=true) @RequestParam(value="userAlgoName", required=true)  String userAlgoName
+    ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
     }
 
-    @ApiOperation(value = "", nickname = "redoBenchmark", notes = "Gets code and id loaded by user (from previous session). The code will later be compiled and executed", response = Map.class, authorizations = {@Authorization(value = "basicAuth")})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Source code was uploaded successfully", response = Map.class) })
-    @RequestMapping(value = "/algoCode/{id}",
-            produces = { "application/json" },
-            consumes = { "multipart/form-data" },
-            method = RequestMethod.POST)
-    default ResponseEntity<Map<String,String>> redoBenchmark(@PathVariable("id") String id, @ApiParam(value = "file detail") @Valid @RequestPart("code") MultipartFile code) {
-        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
-
-    }
 
     @ApiOperation(value = "", nickname = "getTop", notes = "Gets some 10 algos ids and first line of files", response = Map.class, authorizations = {@Authorization(value = "basicAuth")})
     @ApiResponses(value = {

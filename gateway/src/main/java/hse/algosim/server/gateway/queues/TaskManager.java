@@ -8,6 +8,7 @@ import hse.algosim.client.repo.api.RepoApiClientInstance;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.*;
 
 public class TaskManager {
@@ -37,19 +38,21 @@ public class TaskManager {
         taskQueueThread.submit(() -> resultsQueueServer.run(resultQueue));
     }
 
-    public void scheduleCodeAnalysis(String id, MultipartFile code) throws Exception{
+    public void scheduleCodeAnalysis(String id, MultipartFile code) throws ApiException {
         File f = new File(id).getAbsoluteFile();
-        code.transferTo(f);
         try {
+            code.transferTo(f);
             repoApiClient.uploadAlgorithmCode(id,f);
             repoApiClient.uploadAlgorithmStatus(id, new SrcStatus().status(SrcStatus.StatusEnum.SCHEDULED_FOR_COMPILATION));
-        } catch (ApiException e){
-            if (e.getCode() == 409){
+        } catch (ApiException ae){
+            if (ae.getCode() == 409){
                 repoApiClient.replaceAlgorithmCode(id,f);
                 repoApiClient.replaceAlgorithmStatus(id, new SrcStatus().status(SrcStatus.StatusEnum.SCHEDULED_FOR_COMPILATION));
             } else {
-                System.out.println(e.getResponseBody());
+                throw ae;
             }
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
         }
         f.delete();
         compilationQueue.add(id);

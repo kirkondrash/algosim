@@ -20,14 +20,14 @@ paths:
         content:
           multipart/form-data:
             schema:
-              $ref: '#/components/schemas/SrcCode'
+              $ref: '#/components/schemas/UserCodeForm'
       responses:
         '201':
           description: Source code was uploaded successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SrcId'
+                $ref: '#/components/schemas/UserCodeInfo'
 security:
   - basicAuth: []  # <-- use the same name here
 
@@ -37,11 +37,21 @@ components:
       type: http
       scheme: basic
   schemas:
-    SrcCode:
+    UserCodeForm:
       type: object
       properties:
         code:
           type: string
           format: binary
-    SrcId:
-      type: string
+        userId:
+          type: string
+        userAlgoName:
+          type: string
+    UserCodeInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "kirkondrash_newalgo"
+        info:
+          type: string

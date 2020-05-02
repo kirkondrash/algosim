@@ -2,7 +2,9 @@
 ***
 TODO:
 - проверить весь dependencyManagement (mvn dependency:analyze)
-- перейти на formData в gateway (username, algoname)
+- проверить соответствие nickname'ов
+- optimize imports везде
+- ExceptionHandler и общие конфиги в server models
 - repoUrl как передавать в образ для docker-multiworker
 - улучшить сообщения об ошибках
 - перейти на единый формат сериализации (gson/jackson) в клиентах и серверах, сделать единый артефакт с моделями
@@ -30,7 +32,7 @@ Optional TODO:
 1. `mvn clean package -P docker`
 2. `docker-compose up`
   + Обращение к компонентам только через захардкоженно переданный как параметр хост и порт.
-  + `curl -X POST "http://localhost:8080/api/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@framework/src/main/java/TradingAlgorithmImpl.java" -u "user:password"`
+  + `curl -X POST "http://localhost:8080/api/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@framework/src/main/java/TradingAlgorithmImpl.java" -F "userId=kirko" -F "userAlgoName=right" -u "user:password"`
   + `curl "http://localhost:8080/api/getTop" -u "user:password" | jq`
 3. `docker-compose down -v`
 ***
@@ -38,7 +40,7 @@ Optional TODO:
 1. `mvn clean package -P docker`
 2. `docker-compose -f docker-compose-multiworker.yml up --scale compiler=2 --scale executor=2`. 
   + В таком случае на хостнеймах компонент платформы должен стоять loab-balancer. В docker-compose его роль исполняет образ envoy. Envoy обчеспечивает роутинг на все компоненты через соответствующий префикс.
-  + `curl -X POST "http://localhost:8000/api/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@framework/src/main/java/TradingAlgorithmImpl.java" -u "user:password"`
+  + `curl -X POST "http://localhost:8000/api/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@framework/src/main/java/TradingAlgorithmImpl.java" -F "userId=kirko" -F "userAlgoName=right" -u "user:password"`
   + `curl "http://localhost:8000/api/getTop" -u "user:password" | jq`
   + `curl "http://localhost:8000/repo/api/algoStatus/b03b6c6d-a945-4986-970a-43a0c899ab09" -u "user:password"`
 4. `docker-compose -f docker-compose-multiworker.yml down -v`

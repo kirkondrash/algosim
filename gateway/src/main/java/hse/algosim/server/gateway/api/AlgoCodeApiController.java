@@ -10,11 +10,15 @@ import hse.algosim.client.model.IdArray;
 import hse.algosim.client.model.SrcStatus;
 import hse.algosim.client.repo.api.RepoApiClientInstance;
 import hse.algosim.server.gateway.queues.TaskManager;
+import hse.algosim.server.model.UserCodeInfo;
+import io.swagger.annotations.ApiParam;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,34 +49,22 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     }
 
     @Override
-    public ResponseEntity<Map<String,String>> newBenchmark(@Valid MultipartFile code) {
-        String id = UUID.randomUUID().toString();
-        Map<String,String> res = new HashMap<>();
-        res.put("id", id);
+    public ResponseEntity<UserCodeInfo> codeBenchmark(
+            @ApiParam(value = "code") @Valid @RequestPart("code") MultipartFile code,
+            @ApiParam(value = "user id", required=true) @RequestParam(value="userId", required=true)  String userId,
+            @ApiParam(value = "user's name of algorithm", required=true) @RequestParam(value="userAlgoName", required=true)  String userAlgoName
+    ) {
+        String codeId = String.format("%s_%s",userId,userAlgoName);
+        HttpStatus responseStatus = HttpStatus.OK;
+        UserCodeInfo userCodeInfo = new UserCodeInfo().id(codeId).info("Successfully uploaded");
         try {
-            taskManager.scheduleCodeAnalysis(id, code);
-            return new ResponseEntity<>(res, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            res.put("error",e.getLocalizedMessage());
+            taskManager.scheduleCodeAnalysis(codeId, code);
+        } catch (ApiException e) {
+            userCodeInfo.setInfo(e.getResponseBody());
+            responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
-        return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    @Override
-    public ResponseEntity<Map<String,String>> redoBenchmark(@PathVariable("id") String id, @Valid MultipartFile code) {
-        Map<String,String> res = new HashMap<>();
-        res.put("id", id);
-        try {
-            taskManager.scheduleCodeAnalysis(id, code);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            res.put("error",e.getLocalizedMessage());
-        }
-
-        return new ResponseEntity<>(res, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(userCodeInfo, responseStatus);
     }
 
     @Override
