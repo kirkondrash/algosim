@@ -7,7 +7,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -33,9 +32,9 @@ public interface AlgoCodeApi {
         consumes = { "multipart/form-data" },
         method = RequestMethod.POST)
     default ResponseEntity<UserCodeInfo> codeBenchmark(
-            @ApiParam(value = "code") @Valid @RequestPart("code") MultipartFile code,
-            @ApiParam(value = "user id", required=true) @RequestParam(value="userId", required=true)  String userId,
-            @ApiParam(value = "user's name of algorithm", required=true) @RequestParam(value="userAlgoName", required=true)  String userAlgoName
+            @ApiParam(value = "code", required=true) @Valid @RequestPart("code") MultipartFile code,
+            @ApiParam(value = "user id", required=true) @RequestPart(value="userId")  String userId,
+            @ApiParam(value = "user's name of algorithm", required=true) @RequestPart(value="userAlgoName")  String userAlgoName
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 

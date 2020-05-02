@@ -33,7 +33,7 @@ public interface AlgoJarApi {
             consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE },
             method = RequestMethod.POST)
-    default ResponseEntity<Void> createAlgorithmJar(@ApiParam(value = "id of algorithm which jar is uploaded",required=true) @PathVariable("id") String id, @ApiParam(value = "file detail") @Valid @RequestPart("jar") MultipartFile jar) {
+    default ResponseEntity<Void> createAlgorithmJar(@ApiParam(value = "id of algorithm which jar is uploaded",required=true) @PathVariable("id") String id, @ApiParam(value = "jar", required=true) @Valid @RequestPart("jar") MultipartFile jar) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
@@ -56,7 +56,7 @@ public interface AlgoJarApi {
             consumes = { MediaType.MULTIPART_FORM_DATA_VALUE },
             produces = { MediaType.APPLICATION_JSON_VALUE },
             method = RequestMethod.PUT)
-    default ResponseEntity<Void> updateAlgorithmJar(@ApiParam(value = "id of algorithm which jar is uploaded",required=true) @PathVariable("id") String id, @ApiParam(value = "file detail") @Valid @RequestPart("jar") MultipartFile jar) {
+    default ResponseEntity<Void> updateAlgorithmJar(@ApiParam(value = "id of algorithm which jar is uploaded",required=true) @PathVariable("id") String id, @ApiParam(value = "jar", required=true) @Valid @RequestPart("jar") MultipartFile jar) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
