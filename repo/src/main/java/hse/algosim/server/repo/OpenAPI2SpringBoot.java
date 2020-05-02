@@ -10,7 +10,7 @@ import org.springframework.web.servlet.config.annotation.ContentNegotiationConfi
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"hse.algosim.server.repo", "hse.algosim.server.repo.api" , "hse.algosim.server.repo.config"})
+@ComponentScan(basePackages = {"hse.algosim.server.repo", "hse.algosim.server.security"})
 public class OpenAPI2SpringBoot implements CommandLineRunner {
 
     @Override
