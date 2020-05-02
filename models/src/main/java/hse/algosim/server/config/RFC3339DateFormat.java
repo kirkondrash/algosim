@@ -1,4 +1,4 @@
-package hse.algosim.server;
+package hse.algosim.server.config;
 
 import com.fasterxml.jackson.databind.util.ISO8601DateFormat;
 import com.fasterxml.jackson.databind.util.ISO8601Utils;

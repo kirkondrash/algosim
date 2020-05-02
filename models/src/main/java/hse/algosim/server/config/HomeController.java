@@ -1,4 +1,4 @@
-package hse.algosim.server.gateway.config;
+package hse.algosim.server.config;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;

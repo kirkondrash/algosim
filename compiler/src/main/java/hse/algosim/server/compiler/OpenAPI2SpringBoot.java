@@ -9,7 +9,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"hse.algosim.server.compiler", "hse.algosim.server.security"})
+@ComponentScan(basePackages = {"hse.algosim.server.compiler", "hse.algosim.server.security", "hse.algosim.server.config"})
 public class OpenAPI2SpringBoot implements CommandLineRunner {
 
     @Override
