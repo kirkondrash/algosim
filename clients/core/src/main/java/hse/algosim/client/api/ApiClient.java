@@ -439,7 +439,7 @@ public class ApiClient {
      * @param param Parameter
      * @return String representation of the parameter
      */
-    public String parameterToString(Object param){
+    public String parameterToString(Object param) throws ApiException {
         if (param == null) {
             return "";
         } else if (param instanceof Date || param instanceof OffsetDateTime || param instanceof LocalDate) {
@@ -448,7 +448,7 @@ public class ApiClient {
             try {
                 jsonStr = json.writeValueAsString(param);
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                throw new ApiException(e);
             }
             return jsonStr.substring(1, jsonStr.length() - 1);
         } else if (param instanceof Collection) {
@@ -597,7 +597,11 @@ public class ApiClient {
             contentType = "application/json";
         }
         if (isJsonMime(contentType)) {
-            return json.convertValue(respBody, json.getTypeFactory().constructType(returnType));
+            try {
+                return json.readValue(respBody, json.getTypeFactory().constructType(returnType));
+            } catch (JsonProcessingException e) {
+                throw new ApiException(e);
+            }
         } else if (returnType.equals(String.class)) {
             // Expecting string, return the raw response body.
             return (T) respBody;
@@ -837,7 +841,6 @@ public class ApiClient {
      */
     public Call buildCall(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, String> cookieParams, Map<String, Object> formParams, String[] authNames, ApiCallback callback) throws ApiException {
         Request request = buildRequest(path, method, queryParams, collectionQueryParams, body, headerParams, cookieParams, formParams, authNames, callback);
-
         return httpClient.newCall(request);
     }
 
@@ -914,7 +917,7 @@ public class ApiClient {
      * @param collectionQueryParams The collection query parameters
      * @return The full URL
      */
-    public String buildUrl(String path, List<Pair> queryParams, List<Pair> collectionQueryParams) {
+    public String buildUrl(String path, List<Pair> queryParams, List<Pair> collectionQueryParams) throws ApiException {
         final StringBuilder url = new StringBuilder();
         url.append(basePath).append(path);
 
@@ -961,7 +964,7 @@ public class ApiClient {
      * @param headerParams Header parameters in the form of Map
      * @param reqBuilder Request.Builder
      */
-    public void processHeaderParams(Map<String, String> headerParams, Request.Builder reqBuilder) {
+    public void processHeaderParams(Map<String, String> headerParams, Request.Builder reqBuilder) throws ApiException {
         for (Entry<String, String> param : headerParams.entrySet()) {
             reqBuilder.header(param.getKey(), parameterToString(param.getValue()));
         }
@@ -1013,7 +1016,7 @@ public class ApiClient {
      * @param formParams Form parameters in the form of Map
      * @return RequestBody
      */
-    public RequestBody buildRequestBodyFormEncoding(Map<String, Object> formParams) {
+    public RequestBody buildRequestBodyFormEncoding(Map<String, Object> formParams) throws ApiException {
         okhttp3.FormBody.Builder formBuilder = new okhttp3.FormBody.Builder();
         for (Entry<String, Object> param : formParams.entrySet()) {
             formBuilder.add(param.getKey(), parameterToString(param.getValue()));
@@ -1028,7 +1031,7 @@ public class ApiClient {
      * @param formParams Form parameters in the form of Map
      * @return RequestBody
      */
-    public RequestBody buildRequestBodyMultipart(Map<String, Object> formParams) {
+    public RequestBody buildRequestBodyMultipart(Map<String, Object> formParams) throws ApiException {
         MultipartBody.Builder mpBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         for (Entry<String, Object> param : formParams.entrySet()) {
             if (param.getValue() instanceof File) {

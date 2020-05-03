@@ -15,17 +15,24 @@ public class SrcStatus   {
    * Gets or Sets status
    */
   public enum StatusEnum {
+    @JsonProperty("SCHEDULED_FOR_COMPILATION")
     SCHEDULED_FOR_COMPILATION,
+    @JsonProperty("COMPILING")
     COMPILING,
+    @JsonProperty("SUCCESSFULLY_COMPILED")
     SUCCESSFULLY_COMPILED,
+    @JsonProperty("COMPILATION_FAILED")
     COMPILATION_FAILED,
+    @JsonProperty("SCHEDULED_FOR_EXECUTION")
     SCHEDULED_FOR_EXECUTION,
+    @JsonProperty("EXECUTING")
     EXECUTING,
+    @JsonProperty("SUCCESSFULLY_EXECUTED")
     SUCCESSFULLY_EXECUTED,
+    @JsonProperty("EXECUTION_FAILED")
     EXECUTION_FAILED;
   }
 
-  @JsonProperty("status")
   private StatusEnum status;
 
   @JsonProperty("errorTrace")
