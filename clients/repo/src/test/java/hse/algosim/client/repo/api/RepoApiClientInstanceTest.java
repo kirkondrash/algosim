@@ -1,8 +1,8 @@
 package hse.algosim.client.repo.api;
 
 import hse.algosim.client.api.ApiException;
-import hse.algosim.client.model.SrcMeta;
-import hse.algosim.client.model.SrcStatus;
+import hse.algosim.server.model.SrcMeta;
+import hse.algosim.server.model.SrcStatus;
 import org.junit.Ignore;
 import org.junit.Test;
 

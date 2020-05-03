@@ -1,10 +1,9 @@
 package hse.algosim.server.gateway.queues;
 
 import hse.algosim.client.api.ApiException;
-import hse.algosim.client.compiler.api.CompilerApiClientInstance;
 import hse.algosim.client.executor.api.ExecutorApiClientInstance;
-import hse.algosim.client.model.SrcStatus;
 import hse.algosim.client.repo.api.RepoApiClientInstance;
+import hse.algosim.server.model.SrcStatus;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 

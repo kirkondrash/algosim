@@ -2,9 +2,9 @@ package hse.algosim.client.repo.api;
 
 import com.google.gson.reflect.TypeToken;
 import hse.algosim.client.api.*;
-import hse.algosim.client.model.IdArray;
-import hse.algosim.client.model.SrcMeta;
-import hse.algosim.client.model.SrcStatus;
+import hse.algosim.server.model.IdArray;
+import hse.algosim.server.model.SrcMeta;
+import hse.algosim.server.model.SrcStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;

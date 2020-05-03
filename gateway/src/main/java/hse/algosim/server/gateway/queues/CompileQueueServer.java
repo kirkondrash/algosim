@@ -2,7 +2,6 @@ package hse.algosim.server.gateway.queues;
 
 import hse.algosim.client.api.ApiException;
 import hse.algosim.client.compiler.api.CompilerApiClientInstance;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 

@@ -37,7 +37,7 @@ Deletes algorithm source
 import hse.algosim.client.api.ApiClient;
 import hse.algosim.client.api.ApiException;
 import hse.algosim.client.api.Configuration;
-import hse.algosim.client.models.*;
+import hse.algosim.server.model.*;
 import RepoApiClientInstance;
 
 public class Example {

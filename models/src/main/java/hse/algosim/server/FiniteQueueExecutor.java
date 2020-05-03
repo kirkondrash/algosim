@@ -1,9 +1,5 @@
 package hse.algosim.server;
 
-import hse.algosim.client.api.ApiClient;
-import hse.algosim.client.repo.api.RepoApiClientInstance;
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;

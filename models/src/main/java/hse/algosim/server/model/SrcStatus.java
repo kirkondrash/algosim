@@ -1,8 +1,6 @@
 package hse.algosim.server.model;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonValue;
 import io.swagger.annotations.ApiModelProperty;
 
 import javax.validation.constraints.NotNull;
@@ -17,43 +15,14 @@ public class SrcStatus   {
    * Gets or Sets status
    */
   public enum StatusEnum {
-    SCHEDULED_FOR_COMPILATION("SCHEDULED FOR COMPILATION"),
-    
-    COMPILING("COMPILING"),
-    
-    SUCCESSFULLY_COMPILED("SUCCESSFULLY COMPILED"),
-    
-    COMPILATION_FAILED("COMPILATION FAILED"),
-    
-    SCHEDULED_FOR_EXECUTION("SCHEDULED FOR EXECUTION"),
-    
-    EXECUTING("EXECUTING"),
-    
-    SUCCESSFULLY_EXECUTED("SUCCESSFULLY EXECUTED"),
-    
-    EXECUTION_FAILED("EXECUTION FAILED");
-
-    private String value;
-
-    StatusEnum(String value) {
-      this.value = value;
-    }
-
-    @Override
-    @JsonValue
-    public String toString() {
-      return String.valueOf(value);
-    }
-
-    @JsonCreator
-    public static StatusEnum fromValue(String value) {
-      for (StatusEnum b : StatusEnum.values()) {
-        if (b.value.equals(value)) {
-          return b;
-        }
-      }
-      throw new IllegalArgumentException("Unexpected value '" + value + "'");
-    }
+    SCHEDULED_FOR_COMPILATION,
+    COMPILING,
+    SUCCESSFULLY_COMPILED,
+    COMPILATION_FAILED,
+    SCHEDULED_FOR_EXECUTION,
+    EXECUTING,
+    SUCCESSFULLY_EXECUTED,
+    EXECUTION_FAILED;
   }
 
   @JsonProperty("status")
@@ -76,8 +45,6 @@ public class SrcStatus   {
   */
   @ApiModelProperty(required = true, value = "")
   @NotNull
-
-
   public StatusEnum getStatus() {
     return status;
   }
@@ -96,8 +63,6 @@ public class SrcStatus   {
    * @return errorTrace
   */
   @ApiModelProperty(value = "")
-
-
   public String getErrorTrace() {
     return errorTrace;
   }
@@ -116,8 +81,6 @@ public class SrcStatus   {
    * @return metrics
   */
   @ApiModelProperty(example = "+200kk", value = "")
-
-
   public String getMetrics() {
     return metrics;
   }

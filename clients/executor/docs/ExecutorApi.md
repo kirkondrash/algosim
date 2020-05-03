@@ -21,7 +21,7 @@ Gets the artifact from nexus, executes and benchmarks it
 import hse.algosim.client.api.ApiClient;
 import hse.algosim.client.api.ApiException;
 import hse.algosim.client.api.Configuration;
-import hse.algosim.client.models.*;
+import hse.algosim.server.model.*;
 import ExecutorApiClientInstance;
 
 public class Example {

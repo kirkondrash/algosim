@@ -21,7 +21,7 @@ Gets the sources from the db and compiles them
 import hse.algosim.client.api.ApiClient;
 import hse.algosim.client.api.ApiException;
 import hse.algosim.client.api.Configuration;
-import hse.algosim.client.models.*;
+import hse.algosim.server.model.*;
 import CompilerApiClientInstance;
 
 public class Example {

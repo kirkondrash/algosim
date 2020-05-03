@@ -67,7 +67,7 @@ Please follow the [installation](#installation) instruction and execute the foll
 import hse.algosim.client.api.ApiClient;
 import hse.algosim.client.api.ApiException;
 import hse.algosim.client.api.Configuration;
-import hse.algosim.client.models.*;
+import hse.algosim.server.model.*;
 import CompilerApiClientInstance;
 
 public class Example {
