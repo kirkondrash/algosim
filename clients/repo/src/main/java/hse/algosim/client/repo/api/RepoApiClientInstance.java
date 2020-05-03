@@ -1,6 +1,5 @@
 package hse.algosim.client.repo.api;
 
-import com.google.gson.reflect.TypeToken;
 import hse.algosim.client.api.*;
 import hse.algosim.server.model.IdArray;
 import hse.algosim.server.model.SrcMeta;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -567,8 +565,8 @@ public class RepoApiClientInstance {
      */
     public ApiResponse<File> readAlgorithmCodeWithHttpInfo(String id) throws ApiException {
         okhttp3.Call localVarCall = readAlgorithmCodeValidateBeforeCall(id, null);
-        Type localVarReturnType = new TypeToken<File>(){}.getType();
-        return localVarApiClient.execute(localVarCall, localVarReturnType);
+        //Type localVarReturnType = new TypeToken<File>(){}.getType();
+        return localVarApiClient.execute(localVarCall, File.class);
     }
 
     /**
@@ -588,8 +586,8 @@ public class RepoApiClientInstance {
     public okhttp3.Call readAlgorithmCodeAsync(String id, final ApiCallback<File> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = readAlgorithmCodeValidateBeforeCall(id, _callback);
-        Type localVarReturnType = new TypeToken<File>(){}.getType();
-        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+        //Type localVarReturnType = new TypeToken<File>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, File.class, _callback);
         return localVarCall;
     }
     /**
@@ -682,8 +680,8 @@ public class RepoApiClientInstance {
      */
     public ApiResponse<File> readAlgorithmJarWithHttpInfo(String id) throws ApiException {
         okhttp3.Call localVarCall = readAlgorithmJarValidateBeforeCall(id, null);
-        Type localVarReturnType = new TypeToken<File>(){}.getType();
-        return localVarApiClient.execute(localVarCall, localVarReturnType);
+        //Type localVarReturnType = new TypeToken<File>(){}.getType();
+        return localVarApiClient.execute(localVarCall, File.class);
     }
 
     /**
@@ -703,8 +701,8 @@ public class RepoApiClientInstance {
     public okhttp3.Call readAlgorithmJarAsync(String id, final ApiCallback<File> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = readAlgorithmJarValidateBeforeCall(id, _callback);
-        Type localVarReturnType = new TypeToken<File>(){}.getType();
-        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+//        Type localVarReturnType = new TypeToken<File>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, File.class, _callback);
         return localVarCall;
     }
     /**
@@ -797,8 +795,8 @@ public class RepoApiClientInstance {
      */
     public ApiResponse<SrcMeta> readAlgorithmMetaWithHttpInfo(String id) throws ApiException {
         okhttp3.Call localVarCall = readAlgorithmMetaValidateBeforeCall(id, null);
-        Type localVarReturnType = new TypeToken<SrcMeta>(){}.getType();
-        return localVarApiClient.execute(localVarCall, localVarReturnType);
+//        Type localVarReturnType = new TypeToken<SrcMeta>(){}.getType();
+        return localVarApiClient.execute(localVarCall, SrcMeta.class);
     }
 
     /**
@@ -818,8 +816,8 @@ public class RepoApiClientInstance {
     public okhttp3.Call readAlgorithmMetaAsync(String id, final ApiCallback<SrcMeta> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = readAlgorithmMetaValidateBeforeCall(id, _callback);
-        Type localVarReturnType = new TypeToken<SrcMeta>(){}.getType();
-        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+//        Type localVarReturnType = new TypeToken<SrcMeta>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, SrcMeta.class, _callback);
         return localVarCall;
     }
     /**
@@ -912,8 +910,8 @@ public class RepoApiClientInstance {
      */
     public ApiResponse<SrcStatus> readAlgorithmStatusWithHttpInfo(String id) throws ApiException {
         okhttp3.Call localVarCall = readAlgorithmStatusValidateBeforeCall(id, null);
-        Type localVarReturnType = new TypeToken<SrcStatus>(){}.getType();
-        return localVarApiClient.execute(localVarCall, localVarReturnType);
+//        Type localVarReturnType = new TypeToken<SrcStatus>(){}.getType();
+        return localVarApiClient.execute(localVarCall, SrcStatus.class);
     }
 
     /**
@@ -933,8 +931,8 @@ public class RepoApiClientInstance {
     public okhttp3.Call readAlgorithmStatusAsync(String id, final ApiCallback<SrcStatus> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = readAlgorithmStatusValidateBeforeCall(id, _callback);
-        Type localVarReturnType = new TypeToken<SrcStatus>(){}.getType();
-        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+//        Type localVarReturnType = new TypeToken<SrcStatus>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, SrcStatus.class, _callback);
         return localVarCall;
     }
     /**
@@ -1015,8 +1013,8 @@ public class RepoApiClientInstance {
      */
     public ApiResponse<IdArray> getTopCodeWithHttpInfo() throws ApiException {
         okhttp3.Call localVarCall = getTopCodeValidateBeforeCall(null);
-        Type localVarReturnType = new TypeToken<IdArray>(){}.getType();
-        return localVarApiClient.execute(localVarCall, localVarReturnType);
+//        Type localVarReturnType = new TypeToken<IdArray>(){}.getType();
+        return localVarApiClient.execute(localVarCall, IdArray.class);
     }
 
     /**
@@ -1034,8 +1032,8 @@ public class RepoApiClientInstance {
     public okhttp3.Call getTopCodeAsync(final ApiCallback<IdArray> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = getTopCodeValidateBeforeCall(_callback);
-        Type localVarReturnType = new TypeToken<IdArray>(){}.getType();
-        localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
+//        Type localVarReturnType = new TypeToken<IdArray>(){}.getType();
+        localVarApiClient.executeAsync(localVarCall, IdArray.class, _callback);
         return localVarCall;
     }
     /**
