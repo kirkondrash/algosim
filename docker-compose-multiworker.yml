@@ -6,6 +6,8 @@ services:
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
+       - "--user.username=user"
+       - "--user.password=password"
      networks:
        envoymesh:
          aliases:
@@ -15,8 +17,10 @@ services:
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
-       - "--pathToFramework=/framework"
-       - "--repoUrl=http://router:8080/repo/api"
+       - "--framework.project.path=/framework"
+       - "--user.username=user"
+       - "--user.password=password"
+       - "--repo.basePath=http://router:8000/repo/api"
      volumes:
        - ~/.m2:/root/.m2
      networks:
@@ -28,8 +32,10 @@ services:
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
-       - "--pathToQuotes=/quotes"
-       - "--repoUrl=http://router:8080/repo/api"
+       - "--framework.quotes.path=/quotes"
+       - "--user.username=user"
+       - "--user.password=password"
+       - "--repo.basePath=http://router:8000/repo/api"
      networks:
        envoymesh:
          aliases:
@@ -39,9 +45,11 @@ services:
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
-       - "--repoUrl=http://router:8080/repo/api"
-       - "--compilerUrl=http://router:8080/compiler/api"
-       - "--executorUrl=http://router:8080/executor/api"
+       - "--user.username=user"
+       - "--user.password=password"
+       - "--repo.basePath=http://router:8000/repo/api"
+       - "--compiler.basePath=http://router:8000/compiler/api"
+       - "--executor.basePath=http://router:8000/executor/api"
      networks:
        envoymesh:
          aliases:

@@ -1,21 +1,22 @@
 package hse.algosim.client.executor.api;
 
 import hse.algosim.client.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class ExecutorApiClientInstance {
     private ApiClient localVarApiClient;
 
-    public ExecutorApiClientInstance() {
-        this(Configuration.getDefaultApiClient());
-    }
-
-    public ExecutorApiClientInstance(ApiClient apiClient) {
-        this.localVarApiClient = apiClient;
+    @Autowired
+    public ExecutorApiClientInstance(@Value("${user.username}") String username, @Value("${user.password}") String password, @Value("${executor.basePath:http://executor:8080/api}") String basePath) {
+        this.localVarApiClient = new ApiClient(username, password, basePath);
     }
 
     public ApiClient getApiClient() {

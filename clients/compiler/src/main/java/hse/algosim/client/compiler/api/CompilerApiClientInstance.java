@@ -7,15 +7,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Component
 public class CompilerApiClientInstance {
     private ApiClient localVarApiClient;
 
-    public CompilerApiClientInstance() {
-        this(Configuration.getDefaultApiClient());
-    }
-
-    public CompilerApiClientInstance(ApiClient apiClient) {
-        this.localVarApiClient = apiClient;
+    @Autowired
+    public CompilerApiClientInstance(@Value("${user.username}") String username, @Value("${user.password}") String password, @Value("${compiler.basePath:http://compiler:8080/api}") String basePath) {
+        this.localVarApiClient = new ApiClient(username, password, basePath);
     }
 
     public ApiClient getApiClient() {

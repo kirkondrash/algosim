@@ -10,7 +10,7 @@ import org.junit.Test;
 @Ignore
 public class ExecutorApiClientInstanceTest {
 
-    private final ExecutorApiClientInstance api = new ExecutorApiClientInstance();
+    private final ExecutorApiClientInstance api = new ExecutorApiClientInstance("user","password","http://executor:8080/api");
 
     
     /**

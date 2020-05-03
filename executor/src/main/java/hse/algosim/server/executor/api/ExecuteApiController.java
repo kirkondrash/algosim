@@ -1,7 +1,10 @@
 package hse.algosim.server.executor.api;
 
+import hse.algosim.client.repo.api.RepoApiClientInstance;
 import hse.algosim.server.FiniteQueueExecutor;
 import hse.algosim.server.executor.ExecutorServer;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,11 +19,15 @@ import java.util.concurrent.RejectedExecutionException;
 @RequestMapping("${openapi.algosimExecutor.base-path:/api}")
 public class ExecuteApiController extends FiniteQueueExecutor implements ExecuteApi {
 
+    @Autowired
+    private Environment env;
+    private RepoApiClientInstance repoApiClient;
     private final NativeWebRequest request;
 
-    @org.springframework.beans.factory.annotation.Autowired
-    public ExecuteApiController(NativeWebRequest request) {
+    @Autowired
+    public ExecuteApiController(NativeWebRequest request, RepoApiClientInstance repoApiClient) {
         this.request = request;
+        this.repoApiClient = repoApiClient;
     }
 
     @Override
@@ -31,7 +38,7 @@ public class ExecuteApiController extends FiniteQueueExecutor implements Execute
     @Override
     public ResponseEntity<Void> executeAlgorithm(@PathVariable("id") String id) {
         try {
-            singleThreadExecutor.submit(()-> ExecutorServer.runExecution(repoApiClient,id));
+            singleThreadExecutor.submit(()-> ExecutorServer.runExecution(repoApiClient,id, env.getProperty("framework.quotes.path")));
         }catch (RejectedExecutionException re){
             System.out.println(String.format("Execution queue full for %s on %s", id,hostname));
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);

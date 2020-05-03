@@ -2,6 +2,7 @@ package hse.algosim.server;
 
 import hse.algosim.client.api.ApiClient;
 import hse.algosim.client.repo.api.RepoApiClientInstance;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Optional;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -18,6 +19,4 @@ public class FiniteQueueExecutor {
             0L,
             TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>(2));
-
-    public final static RepoApiClientInstance repoApiClient = new RepoApiClientInstance(new ApiClient().setBasePath(System.getProperty("repoUrl","http://repo:8080/api")).setUsername("user").setPassword("password"));
 }

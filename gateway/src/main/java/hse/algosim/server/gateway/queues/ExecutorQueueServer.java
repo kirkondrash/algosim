@@ -1,6 +1,7 @@
 package hse.algosim.server.gateway.queues;
 
 import hse.algosim.client.api.ApiException;
+import hse.algosim.client.compiler.api.CompilerApiClientInstance;
 import hse.algosim.client.executor.api.ExecutorApiClientInstance;
 import hse.algosim.client.model.SrcStatus;
 import hse.algosim.client.repo.api.RepoApiClientInstance;
@@ -9,15 +10,10 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 class ExecutorQueueServer{
 
-    private RepoApiClientInstance repoApiClient;
-    private ExecutorApiClientInstance executorApiClient;
-
-    public ExecutorQueueServer(RepoApiClientInstance repoApiClient, ExecutorApiClientInstance executorApiClient) {
-        this.repoApiClient = repoApiClient;
-        this.executorApiClient = executorApiClient;
-    }
-
-    public void run(ConcurrentLinkedQueue<String> executionQueue, ConcurrentLinkedQueue<String> resultQueue) {
+    public static void run(RepoApiClientInstance repoApiClient,
+                           ExecutorApiClientInstance executorApiClient,
+                           ConcurrentLinkedQueue<String> executionQueue,
+                           ConcurrentLinkedQueue<String> resultQueue) {
         while (true) {
             String id = executionQueue.poll();
             if (id != null) {
@@ -48,7 +44,7 @@ class ExecutorQueueServer{
                         System.out.println("Executor busy!");
                         executionQueue.add(id);
                     } else {
-                        System.out.println(ae.getLocalizedMessage());
+                        System.out.println(ae.getResponseBody());
                     }
                 }
             }

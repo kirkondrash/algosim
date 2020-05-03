@@ -11,17 +11,13 @@ import java.util.Iterator;
 import java.util.stream.Stream;
 
 public class QuotesDAO {
-    private String fileName;
+    private String quotePath = System.getProperty("pathToQuotes","/quotes");
 
-    public QuotesDAO(String fileName) {
-        this.fileName = fileName;
-    }
-
-    public Stream<Tick> getTicks() {
+    public Stream<Tick> getTicks(String fileName) {
         Stream<String> quoteStream = null;
         try {
             BufferedReader br = new BufferedReader(
-                    new FileReader(String.format("%s/%s.csv",System.getProperty("pathToQuotes","/quotes"), fileName)));
+                    new FileReader(String.format("%s/%s.csv",quotePath, fileName)));
             quoteStream = br.lines().skip(1);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -30,11 +26,11 @@ public class QuotesDAO {
     }
 
     //Sadly, only eager version by now..
-    public Stream<Candlestick> getWindow(String pair, int hh, int mm, int ss){
+    public Stream<Candlestick> getWindow(String fileName, String pair, int hh, int mm, int ss){
         long nextClose = 0;
         try {
             BufferedReader br = new BufferedReader(
-                    new FileReader(String.format("%s/%s.csv", System.getProperty("pathToQuotes","/quotes"), fileName)));
+                    new FileReader(String.format("%s/%s.csv", quotePath, fileName)));
             br.readLine();
             String[] lineValues = br.readLine().split(",");
             nextClose = Instant.from(DateTimeFormatter
@@ -43,7 +39,7 @@ public class QuotesDAO {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        Stream<Tick> tickStream =getTicks().filter(order -> order.getCurrencyPair().equals(pair));
+        Stream<Tick> tickStream =getTicks(fileName).filter(order -> order.getCurrencyPair().equals(pair));
 
         ArrayList<Candlestick> candleArray = new ArrayList<>();
 

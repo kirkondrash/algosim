@@ -71,6 +71,13 @@ public class ApiClient {
         authentications = Collections.unmodifiableMap(authentications);
     }
 
+    public ApiClient(String username, String password, String basePath) {
+        this();
+        setUsername(username);
+        setPassword(password);
+        setBasePath(basePath);
+    }
+
     private void init() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addNetworkInterceptor(getProgressInterceptor());
@@ -264,11 +271,11 @@ public class ApiClient {
      *
      * @param username Username
      */
-    public ApiClient setUsername(String username) {
+    public void setUsername(String username) {
         for (Authentication auth : authentications.values()) {
             if (auth instanceof HttpBasicAuth) {
                 ((HttpBasicAuth) auth).setUsername(username);
-                return this;
+                return;
             }
         }
         throw new RuntimeException("No HTTP basic authentication configured!");
@@ -279,11 +286,11 @@ public class ApiClient {
      *
      * @param password Password
      */
-    public ApiClient setPassword(String password) {
+    public void setPassword(String password) {
         for (Authentication auth : authentications.values()) {
             if (auth instanceof HttpBasicAuth) {
                 ((HttpBasicAuth) auth).setPassword(password);
-                return this;
+                return;
             }
         }
         throw new RuntimeException("No HTTP basic authentication configured!");

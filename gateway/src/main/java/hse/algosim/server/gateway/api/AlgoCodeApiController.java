@@ -2,16 +2,14 @@ package hse.algosim.server.gateway.api;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import hse.algosim.client.api.ApiClient;
 import hse.algosim.client.api.ApiException;
-import hse.algosim.client.compiler.api.CompilerApiClientInstance;
-import hse.algosim.client.executor.api.ExecutorApiClientInstance;
 import hse.algosim.client.model.IdArray;
 import hse.algosim.client.model.SrcStatus;
 import hse.algosim.client.repo.api.RepoApiClientInstance;
 import hse.algosim.server.gateway.queues.TaskManager;
 import hse.algosim.server.model.UserCodeInfo;
 import io.swagger.annotations.ApiParam;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -30,15 +28,14 @@ public class AlgoCodeApiController implements AlgoCodeApi {
 
     private final NativeWebRequest request;
     private static final ObjectMapper mapper = new ObjectMapper();
+    private TaskManager taskManager;
+    private RepoApiClientInstance repoApiClient;
 
-    private final static RepoApiClientInstance repoApiClient = new RepoApiClientInstance(new ApiClient().setBasePath(System.getProperty("repoUrl","http://repo:8080/api")).setUsername("user").setPassword("password"));
-    private final static CompilerApiClientInstance compilerApiClient = new CompilerApiClientInstance(new ApiClient().setBasePath(System.getProperty("compilerUrl","http://compiler:8080/api")).setUsername("user").setPassword("password"));
-    private final static ExecutorApiClientInstance executorApiClient = new ExecutorApiClientInstance(new ApiClient().setBasePath(System.getProperty("executorUrl","http://executor:8080/api")).setUsername("user").setPassword("password"));
-    private final static TaskManager taskManager = new TaskManager(repoApiClient,compilerApiClient,executorApiClient);
-
-    @org.springframework.beans.factory.annotation.Autowired
-    public AlgoCodeApiController(NativeWebRequest request) {
+    @Autowired
+    public AlgoCodeApiController(NativeWebRequest request, RepoApiClientInstance repoApiClient, TaskManager taskManager) {
         this.request = request;
+        this.repoApiClient = repoApiClient;
+        this.taskManager = taskManager;
     }
 
     @Override
@@ -78,13 +75,18 @@ public class AlgoCodeApiController implements AlgoCodeApi {
                     node.put("id",id);
                     node.put("score", winLossNode.asDouble());
                     res.add(node);
-                } catch (ApiException | IOException e) {
-                    e.printStackTrace();
+                } catch (ApiException ae) {
+                    System.out.println(ae.getResponseBody());
+                    System.out.println(ae.getCode());
+                    ae.printStackTrace();
+                } catch (IOException ioe) {
+                    ioe.printStackTrace();
                 }
-
             });
-        } catch (ApiException e) {
-            e.printStackTrace();
+        } catch (ApiException ae) {
+            System.out.println(ae.getResponseBody());
+            System.out.println(ae.getCode());
+            ae.printStackTrace();
         }
         return new ResponseEntity<>(res, HttpStatus.OK);
     }

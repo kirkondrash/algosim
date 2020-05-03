@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class ExecutorServer {
     private final static ProcessBuilder pb = new ProcessBuilder();
 
-    public static void runExecution(RepoApiClientInstance repoApiClient, String id){
+    public static void runExecution(RepoApiClientInstance repoApiClient, String id, String pathToQuotes){
         SrcStatus srcStatus = new SrcStatus();
         File jar = null;
         try {
@@ -21,7 +21,11 @@ public class ExecutorServer {
             jar = repoApiClient.readAlgorithmJar(id);
 
             Process p = pb
-                    .command(Arrays.asList("java", "-jar", jar.getAbsolutePath()))
+                    .command(Arrays.asList(
+                            "java",
+                            String.format("-DpathToQuotes=%s", pathToQuotes),
+                            "-jar",
+                            jar.getAbsolutePath()))
                     .start();
             BufferedReader pErrorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             BufferedReader pOutputReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
@@ -48,8 +52,8 @@ public class ExecutorServer {
                 repoApiClient.updateAlgorithmStatus(
                         id,
                         srcStatus);
-            } catch (ApiException e) {
-                e.printStackTrace();
+            } catch (ApiException ae) {
+                System.out.println(ae.getResponseBody());
             }
         }
     }

@@ -14,7 +14,7 @@ import java.io.File;
 @Ignore
 public class RepoApiClientInstanceTest {
 
-    private final RepoApiClientInstance api = new RepoApiClientInstance();
+    private final RepoApiClientInstance api = new RepoApiClientInstance("user","password","http://repo:8080/api");
 
     
     /**

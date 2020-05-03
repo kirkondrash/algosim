@@ -1,8 +1,8 @@
 public class Simulation {
     public static void main(String[] args) {
-        QuotesDAO quotes = new QuotesDAO("test_set_light");
+        QuotesDAO quotes = new QuotesDAO();
         final TradingAlgorithm tradingAlgorithm = new TradingAlgorithmImpl();
-        quotes.getTicks()
+        quotes.getTicks("test_set_light")
                 .forEach( quote -> {
                     try {
                         tradingAlgorithm.receiveTick(quote);

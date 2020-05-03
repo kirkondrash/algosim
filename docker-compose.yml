@@ -6,11 +6,17 @@ services:
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
+       - "--user.username=user"
+       - "--user.password=password"
    compiler:
      image: compiler-server
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
+       - "--framework.project.path=/framework"
+       - "--user.username=user"
+       - "--user.password=password"
+       - "--repo.basePath=http://repo:8080/api"
      volumes:
        - ~/.m2:/root/.m2
    executor:
@@ -18,10 +24,19 @@ services:
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
+       - "--framework.quotes.path=/quotes"
+       - "--user.username=user"
+       - "--user.password=password"
+       - "--repo.basePath=http://repo:8080/api"
    gateway:
      image: gateway-server
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
+       - "--user.username=user"
+       - "--user.password=password"
+       - "--repo.basePath=http://repo:8080/api"
+       - "--compiler.basePath=http://compiler:8080/api"
+       - "--executor.basePath=http://executor:8080/api"
      ports:
        - 8080:8080

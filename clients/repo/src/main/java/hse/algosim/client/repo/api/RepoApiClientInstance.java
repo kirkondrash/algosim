@@ -5,6 +5,9 @@ import hse.algosim.client.api.*;
 import hse.algosim.client.model.IdArray;
 import hse.algosim.client.model.SrcMeta;
 import hse.algosim.client.model.SrcStatus;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.lang.reflect.Type;
@@ -13,15 +16,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Component
 public class RepoApiClientInstance {
     private ApiClient localVarApiClient;
 
-    public RepoApiClientInstance() {
-        this(Configuration.getDefaultApiClient());
-    }
-
-    public RepoApiClientInstance(ApiClient apiClient) {
-        this.localVarApiClient = apiClient;
+    @Autowired
+    public RepoApiClientInstance(@Value("${user.username}") String username, @Value("${user.password}") String password, @Value("${repo.basePath:http://repo:8080/api}") String basePath) {
+        this.localVarApiClient = new ApiClient(username, password, basePath);
     }
 
     public ApiClient getApiClient() {

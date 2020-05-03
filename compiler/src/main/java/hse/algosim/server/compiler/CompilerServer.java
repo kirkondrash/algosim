@@ -21,7 +21,7 @@ public class CompilerServer {
 
     private final static Invoker mavenInvoker = new DefaultInvoker().setMavenHome(new File(System.getenv("MAVEN_HOME")));
 
-    public static void runCompilation(RepoApiClientInstance repoApiClient, String id) {
+    public static void runCompilation(RepoApiClientInstance repoApiClient, String id, String pathToFramework) {
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
         SrcStatus srcStatus = new SrcStatus();
@@ -32,7 +32,7 @@ public class CompilerServer {
             repoApiClient.updateAlgorithmStatus(
                     id,
                     new SrcStatus().status(SrcStatus.StatusEnum.COMPILING));
-            copyFolder(Paths.get(System.getProperty("pathToFramework","/framework")),projectDir.toPath());
+            copyFolder(Paths.get(pathToFramework),projectDir.toPath());
             Files.move(
                     repoApiClient.readAlgorithmCode(id).toPath(),
                     Paths.get(projectDirName + "/src/main/java/TradingAlgorithmImpl.java"),
@@ -53,10 +53,12 @@ public class CompilerServer {
                 srcStatus.setStatus(SrcStatus.StatusEnum.SUCCESSFULLY_COMPILED);
                 try {
                     repoApiClient.createAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
-                } catch (ApiException e) {
-                    if (e.getCode() == 409) {
+                } catch (ApiException ae) {
+                    if (ae.getCode() == 409) {
                         repoApiClient.updateAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
-                    }
+                    } else {
+                    System.out.println(ae.getResponseBody());
+                }
                 }
             }
             else {
@@ -74,8 +76,10 @@ public class CompilerServer {
                 repoApiClient.updateAlgorithmStatus(
                         id,
                         srcStatus);
-            } catch (ApiException | IOException e) {
-                e.printStackTrace();
+            } catch (ApiException ae) {
+                System.out.println(ae.getResponseBody());
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
             }
         }
     }

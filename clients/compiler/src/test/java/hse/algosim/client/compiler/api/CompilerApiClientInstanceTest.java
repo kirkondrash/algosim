@@ -10,7 +10,7 @@ import org.junit.Test;
 @Ignore
 public class CompilerApiClientInstanceTest {
 
-    private final CompilerApiClientInstance api = new CompilerApiClientInstance();
+    private final CompilerApiClientInstance api = new CompilerApiClientInstance("user","password","http://compiler:8080/api");
 
     
     /**
