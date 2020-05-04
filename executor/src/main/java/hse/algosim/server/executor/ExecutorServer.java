@@ -27,16 +27,17 @@ public class ExecutorServer {
                             "-jar",
                             jar.getAbsolutePath()))
                     .start();
-            BufferedReader pErrorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-            BufferedReader pOutputReader = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            try ( BufferedReader pErrorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+                  BufferedReader pOutputReader = new BufferedReader(new InputStreamReader(p.getInputStream()))){
 
             srcStatus = srcStatus
                     .status(SrcStatus.StatusEnum.SUCCESSFULLY_EXECUTED)
                     .errorTrace(pErrorReader.lines().collect(Collectors.joining(System.lineSeparator())))
                     .metrics(pOutputReader.lines().collect(Collectors.joining(System.lineSeparator())));
 
-            if (p.waitFor() != 0) {
-                srcStatus.setStatus(SrcStatus.StatusEnum.EXECUTION_FAILED);
+                if (p.waitFor() != 0) {
+                    srcStatus.setStatus(SrcStatus.StatusEnum.EXECUTION_FAILED);
+                }
             }
         } catch (InterruptedException | ApiException | IOException e ){
             StringWriter stringWriter = new StringWriter();
