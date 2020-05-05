@@ -1,4 +1,4 @@
-public class TradingLogicException extends Exception {
+public class TradingLogicException extends RuntimeException {
     public TradingLogicException(String message) {
         super(message);
     }

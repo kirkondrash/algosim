@@ -6,8 +6,8 @@ services:
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
-       - "--user.username=user"
-       - "--user.password=password"
+       - "--platform.username=user"
+       - "--platform.password=password"
      networks:
        envoymesh:
          aliases:
@@ -18,8 +18,8 @@ services:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
        - "--framework.project.path=/framework"
-       - "--user.username=user"
-       - "--user.password=password"
+       - "--platform.username=user"
+       - "--platform.password=password"
        - "--repo.basePath=http://router:8000/repo/api"
      volumes:
        - ~/.m2:/root/.m2
@@ -33,8 +33,12 @@ services:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
        - "--framework.quotes.path=/quotes"
-       - "--user.username=user"
-       - "--user.password=password"
+       - "--framework.database.user=postgres"
+       - "--framework.database.password=postgres"
+       - "--framework.database.hostport=database:5432"
+       - "--framework.database.name=algosim"
+       - "--platform.username=user"
+       - "--platform.password=password"
        - "--repo.basePath=http://router:8000/repo/api"
      networks:
        envoymesh:
@@ -45,8 +49,8 @@ services:
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
-       - "--user.username=user"
-       - "--user.password=password"
+       - "--platform.username=user"
+       - "--platform.password=password"
        - "--repo.basePath=http://router:8000/repo/api"
        - "--compiler.basePath=http://router:8000/compiler/api"
        - "--executor.basePath=http://router:8000/executor/api"
@@ -61,6 +65,16 @@ services:
        - 8001:8001
      volumes:
        - ./envoy-config.yaml:/etc/envoy/envoy.yaml
+     networks:
+       envoymesh:
+         aliases:
+           - router
+   database:
+     image: postgres:12-alpine
+     environment:
+       - POSTGRES_PASSWORD=postgres
+     volumes:
+       - ./db-init.sh:/docker-entrypoint-initdb.d/db-init.sh
      networks:
        envoymesh:
          aliases:

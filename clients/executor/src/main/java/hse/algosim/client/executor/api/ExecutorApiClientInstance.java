@@ -15,7 +15,7 @@ public class ExecutorApiClientInstance {
     private ApiClient localVarApiClient;
 
     @Autowired
-    public ExecutorApiClientInstance(@Value("${user.username}") String username, @Value("${user.password}") String password, @Value("${executor.basePath:http://executor:8080/api}") String basePath) {
+    public ExecutorApiClientInstance(@Value("${platform.username}") String username, @Value("${platform.password}") String password, @Value("${executor.basePath:http://executor:8080/api}") String basePath) {
         this.localVarApiClient = new ApiClient(username, password, basePath);
     }
 

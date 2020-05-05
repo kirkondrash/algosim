@@ -6,16 +6,16 @@ services:
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
-       - "--user.username=user"
-       - "--user.password=password"
+       - "--platform.username=user"
+       - "--platform.password=password"
    compiler:
      image: compiler-server
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
        - "--framework.project.path=/framework"
-       - "--user.username=user"
-       - "--user.password=password"
+       - "--platform.username=user"
+       - "--platform.password=password"
        - "--repo.basePath=http://repo:8080/api"
      volumes:
        - ~/.m2:/root/.m2
@@ -25,18 +25,30 @@ services:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
        - "--framework.quotes.path=/quotes"
-       - "--user.username=user"
-       - "--user.password=password"
+       - "--framework.database.user=postgres"
+       - "--framework.database.password=postgres"
+       - "--framework.database.hostport=database:5432"
+       - "--framework.database.name=algosim"
+       - "--platform.username=user"
+       - "--platform.password=password"
        - "--repo.basePath=http://repo:8080/api"
    gateway:
      image: gateway-server
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
-       - "--user.username=user"
-       - "--user.password=password"
+       - "--platform.username=user"
+       - "--platform.password=password"
        - "--repo.basePath=http://repo:8080/api"
        - "--compiler.basePath=http://compiler:8080/api"
        - "--executor.basePath=http://executor:8080/api"
      ports:
        - 8080:8080
+   database:
+     image: postgres:12-alpine
+     environment:
+       - POSTGRES_PASSWORD=postgres
+     volumes:
+       - ./db-init.sh:/docker-entrypoint-initdb.d/db-init.sh
+
+

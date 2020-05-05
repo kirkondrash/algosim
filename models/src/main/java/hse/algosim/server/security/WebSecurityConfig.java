@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
         auth.inMemoryAuthentication()
-                .withUser(env.getProperty("user.username")).password(passwordEncoder().encode(env.getProperty("user.password")))
+                .withUser(env.getProperty("platform.username")).password(passwordEncoder().encode(env.getProperty("platform.password")))
                 .authorities("USER");
     }
 

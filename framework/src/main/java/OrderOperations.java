@@ -1,6 +1,6 @@
 import java.math.BigDecimal;
 
-public interface OrderOperations<T extends Order> {
+public interface OrderOperations<T> {
     T buyNow() throws TradingLogicException;
     T sellNow() throws TradingLogicException;
     T buyStop(BigDecimal pips) throws TradingLogicException;
@@ -9,5 +9,4 @@ public interface OrderOperations<T extends Order> {
     T sellLimit(BigDecimal pips) throws TradingLogicException;
     T stopLoss(BigDecimal pips) throws TradingLogicException;
     T makeProfit(BigDecimal pips) throws TradingLogicException;
-    T close();
 }

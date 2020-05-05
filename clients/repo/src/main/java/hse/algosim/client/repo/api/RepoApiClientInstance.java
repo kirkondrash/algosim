@@ -19,7 +19,7 @@ public class RepoApiClientInstance {
     private ApiClient localVarApiClient;
 
     @Autowired
-    public RepoApiClientInstance(@Value("${user.username}") String username, @Value("${user.password}") String password, @Value("${repo.basePath:http://repo:8080/api}") String basePath) {
+    public RepoApiClientInstance(@Value("${platform.username}") String username, @Value("${platform.password}") String password, @Value("${repo.basePath:http://repo:8080/api}") String basePath) {
         this.localVarApiClient = new ApiClient(username, password, basePath);
     }
 

@@ -15,7 +15,7 @@ public class CompilerApiClientInstance {
     private ApiClient localVarApiClient;
 
     @Autowired
-    public CompilerApiClientInstance(@Value("${user.username}") String username, @Value("${user.password}") String password, @Value("${compiler.basePath:http://compiler:8080/api}") String basePath) {
+    public CompilerApiClientInstance(@Value("${platform.username}") String username, @Value("${platform.password}") String password, @Value("${compiler.basePath:http://compiler:8080/api}") String basePath) {
         this.localVarApiClient = new ApiClient(username, password, basePath);
     }
 

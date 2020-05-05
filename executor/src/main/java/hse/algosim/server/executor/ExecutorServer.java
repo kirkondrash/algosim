@@ -11,7 +11,13 @@ import java.util.stream.Collectors;
 public class ExecutorServer {
     private final static ProcessBuilder pb = new ProcessBuilder();
 
-    public static void runExecution(RepoApiClientInstance repoApiClient, String id, String pathToQuotes){
+    public static void runExecution(RepoApiClientInstance repoApiClient,
+                                    String id,
+                                    String pathToQuotes,
+                                    String dbUser,
+                                    String dbPassword,
+                                    String dbHostPort,
+                                    String dbName){
         SrcStatus srcStatus = new SrcStatus();
         File jar = null;
         try {
@@ -24,6 +30,10 @@ public class ExecutorServer {
                     .command(Arrays.asList(
                             "java",
                             String.format("-DpathToQuotes=%s", pathToQuotes),
+                            String.format("-Dhibernate.connection.username=%s", dbUser),
+                            String.format("-Dhibernate.connection.password=%s", dbPassword),
+                            String.format("-Dpostgres.hostport=%s", dbHostPort),
+                            String.format("-Dpostgres.database=%s", dbName),
                             "-jar",
                             jar.getAbsolutePath()))
                     .start();
