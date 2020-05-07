@@ -4,6 +4,8 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
 import java.math.BigDecimal;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Random;
@@ -14,7 +16,7 @@ public class TradingAlgorithmImpl implements TradingAlgorithm {
     private CurrencyRates currencyRates;
     private static Random r = new Random(System.currentTimeMillis());
 
-    public TradingAlgorithmImpl() {
+    public TradingAlgorithmImpl() throws SQLException {
         if (System.getProperty("framework.debug")!=null){
             Configurator.setLevel("TradingAlgorithmImpl",Level.DEBUG);
         }
@@ -23,7 +25,7 @@ public class TradingAlgorithmImpl implements TradingAlgorithm {
         ordersBase = new SimulationOrdersDAO(currencyRates);
     }
 
-    public void receiveTick(Tick tick) throws TradingLogicException {
+    public void receiveTick(Tick tick) throws TradingLogicException, SQLException {
         CurrencyRate currencyRate = currencyRates.updateAndReturnCurrentRate(tick.getCurrencyPair(),tick.getRate());
         log.debug(String.format("%s - %s: %s",
                 Instant.ofEpochSecond(tick.getTimestamp()).toString(),
@@ -55,7 +57,7 @@ public class TradingAlgorithmImpl implements TradingAlgorithm {
     }
 
     @Override
-    public void evaluateResult() {
+    public void evaluateResult() throws SQLException {
         System.out.println(
                 String.format("{ \"winloss\": %f, \"profitloss\": %f}",
                         ordersBase.evaluateWinLoss(),

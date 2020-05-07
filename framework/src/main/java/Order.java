@@ -1,46 +1,22 @@
-import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
-@Entity
-@Table(name="orders")
 public class Order implements OrderOperations<Order>{
 
     enum State {WAIT, OPENED, CLOSED}
     enum Type {BUY, SELL}
 
-    @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "orders_sequence"
-    )
-    @SequenceGenerator(
-            name = "orders_sequence",
-            sequenceName = "orders_id_seq",
-            allocationSize = 40
-    )
     private int id;
-    @Column(name = "pair")
     private String pair;
-    @Column(name = "lot")
     private int lot;
-    @Column(name = "opening_price")
     private BigDecimal openingPrice;
-    @Column(name = "closing_price")
     private BigDecimal closingPrice;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "state")
     private State state;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type")
     private Type type;
-    @OneToMany(mappedBy = "order")
     private List<OrderTrigger> triggers;
 
-    @Transient
     private CurrencyRate currencyRate;
 
     public Order() {
@@ -272,7 +248,6 @@ public class Order implements OrderOperations<Order>{
 
     public void addTrigger(OrderTrigger.Type type, BigDecimal trigger){
         OrderTrigger ot = new OrderTrigger(type,trigger);
-        ot.setOrder(this);
         triggers.removeIf(t -> t.getType().equals(type));
         triggers.add(ot);
     }

@@ -1,161 +1,130 @@
-import org.apache.logging.log4j.*;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.hibernate.query.Query;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 
 public class SimulationOrdersDAO {
     private static Logger log = LogManager.getLogger(SimulationOrdersDAO.class);
 
     private List<Order> tickOrderList;
     private static CurrencyRates currencyRates;
-    private Session session;
-    private Query triggeredOrdersQuery;
-    private static Predicate<Order> isClosing = order -> order.getState().equals(Order.State.OPENED) &&
-            (order.isTriggered(OrderTrigger.Type.MAKEPROFIT,currencyRates.getCurrentRate(order.getPair())) ||
-            order.isTriggered(OrderTrigger.Type.STOPLOSS,currencyRates.getCurrentRate(order.getPair())));
-    private static Predicate<Order> isOpening = order -> order.getState().equals(Order.State.WAIT) &&
-            order.isTriggered(OrderTrigger.Type.OPEN,currencyRates.getCurrentRate(order.getPair()));
-    private static Predicate<Order> isSkippping = order -> order.getState().equals(Order.State.OPENED) &&
-            order.isTriggered(OrderTrigger.Type.MAKEPROFIT,currencyRates.getCurrentRate(order.getPair())) &&
-            order.isTriggered(OrderTrigger.Type.STOPLOSS,currencyRates.getCurrentRate(order.getPair()));
+    private Connection con;
+    private PreparedStatement insertOrdersQuery, insertOrderTriggersQuery, openByTriggerQuery, closeByStopLossQuery, closeByMakeProfitQuery, clearUnusedTriggersQuery;
+    private static Properties queries;
 
-    public SimulationOrdersDAO(CurrencyRates currencyRates) {
+    public SimulationOrdersDAO(CurrencyRates currencyRates) throws SQLException {
         if (System.getProperty("framework.debug")!=null){
             Configurator.setLevel("SimulationOrdersDAO",Level.DEBUG);
         }
-
-        this.session = HibernateSessionFactoryUtil.getSessionFactory().openSession();
-        this.triggeredOrdersQuery = session.createQuery("from Order as orders join fetch orders.triggers as order_triggers where " +
-                "((order_triggers.trigger <= :curprice and :prevprice < order_triggers.trigger) or " +
-                "(order_triggers.trigger < :prevprice and :curprice <= order_triggers.trigger)) and " +
-                "orders.pair = :pair and " +
-                "orders.state != 'CLOSED'");
         this.tickOrderList = new ArrayList<>();
         SimulationOrdersDAO.currencyRates = currencyRates;
+        con = PostgreSQLManager.getConnection();
+        queries = PostgreSQLManager.getQueries();
+        insertOrdersQuery = con.prepareStatement(queries.getProperty("ORDER_INSERT_SQL"),new String[]{ "id" });
+        insertOrderTriggersQuery = con.prepareStatement(queries.getProperty("ORDER_TRIGGER_INSERT_SQL"));
+        openByTriggerQuery = con.prepareStatement(queries.getProperty("OPEN_BY_TRIGGER_SQL"));
+        closeByStopLossQuery = con.prepareStatement(queries.getProperty("CLOSE_BY_STOP_LOSS_SQL"));
+        closeByMakeProfitQuery = con.prepareStatement(queries.getProperty("CLOSE_BY_MAKE_PROFIT_SQL"));
+        clearUnusedTriggersQuery = con.prepareStatement(queries.getProperty("ORDER_TRIGGER_DELETE_UNUSED_SQL"));
     }
 
-    public void executeOrders(String pair) {
-        Transaction tx = session.beginTransaction();
-        //change statuses of all orders after new currency rate
-        List<Order> triggeredOrderList = getTriggeredOrders(pair);
-        Set<Order> updatedOrderList = processTriggeredOrders(triggeredOrderList);
-        updateTriggeredOrders(updatedOrderList);
+    public void executeOrders(String pair) throws SQLException {
+        updateTriggeredOrders(pair);
         insertTickOrders();
+        con.commit();
         tickOrderList.clear();
-        tx.commit();
     }
 
-    public List<Order> getTriggeredOrders(String pair){
-        CurrencyRate rate = currencyRates.getCurrentRate(pair);
-        triggeredOrdersQuery.setParameter("curprice", rate.get());
-        triggeredOrdersQuery.setParameter("prevprice",rate.getPrev());
-        triggeredOrdersQuery.setParameter("pair", pair);
-        return triggeredOrdersQuery.list();
-    }
-
-    public Set<Order> processTriggeredOrders(List<Order> triggeredOrderList){
-        Set<Order> updatedOrderList = new HashSet<>();
-        updatedOrderList.addAll(
-                triggeredOrderList.parallelStream()
-                        .filter(isClosing)
-                        .map(order -> order.close(currencyRates.getCurrentRate(order.getPair())))
-                        .collect(Collectors.toSet()));
-        updatedOrderList.addAll(
-                triggeredOrderList.parallelStream()
-                        .filter(isOpening)
-                        .map(order -> order.open(currencyRates.getCurrentRate(order.getPair())))
-                        .collect(Collectors.toSet()));
-        updatedOrderList.parallelStream()
-                .filter(isSkippping)
-                .forEach(order -> order.close(currencyRates.getCurrentRate(order.getPair())));
-
-        return updatedOrderList;
-    }
-
-    public void insertTickOrders(){
-        int count = 0;
-        //persist of all new orders for this tick
-        for (Iterator<Order> iter = tickOrderList.iterator(); iter.hasNext(); ){
-            Order o = iter.next();
-            session.persist("orders",o);
-            log.debug(String.format("   inserting %s", o.toString()));
-            if ( ++count % 40 == 0 ) { //40, same as the JDBC batch size
-                //flush a batch of inserts and release memory:
-                session.flush();
-                session.clear();
+    public void insertTickOrders() throws SQLException {
+        for (Iterator<Order> orderIterator = tickOrderList.iterator(); orderIterator.hasNext(); ){
+            Order o = orderIterator.next();
+            insertOrdersQuery.setString(1,o.getPair());
+            insertOrdersQuery.setInt(2,o.getLot());
+            insertOrdersQuery.setBigDecimal(3,o.getOpeningPrice());
+            insertOrdersQuery.setString(4,o.getState().toString());
+            insertOrdersQuery.setString(5,o.getType().toString());
+            insertOrdersQuery.addBatch();
+        }
+        insertOrdersQuery.executeBatch();
+        ResultSet keys = insertOrdersQuery.getGeneratedKeys();
+        for (Iterator<Order> orderIterator = tickOrderList.iterator(); orderIterator.hasNext(); ){
+            Order o = orderIterator.next();
+            keys.next();
+            Long orderKey = keys.getLong(1);
+            for (Iterator<OrderTrigger> orderTriggerIterator = o.getTriggers().iterator(); orderTriggerIterator.hasNext(); ) {
+                OrderTrigger ot = orderTriggerIterator.next();
+                insertOrderTriggersQuery.setLong(1, orderKey);
+                insertOrderTriggersQuery.setString(2, ot.getType().toString());
+                insertOrderTriggersQuery.setBigDecimal(3,ot.getTrigger());
+                insertOrderTriggersQuery.addBatch();
             }
         }
-        count = 0;
-        session.flush();
-        session.clear();
-        List<OrderTrigger> orderTriggerList = tickOrderList.stream().flatMap(order -> order.getTriggers().stream()).collect(Collectors.toList());
-        //persist of all new orders triggers for this tick
-        for (Iterator<OrderTrigger> iter = orderTriggerList.iterator(); iter.hasNext(); ){
-            OrderTrigger orderTrigger = iter.next();
-            session.persist(orderTrigger);
-            if ( ++count % 40 == 0 ) { //40, same as the JDBC batch size
-                //flush a batch of inserts and release memory:
-                session.flush();
-                session.clear();
-            }
-        }
-        count = 0;
-        session.flush();
-        session.clear();
+        insertOrderTriggersQuery.executeBatch();
     }
 
-    public void updateTriggeredOrders(Set<Order> triggeredOrderList){
-        int count =0;
-        //update of all orders after new currency rate
-        for (Iterator<Order> iter = triggeredOrderList.iterator(); iter.hasNext(); ){
-            Order o = iter.next();
-            log.debug(String.format("   updating %d: %s", o.getId(),o.toString()));
-            session.update(o);
-            if ( ++count % 40 == 0 ) { //40, same as the JDBC batch size
-                //flush a batch of inserts and release memory:
-                session.flush();
-                session.clear();
-            }
-        }
-        session.flush();
-        session.clear();
+    public void updateTriggeredOrders(String pair) throws SQLException {
+        CurrencyRate currencyRate = currencyRates.getCurrentRate(pair);
+        closeByStopLossQuery.setBigDecimal(1,currencyRate.get());
+        closeByStopLossQuery.setString(2,pair);
+        closeByStopLossQuery.setBigDecimal(3,currencyRate.get());
+        closeByStopLossQuery.setBigDecimal(4,currencyRate.getPrev());
+        closeByStopLossQuery.execute();
+
+        openByTriggerQuery.setBigDecimal(1,currencyRate.get());
+        openByTriggerQuery.setString(2,pair);
+        openByTriggerQuery.setBigDecimal(3,currencyRate.get());
+        openByTriggerQuery.setBigDecimal(4,currencyRate.getPrev());
+        openByTriggerQuery.execute();
+
+        closeByMakeProfitQuery.setBigDecimal(1,currencyRate.get());
+        closeByMakeProfitQuery.setString(2,pair);
+        closeByMakeProfitQuery.setBigDecimal(3,currencyRate.get());
+        closeByMakeProfitQuery.setBigDecimal(4,currencyRate.getPrev());
+        closeByMakeProfitQuery.execute();
+
+        clearUnusedTriggersQuery.execute();
     }
 
     public void put(Order order){
         tickOrderList.add(order);
     }
 
-    public double evaluateWinLoss(){
-        Query q = session.createQuery("from Order as orders where orders.state='CLOSED'");
-        List<Order> orderList = q.list();
-        long winCount = orderList
-                .parallelStream()
-                .filter(order -> {
-                            double delta = order.getClosingPrice().subtract(order.getOpeningPrice()).doubleValue();
-                            if (order.getType()== Order.Type.SELL)
-                                delta*= -1;
-                            return delta > 0;
-                        })
-                .count();
-        long closedCount = orderList.size();
+    public double evaluateWinLoss() throws SQLException {
+        PreparedStatement winCountQuery = con.prepareStatement(queries.getProperty("GET_BUY_ORDER_SUCCESS_COUNT_SQL"));
+        winCountQuery.execute();
+        ResultSet rs = winCountQuery.getResultSet();
+        rs.next();
+        int winCount = rs.getInt(1);
+        winCountQuery = con.prepareStatement(queries.getProperty("GET_SELL_ORDER_SUCCESS_COUNT_PROFIT_SQL"));
+        winCountQuery.execute();
+        rs = winCountQuery.getResultSet();
+        rs.next();
+        winCount += rs.getInt(1);
+        PreparedStatement closedCountQuery = con.prepareStatement(queries.getProperty("GET_CLOSED_ORDER_COUNT_SQL"));
+        closedCountQuery.execute();
+        rs = closedCountQuery.getResultSet();
+        rs.next();
+        int closedCount = rs.getInt(1);
         return (double) winCount / (closedCount - winCount);
     }
 
-    public void clearDB(){
-        Transaction tx = session.beginTransaction();
-        Query query = session.createQuery("DELETE OrderTrigger");
-        query.executeUpdate();
-        query = session.createQuery("DELETE Order");
-        query.executeUpdate();
-        tx.commit();
-        session.close();
+    public void clearDB() throws SQLException {
+        PreparedStatement deleteOrderTriggers = con.prepareStatement(queries.getProperty("ORDER_TRIGGER_DELETE_SQL"));
+        deleteOrderTriggers.execute();
+        PreparedStatement deleteOrders = con.prepareStatement(queries.getProperty("ORDER_DELETE_SQL"));
+        deleteOrders.execute();
+        con.commit();
     }
 
     private class ProfitLoss {

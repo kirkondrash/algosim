@@ -1,29 +1,11 @@
-import javax.persistence.*;
 import java.math.BigDecimal;
 
-@Entity
-@Table(name="order_triggers")
 public class OrderTrigger {
 
     enum Type {STOPLOSS, MAKEPROFIT, OPEN}
 
-    @Id
-    @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
-            generator = "order_triggers_sequence"
-    )
-    @SequenceGenerator(
-            name = "order_triggers_sequence",
-            sequenceName = "order_triggers_id_seq",
-            allocationSize = 40
-    )
     private int id;
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Order order;
-    @Enumerated(EnumType.STRING)
-    @Column(name = "type")
     private Type type;
-    @Column(name = "trigger")
     private BigDecimal trigger;
 
     public OrderTrigger() {
@@ -36,14 +18,6 @@ public class OrderTrigger {
 
     public int getId() {
         return id;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
     }
 
     public Type getType() {

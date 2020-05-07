@@ -1,15 +1,14 @@
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
+import java.sql.SQLException;
+import java.util.Iterator;
 
 public class Simulation {
-    public static void main(String[] args) throws TradingLogicException {
+    public static void main(String[] args) throws TradingLogicException, SQLException {
 
         QuotesDAO quotes = new QuotesDAO();
         final TradingAlgorithm tradingAlgorithm = new TradingAlgorithmImpl();
-        quotes.getTicks("test_set_light")
-                .forEach( quote -> {
-                        tradingAlgorithm.receiveTick(quote);
-                });
+        for (Iterator<Tick> tickIterator = quotes.getTicks("test_set_light").iterator(); tickIterator.hasNext(); ) {
+            tradingAlgorithm.receiveTick(tickIterator.next());
+        }
 
         tradingAlgorithm.evaluateResult();
 

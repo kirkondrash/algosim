@@ -30,8 +30,8 @@ public class ExecutorServer {
                     .command(Arrays.asList(
                             "java",
                             String.format("-DpathToQuotes=%s", pathToQuotes),
-                            String.format("-Dhibernate.connection.username=%s", dbUser),
-                            String.format("-Dhibernate.connection.password=%s", dbPassword),
+                            String.format("-Dpostgres.username=%s", dbUser),
+                            String.format("-Dpostgres.password=%s", dbPassword),
                             String.format("-Dpostgres.hostport=%s", dbHostPort),
                             String.format("-Dpostgres.database=%s", dbName),
                             "-jar",
