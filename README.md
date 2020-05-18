@@ -46,7 +46,7 @@ Optional TODO:
 Запуск jar-артефактов:
 1. `mvn clean package -P boot` 
 2. 
-   + `java -Xverify:none -jar repo/target/repo-server-1.1.0-SNAPSHOT.jar --server.port=8081`
+   + `java -Xverify:none -jar repo/target/repo-server-1.1.0-SNAPSHOT.jar --server.port=8081 --platform.username=user --platform.password=password`
    + `java -Xverify:none -jar compiler/target/compiler-server-1.1.0-SNAPSHOT.jar --server.port=8082 --framework.project.path=./framework --platform.username=user --platform.password=password`
    + `java -Xverify:none -jar executor/target/executor-server-1.1.0-SNAPSHOT.jar --server.port=8083 --framework.quotes.path=./quotes --framework.database.user=postgres --framework.database.password=postgres --framework.database.hostport=database:5432 --framework.database.name=algosim --platform.username=user --platform.password=password`
    + `java -Xverify:none -jar gateway/target/gateway-server-1.1.0-SNAPSHOT.jar --server.port=8080 --platform.username=user --platform.password=password`
