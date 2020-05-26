@@ -14,21 +14,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 
-public class SimulationOrdersDAO {
-    private static Logger log = LogManager.getLogger(SimulationOrdersDAO.class);
+public class OrdersDAO {
+    private static Logger log = LogManager.getLogger(OrdersDAO.class);
 
     private List<Order> tickOrderList;
     private static CurrencyRates currencyRates;
     private Connection con;
-    private PreparedStatement insertOrdersQuery, insertOrderTriggersQuery, openByTriggerQuery, closeByStopLossQuery, closeByMakeProfitQuery, clearUnusedTriggersQuery;
+    private PreparedStatement insertOrdersQuery, insertOrderTriggersQuery, openByTriggerQuery, closeByStopLossQuery, closeByMakeProfitQuery;
     private static Properties queries;
+    private static final String algorithmId = System.getProperty("framework.algo_id");
 
-    public SimulationOrdersDAO(CurrencyRates currencyRates) throws SQLException {
+    public OrdersDAO(CurrencyRates currencyRates) throws SQLException {
         if (System.getProperty("framework.debug")!=null){
-            Configurator.setLevel("SimulationOrdersDAO",Level.DEBUG);
+            Configurator.setLevel("OrdersDAO",Level.DEBUG);
         }
         this.tickOrderList = new ArrayList<>();
-        SimulationOrdersDAO.currencyRates = currencyRates;
+        OrdersDAO.currencyRates = currencyRates;
         con = PostgreSQLManager.getConnection();
         queries = PostgreSQLManager.getQueries();
         insertOrdersQuery = con.prepareStatement(queries.getProperty("ORDER_INSERT_SQL"),new String[]{ "id" });
@@ -36,7 +37,6 @@ public class SimulationOrdersDAO {
         openByTriggerQuery = con.prepareStatement(queries.getProperty("OPEN_BY_TRIGGER_SQL"));
         closeByStopLossQuery = con.prepareStatement(queries.getProperty("CLOSE_BY_STOP_LOSS_SQL"));
         closeByMakeProfitQuery = con.prepareStatement(queries.getProperty("CLOSE_BY_MAKE_PROFIT_SQL"));
-        clearUnusedTriggersQuery = con.prepareStatement(queries.getProperty("ORDER_TRIGGER_DELETE_UNUSED_SQL"));
     }
 
     public void executeOrders(String pair) throws SQLException {
@@ -49,11 +49,12 @@ public class SimulationOrdersDAO {
     public void insertTickOrders() throws SQLException {
         for (Iterator<Order> orderIterator = tickOrderList.iterator(); orderIterator.hasNext(); ){
             Order o = orderIterator.next();
-            insertOrdersQuery.setString(1,o.getPair());
-            insertOrdersQuery.setInt(2,o.getLot());
-            insertOrdersQuery.setBigDecimal(3,o.getOpeningPrice());
-            insertOrdersQuery.setString(4,o.getState().toString());
-            insertOrdersQuery.setString(5,o.getType().toString());
+            insertOrdersQuery.setString(1,algorithmId);
+            insertOrdersQuery.setString(2,o.getPair());
+            insertOrdersQuery.setInt(3,o.getLot());
+            insertOrdersQuery.setBigDecimal(4,o.getOpeningPrice());
+            insertOrdersQuery.setString(5,o.getState().toString());
+            insertOrdersQuery.setString(6,o.getType().toString());
             insertOrdersQuery.addBatch();
         }
         insertOrdersQuery.executeBatch();
@@ -76,24 +77,25 @@ public class SimulationOrdersDAO {
     public void updateTriggeredOrders(String pair) throws SQLException {
         CurrencyRate currencyRate = currencyRates.getCurrentRate(pair);
         closeByStopLossQuery.setBigDecimal(1,currencyRate.get());
-        closeByStopLossQuery.setString(2,pair);
-        closeByStopLossQuery.setBigDecimal(3,currencyRate.get());
-        closeByStopLossQuery.setBigDecimal(4,currencyRate.getPrev());
+        closeByStopLossQuery.setString(2,algorithmId);
+        closeByStopLossQuery.setString(3,pair);
+        closeByStopLossQuery.setBigDecimal(4,currencyRate.get());
+        closeByStopLossQuery.setBigDecimal(5,currencyRate.getPrev());
         closeByStopLossQuery.execute();
 
         openByTriggerQuery.setBigDecimal(1,currencyRate.get());
-        openByTriggerQuery.setString(2,pair);
-        openByTriggerQuery.setBigDecimal(3,currencyRate.get());
-        openByTriggerQuery.setBigDecimal(4,currencyRate.getPrev());
+        openByTriggerQuery.setString(2,algorithmId);
+        openByTriggerQuery.setString(3,pair);
+        openByTriggerQuery.setBigDecimal(4,currencyRate.get());
+        openByTriggerQuery.setBigDecimal(5,currencyRate.getPrev());
         openByTriggerQuery.execute();
 
         closeByMakeProfitQuery.setBigDecimal(1,currencyRate.get());
-        closeByMakeProfitQuery.setString(2,pair);
-        closeByMakeProfitQuery.setBigDecimal(3,currencyRate.get());
-        closeByMakeProfitQuery.setBigDecimal(4,currencyRate.getPrev());
+        closeByMakeProfitQuery.setString(2,algorithmId);
+        closeByMakeProfitQuery.setString(3,pair);
+        closeByMakeProfitQuery.setBigDecimal(4,currencyRate.get());
+        closeByMakeProfitQuery.setBigDecimal(5,currencyRate.getPrev());
         closeByMakeProfitQuery.execute();
-
-        clearUnusedTriggersQuery.execute();
     }
 
     public void put(Order order){
@@ -102,16 +104,19 @@ public class SimulationOrdersDAO {
 
     public double evaluateWinLoss() throws SQLException {
         PreparedStatement winCountQuery = con.prepareStatement(queries.getProperty("GET_BUY_ORDER_SUCCESS_COUNT_SQL"));
+        winCountQuery.setString(1,algorithmId);
         winCountQuery.execute();
         ResultSet rs = winCountQuery.getResultSet();
         rs.next();
         int winCount = rs.getInt(1);
-        winCountQuery = con.prepareStatement(queries.getProperty("GET_SELL_ORDER_SUCCESS_COUNT_PROFIT_SQL"));
+        winCountQuery = con.prepareStatement(queries.getProperty("GET_SELL_ORDER_SUCCESS_COUNT_SQL"));
+        winCountQuery.setString(1,algorithmId);
         winCountQuery.execute();
         rs = winCountQuery.getResultSet();
         rs.next();
         winCount += rs.getInt(1);
         PreparedStatement closedCountQuery = con.prepareStatement(queries.getProperty("GET_CLOSED_ORDER_COUNT_SQL"));
+        closedCountQuery.setString(1,algorithmId);
         closedCountQuery.execute();
         rs = closedCountQuery.getResultSet();
         rs.next();
@@ -120,9 +125,8 @@ public class SimulationOrdersDAO {
     }
 
     public void clearDB() throws SQLException {
-        PreparedStatement deleteOrderTriggers = con.prepareStatement(queries.getProperty("ORDER_TRIGGER_DELETE_SQL"));
-        deleteOrderTriggers.execute();
         PreparedStatement deleteOrders = con.prepareStatement(queries.getProperty("ORDER_DELETE_SQL"));
+        deleteOrders.setString(1,algorithmId);
         deleteOrders.execute();
         con.commit();
     }

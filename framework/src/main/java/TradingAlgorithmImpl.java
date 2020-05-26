@@ -4,15 +4,14 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Random;
 
 public class TradingAlgorithmImpl implements TradingAlgorithm {
-    private static Logger log = LogManager.getLogger(SimulationOrdersDAO.class);
-    private SimulationOrdersDAO ordersBase;
+    private static Logger log = LogManager.getLogger(OrdersDAO.class);
+    private OrdersDAO ordersBase;
     private CurrencyRates currencyRates;
     private static Random r = new Random(System.currentTimeMillis());
 
@@ -22,7 +21,7 @@ public class TradingAlgorithmImpl implements TradingAlgorithm {
         }
 
         currencyRates = new CurrencyRates();
-        ordersBase = new SimulationOrdersDAO(currencyRates);
+        ordersBase = new OrdersDAO(currencyRates);
     }
 
     public void receiveTick(Tick tick) throws TradingLogicException, SQLException {

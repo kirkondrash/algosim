@@ -29,6 +29,7 @@ public class ExecutorServer {
             Process p = pb
                     .command(Arrays.asList(
                             "java",
+                            String.format("-Dframework.algo_id=%s",id),
                             String.format("-DpathToQuotes=%s", pathToQuotes),
                             String.format("-Dpostgres.username=%s", dbUser),
                             String.format("-Dpostgres.password=%s", dbPassword),

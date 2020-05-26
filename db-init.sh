@@ -5,7 +5,8 @@ psql -U postgres <<-EOSQL
     create database algosim;
     \connect algosim;
     create table orders(
-      id             serial primary key,
+      id             serial      primary key,
+      algo_id        varchar     not null,
       pair           char(7)     not null,
       lot            numeric     not null,
       opening_price  numeric,
@@ -14,8 +15,8 @@ psql -U postgres <<-EOSQL
       type           varchar(4)  not null
     );
     create table order_triggers(
-      id             serial primary key,
-      order_id       serial      not null references orders,
+      id             serial      primary key,
+      order_id       serial      not null references orders(id) on delete cascade,
       type           varchar(10) not null,
       trigger        numeric     not null
     );
