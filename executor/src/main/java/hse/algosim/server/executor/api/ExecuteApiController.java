@@ -42,10 +42,9 @@ public class ExecuteApiController extends FiniteQueueExecutor implements Execute
                     repoApiClient,
                     id,
                     env.getProperty("framework.quotes.path"),
-                    env.getProperty("framework.database.user"),
-                    env.getProperty("framework.database.password"),
-                    env.getProperty("framework.database.hostport"),
-                    env.getProperty("framework.database.name")
+                    env.getProperty("spring.datasource.username"),
+                    env.getProperty("spring.datasource.password"),
+                    env.getProperty("spring.datasource.url")
                     ));
         }catch (RejectedExecutionException re){
             System.out.println(String.format("Execution queue full for %s on %s", id,hostname));

@@ -5,6 +5,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,8 +19,14 @@ public class CompilerApiClientInstance {
     private ApiClient localVarApiClient;
 
     @Autowired
-    public CompilerApiClientInstance(@Value("${platform.username}") String username, @Value("${platform.password}") String password, @Value("${compiler.basePath:http://compiler:8080/api}") String basePath) {
-        this.localVarApiClient = new ApiClient(username, password, basePath);
+    public CompilerApiClientInstance(@Value("${compiler.basePath:http://compiler:8080/api}") String basePath, DataSource dataSource) throws SQLException {
+        Statement stmt = dataSource.getConnection().createStatement();
+        ResultSet rs = stmt.executeQuery("select login, password from bhacklogins where permit='admin' limit 1");
+        if (rs.next()) {
+            this.localVarApiClient = new ApiClient(rs.getString("login"), rs.getString("password"), basePath);
+        } else {
+            throw new RuntimeException("No tech user found!");
+        }
     }
 
     public ApiClient getApiClient() {

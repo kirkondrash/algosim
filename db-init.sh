@@ -4,6 +4,12 @@ set -e
 psql -U postgres <<-EOSQL
     create database algosim;
     \connect algosim;
+    create table bhacklogins(
+      login          varchar     not null,
+      password       varchar     not null,
+      permit         varchar     not null
+    );
+    insert into bhacklogins values ('user','password','user'),('admin','admin','admin');
     create table orders(
       id             serial      primary key,
       algo_id        varchar     not null,

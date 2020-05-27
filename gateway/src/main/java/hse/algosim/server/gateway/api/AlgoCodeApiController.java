@@ -23,7 +23,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Controller
-@RequestMapping("${openapi.algosimGateway.base-path:/api}")
+@RequestMapping("${openapi.algosimGateway.base-path:/}")
 public class AlgoCodeApiController implements AlgoCodeApi {
 
     private final NativeWebRequest request;

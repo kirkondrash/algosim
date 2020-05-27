@@ -6,17 +6,21 @@ services:
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
-       - "--platform.username=user"
-       - "--platform.password=password"
+       - "--spring.datasource.driverClassName=org.postgresql.Driver"
+       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
+       - "--spring.datasource.username=postgres"
+       - "--spring.datasource.password=postgres"
    compiler:
      image: compiler-server
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
        - "--framework.project.path=/framework"
-       - "--platform.username=user"
-       - "--platform.password=password"
        - "--repo.basePath=http://repo:8080/api"
+       - "--spring.datasource.driverClassName=org.postgresql.Driver"
+       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
+       - "--spring.datasource.username=postgres"
+       - "--spring.datasource.password=postgres"
      volumes:
        - ~/.m2:/root/.m2
    executor:
@@ -25,23 +29,23 @@ services:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
        - "--framework.quotes.path=/quotes"
-       - "--framework.database.user=postgres"
-       - "--framework.database.password=postgres"
-       - "--framework.database.hostport=database:5432"
-       - "--framework.database.name=algosim"
-       - "--platform.username=user"
-       - "--platform.password=password"
        - "--repo.basePath=http://repo:8080/api"
+       - "--spring.datasource.driverClassName=org.postgresql.Driver"
+       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
+       - "--spring.datasource.username=postgres"
+       - "--spring.datasource.password=postgres"
    gateway:
      image: gateway-server
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
-       - "--platform.username=user"
-       - "--platform.password=password"
        - "--repo.basePath=http://repo:8080/api"
        - "--compiler.basePath=http://compiler:8080/api"
        - "--executor.basePath=http://executor:8080/api"
+       - "--spring.datasource.driverClassName=org.postgresql.Driver"
+       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
+       - "--spring.datasource.username=postgres"
+       - "--spring.datasource.password=postgres"
      ports:
        - 8080:8080
    database:

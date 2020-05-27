@@ -2,10 +2,9 @@
 ***
 TODO:
 - boot dataSource на каждый сервис для настроек и вместо Map в репо
-- rbac spring security
 - batch запрос статусов из repo
 - пробросить опрос статуса на gateway
-- КУРСАЧ: сменить слайд с терминалами вместо ALternatives на State of things;
+- КУРСАЧ: сменить слайд с терминалами вместо Alternatives на State of things;
 - КУРСАЧ: раскрыть предложение "a clear unambiguous process of *creating* and *verifying* *algorithms* wielding exchange markets logic has to be introduced" - по слайду объяснений на каждое слово;
 - КУРСАЧ: слайд на Functional/Non-functional requirements;
 Future TODO:
@@ -35,26 +34,28 @@ Optional TODO:
 1. `mvn clean package -P docker`
 2. `docker-compose up`
   + Обращение к компонентам только через захардкоженно переданный как параметр хост и порт.
-  + `curl -X POST "http://localhost:8080/api/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@framework/src/main/java/TradingAlgorithmImpl.java" -F "userId=kirko" -F "userAlgoName=right" -u "user:password"`
-  + `curl "http://localhost:8080/api/getTop" -u "user:password" | jq`
+  + `curl -X POST "http://localhost:8080/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@framework/src/main/java/TradingAlgorithmImpl.java" -F "userId=kirko" -F "userAlgoName=right" -u "user:password"`
+  + `curl "http://localhost:8080/getTop" -u "user:password" | jq`
 3. `docker-compose down -v`
 ***
 Несолько compiler- и executor- worker'ов:
 1. `mvn clean package -P docker`
 2. `docker-compose -f docker-compose-multiworker.yml up --scale compiler=2 --scale executor=2`. 
   + В таком случае на хостнеймах компонент платформы должен стоять loab-balancer. В docker-compose его роль исполняет образ envoy. Envoy обчеспечивает роутинг на все компоненты через соответствующий префикс.
-  + `curl -X POST "http://localhost:8000/api/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@framework/src/main/java/TradingAlgorithmImpl.java" -F "userId=kirko" -F "userAlgoName=right" -u "user:password"`
-  + `curl "http://localhost:8000/api/getTop" -u "user:password" | jq`
+  + `curl -X POST "http://localhost:8000/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@framework/src/main/java/TradingAlgorithmImpl.java" -F "userId=kirko" -F "userAlgoName=right" -u "user:password"`
+  + `curl "http://localhost:8000/getTop" -u "user:password" | jq`
   + `curl "http://localhost:8000/repo/api/algoStatus/kirko_right" -u "user:password"`
+  + `for i in {21..40}; do curl -X POST "http://localhost:8000/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@framework/src/main/java/TradingAlgorithmImpl.java" -F "userId=kirko" -F "userAlgoName=$i" -u user:password; sleep 1; done`
+  + `for i in {21..40}; do curl -X POST "http://localhost:8000/executor/api/execute/kirko_$i" -H "accept: application/json"  -u admin:admin;  done`
 4. `docker-compose -f docker-compose-multiworker.yml down -v`
 ***
 Запуск jar-артефактов:
 1. `mvn clean package -P boot` 
 2. 
-   + `java -Xverify:none -jar repo/target/repo-server-1.1.0-SNAPSHOT.jar --server.port=8081 --platform.username=user --platform.password=password`
-   + `java -Xverify:none -jar compiler/target/compiler-server-1.1.0-SNAPSHOT.jar --server.port=8082 --framework.project.path=./framework --platform.username=user --platform.password=password`
-   + `java -Xverify:none -jar executor/target/executor-server-1.1.0-SNAPSHOT.jar --server.port=8083 --framework.quotes.path=./quotes --framework.database.user=postgres --framework.database.password=postgres --framework.database.hostport=database:5432 --framework.database.name=algosim --platform.username=user --platform.password=password`
-   + `java -Xverify:none -jar gateway/target/gateway-server-1.1.0-SNAPSHOT.jar --server.port=8080 --platform.username=user --platform.password=password`
+   + `java -Xverify:none -jar repo/target/repo-server-1.1.0-SNAPSHOT.jar --server.port=8081 --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
+   + `java -Xverify:none -jar compiler/target/compiler-server-1.1.0-SNAPSHOT.jar --server.port=8082 --framework.project.path=./framework --repo.basePath=http://127.0.0.1:8081/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
+   + `java -Xverify:none -jar executor/target/executor-server-1.1.0-SNAPSHOT.jar --server.port=8083 --framework.quotes.path=./quotes --repo.basePath=http://127.0.0.1:8081/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
+   + `java -Xverify:none -jar gateway/target/gateway-server-1.1.0-SNAPSHOT.jar --server.port=8080 --repo.basePath=http://127.0.0.1:8081/api --compiler.basePath=http://127.0.0.1:8082/api --executor.basePath=http://127.0.0.1:8083/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
    + Запустить БД и все изменения из db-init.sh
 ***
 Аргументы артефактов (параметры):
@@ -62,8 +63,10 @@ Optional TODO:
 Oбщие:
 + `--server.port=8080`
 + `--server.address=0.0.0.0`
-+ `--platform.username=user`
-+ `--platform.password=password`
++ `--spring.datasource.driverClassName=org.postgresql.Driver`
++ `--spring.datasource.url=jdbc:postgresql://database:5432/algosim`
++ `--spring.datasource.username=postgres`
++ `--spring.datasource.password=postgres`
 
 В compiler'e:
 + `--framework.project.path=./framework`
@@ -71,10 +74,6 @@ Oбщие:
 
 В executor'e:
 + `--framework.quotes.path=./quotes`
-+ `--framework.database.user=postgres`
-+ `--framework.database.password=postgres`
-+ `--framework.database.hostport=database:5432`
-+ `--framework.database.name=algosim`
 + `--repo.basePath=http://repo:8080/api`
 
 В gateway'e:
@@ -85,9 +84,8 @@ Oбщие:
 ***
 Аргументы фреймворка (system properties):
 + `-DpathToQuotes=/Users/kirkondrash/Desktop/algosim/quotes`
-+ `-Dhibernate.connection.username=postgres`
-+ `-Dhibernate.connection.password=postgres`
-+ `-Dpostgres.hostport=127.0.0.1:5432`
-+ `-Dpostgres.database=algosim`
++ `-Dpostgres.username=postgres`
++ `-Dpostgres.password=postgres`
++ `-Dpostgres.url=jdbc:postgresql://127.0.0.1:5432/algosim`
 + `-Dframework.debug`
 + `-Dframework.algo_id=user_id`

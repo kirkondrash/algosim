@@ -16,8 +16,7 @@ public class ExecutorServer {
                                     String pathToQuotes,
                                     String dbUser,
                                     String dbPassword,
-                                    String dbHostPort,
-                                    String dbName){
+                                    String dbURL){
         SrcStatus srcStatus = new SrcStatus();
         File jar = null;
         try {
@@ -33,8 +32,7 @@ public class ExecutorServer {
                             String.format("-DpathToQuotes=%s", pathToQuotes),
                             String.format("-Dpostgres.username=%s", dbUser),
                             String.format("-Dpostgres.password=%s", dbPassword),
-                            String.format("-Dpostgres.hostport=%s", dbHostPort),
-                            String.format("-Dpostgres.database=%s", dbName),
+                            String.format("-Dpostgres.url=%s", dbURL),
                             "-jar",
                             jar.getAbsolutePath()))
                     .start();
