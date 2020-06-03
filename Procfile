@@ -1,0 +1,1 @@
+web: java -Xverify:none -jar $APP/target/$APP.jar

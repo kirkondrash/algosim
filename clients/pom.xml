@@ -16,9 +16,9 @@
   
   <modules>
     <module>core</module>
-    <module>executor</module>
-    <module>compiler</module>
-    <module>repo</module>
+    <module>executor-client</module>
+    <module>compiler-client</module>
+    <module>repo-client</module>
   </modules>
 
 </project>

@@ -29,13 +29,13 @@
     </parent>
 
     <modules>
-        <module>models</module>
+        <module>server-models</module>
         <module>clients</module>
-        <module>repo</module>
-        <module>compiler</module>
-        <module>executor</module>
-        <module>gateway</module>
-        <module>framework</module>
+        <module>repo-server</module>
+        <module>compiler-server</module>
+        <module>executor-server</module>
+        <module>gateway-server</module>
+        <module>algosim-framework</module>
     </modules>
 
     <dependencyManagement>
@@ -141,10 +141,19 @@
             </dependency>
 
             <dependency>
+                <groupId>org.codehaus.plexus</groupId>
+                <artifactId>plexus-utils</artifactId>
+                <version>3.0.8</version>
+            </dependency>
+
+            <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${postgresql.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
+    <build>
+        <finalName>${project.artifactId}</finalName>
+    </build>
 </project>
