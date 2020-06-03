@@ -1,8 +1,0 @@
-# we wont work with clients a lot, so I just build all of them together and use in other stages
-# it will be cached and wont be built every time the build starts
-FROM maven:3.6.2-jdk-8 AS clients-builder
-COPY ./clients /clients
-COPY ./models /models
-COPY ./framework /framework
-RUN cd /clients && mvn clean install && \
-    cd /models && mvn clean install

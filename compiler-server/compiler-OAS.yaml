@@ -1,0 +1,52 @@
+openapi: "3.0.0"
+info:
+  version: 0.0.1
+  title: Algosim compiler
+  description: A compiler service for collab project of HSE and Deutsche Bank aiming to improve trading algorithms testing. Gets the source code from the repo and compiles it.
+  contact:
+    name: developers
+    email: kirkondrash@yandex.ru
+servers:
+  - url: http://localhost:8080/api
+paths:
+  /compile/{id}:
+    post:
+      tags:
+        - compiler
+      description: Gets the sources from the db and compiles them
+      operationId: compileAlgorithm
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm to fetch
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      responses:
+        '200':
+          description: Successfully compiled
+        '404':
+          description: Source code not found for this id
+  /ready:
+    get:
+      tags:
+        - compiler
+      description: Returns readiness of the host for compilation
+      operationId: getReadiness
+      responses:
+        '200':
+          description: Ready
+        '503':
+          description: Busy
+
+security:
+  - basicAuth: []
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    SrcId:
+      type: string

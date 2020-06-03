@@ -1,0 +1,81 @@
+openapi: "3.0.0"
+info:
+  version: 0.0.1
+  title: Algosim gateway
+  description: A gateway service for collab project of HSE and Deutsche Bank aiming to improve trading algorithms testing. Entrypoint of the whole thing. Here the scheduling logic resides.
+  contact:
+    name: developers
+    email: kirkondrash@yandex.ru
+servers:
+  - url: http://localhost:8080/api
+
+paths:
+  /algoCode:
+    post:
+      tags:
+        - gateway
+      description: Gets code loaded by user, assigns the id to it. The code will later be compiled and executed
+      operationId: codeBenchmark
+      requestBody:
+        description: Source code to be uploaded
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserCodeForm'
+      responses:
+        '201':
+          description: Source code was uploaded successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCodeInfo'
+  /getTop:
+    get:
+      tags:
+        - gateway
+      description: Gets top 10 algos ids and winloss scores
+      operationId: getTop
+      responses:
+        '200':
+          description: Source code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResultArray'
+security:
+  - basicAuth: []
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    UserCodeForm:
+      type: object
+      properties:
+        code:
+          type: string
+          format: binary
+        userId:
+          type: string
+        userAlgoName:
+          type: string
+    UserCodeInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "kirkondrash_newalgo"
+        info:
+          type: string
+    ResultArray:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          score:
+            type: string

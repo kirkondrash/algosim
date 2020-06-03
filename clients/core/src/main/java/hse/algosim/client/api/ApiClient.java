@@ -1,8 +1,10 @@
 package hse.algosim.client.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import hse.algosim.client.api.auth.ApiKeyAuth;
 import hse.algosim.client.api.auth.Authentication;
 import hse.algosim.client.api.auth.HttpBasicAuth;
-import hse.algosim.client.api.auth.ApiKeyAuth;
 import okhttp3.*;
 import okhttp3.internal.http.HttpMethod;
 import okhttp3.internal.tls.OkHostnameVerifier;
@@ -26,10 +28,8 @@ import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.TimeUnit;
@@ -46,17 +46,12 @@ public class ApiClient {
 
     private Map<String, Authentication> authentications;
 
-    private DateFormat dateFormat;
-    private DateFormat datetimeFormat;
-    private boolean lenientDatetimeFormat;
-    private int dateLength;
-
     private InputStream sslCaCert;
     private boolean verifyingSsl;
     private KeyManager[] keyManagers;
 
     private OkHttpClient httpClient;
-    private JSON json;
+    private ObjectMapper json = new ObjectMapper();
 
     private HttpLoggingInterceptor loggingInterceptor;
 
@@ -71,20 +66,25 @@ public class ApiClient {
         authentications = Collections.unmodifiableMap(authentications);
     }
 
+    public ApiClient(String username, String password, String basePath) {
+        this();
+        setUsername(username);
+        setPassword(password);
+        setBasePath(basePath);
+    }
+
     private void init() {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.addNetworkInterceptor(getProgressInterceptor());
         httpClient = builder.build();
 
-
         verifyingSsl = true;
-
-        json = new JSON();
 
         // Set default User-Agent.
         setUserAgent("OpenAPI-Generator/0.0.1/java");
 
         authentications = new HashMap<String, Authentication>();
+        authentications.put("basicAuth", new HttpBasicAuth());
     }
 
     /**
@@ -125,26 +125,6 @@ public class ApiClient {
      */
     public ApiClient setHttpClient(OkHttpClient newHttpClient) {
         this.httpClient = Objects.requireNonNull(newHttpClient, "HttpClient must not be null!");
-        return this;
-    }
-
-    /**
-     * Get JSON
-     *
-     * @return JSON object
-     */
-    public JSON getJSON() {
-        return json;
-    }
-
-    /**
-     * Set JSON
-     *
-     * @param json JSON object
-     * @return Api client
-     */
-    public ApiClient setJSON(JSON json) {
-        this.json = json;
         return this;
     }
 
@@ -207,35 +187,6 @@ public class ApiClient {
     public ApiClient setKeyManagers(KeyManager[] managers) {
         this.keyManagers = managers;
         applySslSettings();
-        return this;
-    }
-
-    public DateFormat getDateFormat() {
-        return dateFormat;
-    }
-
-    public ApiClient setDateFormat(DateFormat dateFormat) {
-        this.json.setDateFormat(dateFormat);
-        return this;
-    }
-
-    public ApiClient setSqlDateFormat(DateFormat dateFormat) {
-        this.json.setSqlDateFormat(dateFormat);
-        return this;
-    }
-
-    public ApiClient setOffsetDateTimeFormat(DateTimeFormatter dateFormat) {
-        this.json.setOffsetDateTimeFormat(dateFormat);
-        return this;
-    }
-
-    public ApiClient setLocalDateFormat(DateTimeFormatter dateFormat) {
-        this.json.setLocalDateFormat(dateFormat);
-        return this;
-    }
-
-    public ApiClient setLenientOnJson(boolean lenientOnJson) {
-        this.json.setLenientOnJson(lenientOnJson);
         return this;
     }
 
@@ -488,12 +439,17 @@ public class ApiClient {
      * @param param Parameter
      * @return String representation of the parameter
      */
-    public String parameterToString(Object param) {
+    public String parameterToString(Object param) throws ApiException {
         if (param == null) {
             return "";
         } else if (param instanceof Date || param instanceof OffsetDateTime || param instanceof LocalDate) {
             //Serialize to json string and remove the " enclosing characters
-            String jsonStr = json.serialize(param);
+            String jsonStr = null;
+            try {
+                jsonStr = json.writeValueAsString(param);
+            } catch (JsonProcessingException e) {
+                throw new ApiException(e);
+            }
             return jsonStr.substring(1, jsonStr.length() - 1);
         } else if (param instanceof Collection) {
             StringBuilder b = new StringBuilder();
@@ -507,111 +463,6 @@ public class ApiClient {
         } else {
             return String.valueOf(param);
         }
-    }
-
-    /**
-     * Formats the specified query parameter to a list containing a single {@code Pair} object.
-     *
-     * Note that {@code value} must not be a collection.
-     *
-     * @param name The name of the parameter.
-     * @param value The value of the parameter.
-     * @return A list containing a single {@code Pair} object.
-     */
-    public List<Pair> parameterToPair(String name, Object value) {
-        List<Pair> params = new ArrayList<Pair>();
-
-        // preconditions
-        if (name == null || name.isEmpty() || value == null || value instanceof Collection) {
-            return params;
-        }
-
-        params.add(new Pair(name, parameterToString(value)));
-        return params;
-    }
-
-    /**
-     * Formats the specified collection query parameters to a list of {@code Pair} objects.
-     *
-     * Note that the values of each of the returned Pair objects are percent-encoded.
-     *
-     * @param collectionFormat The collection format of the parameter.
-     * @param name The name of the parameter.
-     * @param value The value of the parameter.
-     * @return A list of {@code Pair} objects.
-     */
-    public List<Pair> parameterToPairs(String collectionFormat, String name, Collection value) {
-        List<Pair> params = new ArrayList<Pair>();
-
-        // preconditions
-        if (name == null || name.isEmpty() || value == null || value.isEmpty()) {
-            return params;
-        }
-
-        // create the params based on the collection format
-        if ("multi".equals(collectionFormat)) {
-            for (Object item : value) {
-                params.add(new Pair(name, escapeString(parameterToString(item))));
-            }
-            return params;
-        }
-
-        // collectionFormat is assumed to be "csv" by default
-        String delimiter = ",";
-
-        // escape all delimiters except commas, which are URI reserved
-        // characters
-        if ("ssv".equals(collectionFormat)) {
-            delimiter = escapeString(" ");
-        } else if ("tsv".equals(collectionFormat)) {
-            delimiter = escapeString("\t");
-        } else if ("pipes".equals(collectionFormat)) {
-            delimiter = escapeString("|");
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for (Object item : value) {
-            sb.append(delimiter);
-            sb.append(escapeString(parameterToString(item)));
-        }
-
-        params.add(new Pair(name, sb.substring(delimiter.length())));
-
-        return params;
-    }
-
-    /**
-     * Formats the specified collection path parameter to a string value.
-     *
-     * @param collectionFormat The collection format of the parameter.
-     * @param value The value of the parameter.
-     * @return String representation of the parameter
-     */
-    public String collectionPathParameterToString(String collectionFormat, Collection value) {
-        // create the value based on the collection format
-        if ("multi".equals(collectionFormat)) {
-            // not valid for path params
-            return parameterToString(value);
-        }
-
-        // collectionFormat is assumed to be "csv" by default
-        String delimiter = ",";
-
-        if ("ssv".equals(collectionFormat)) {
-            delimiter = " ";
-        } else if ("tsv".equals(collectionFormat)) {
-            delimiter = "\t";
-        } else if ("pipes".equals(collectionFormat)) {
-            delimiter = "|";
-        }
-
-        StringBuilder sb = new StringBuilder() ;
-        for (Object item : value) {
-            sb.append(delimiter);
-            sb.append(parameterToString(item));
-        }
-
-        return sb.substring(delimiter.length());
     }
 
     /**
@@ -746,7 +597,11 @@ public class ApiClient {
             contentType = "application/json";
         }
         if (isJsonMime(contentType)) {
-            return json.deserialize(respBody, returnType);
+            try {
+                return json.readValue(respBody, json.getTypeFactory().constructType(returnType));
+            } catch (JsonProcessingException e) {
+                throw new ApiException(e);
+            }
         } else if (returnType.equals(String.class)) {
             // Expecting string, return the raw response body.
             return (T) respBody;
@@ -776,9 +631,13 @@ public class ApiClient {
             // File body parameter support.
             return RequestBody.create(MediaType.parse(contentType), (File) obj);
         } else if (isJsonMime(contentType)) {
-            String content;
+            String content = null;
             if (obj != null) {
-                content = json.serialize(obj);
+                try {
+                    content = json.writeValueAsString(obj);
+                } catch (JsonProcessingException e) {
+                    e.printStackTrace();
+                }
             } else {
                 content = null;
             }
@@ -982,7 +841,6 @@ public class ApiClient {
      */
     public Call buildCall(String path, String method, List<Pair> queryParams, List<Pair> collectionQueryParams, Object body, Map<String, String> headerParams, Map<String, String> cookieParams, Map<String, Object> formParams, String[] authNames, ApiCallback callback) throws ApiException {
         Request request = buildRequest(path, method, queryParams, collectionQueryParams, body, headerParams, cookieParams, formParams, authNames, callback);
-
         return httpClient.newCall(request);
     }
 
@@ -1059,7 +917,7 @@ public class ApiClient {
      * @param collectionQueryParams The collection query parameters
      * @return The full URL
      */
-    public String buildUrl(String path, List<Pair> queryParams, List<Pair> collectionQueryParams) {
+    public String buildUrl(String path, List<Pair> queryParams, List<Pair> collectionQueryParams) throws ApiException {
         final StringBuilder url = new StringBuilder();
         url.append(basePath).append(path);
 
@@ -1106,7 +964,7 @@ public class ApiClient {
      * @param headerParams Header parameters in the form of Map
      * @param reqBuilder Request.Builder
      */
-    public void processHeaderParams(Map<String, String> headerParams, Request.Builder reqBuilder) {
+    public void processHeaderParams(Map<String, String> headerParams, Request.Builder reqBuilder) throws ApiException {
         for (Entry<String, String> param : headerParams.entrySet()) {
             reqBuilder.header(param.getKey(), parameterToString(param.getValue()));
         }
@@ -1158,7 +1016,7 @@ public class ApiClient {
      * @param formParams Form parameters in the form of Map
      * @return RequestBody
      */
-    public RequestBody buildRequestBodyFormEncoding(Map<String, Object> formParams) {
+    public RequestBody buildRequestBodyFormEncoding(Map<String, Object> formParams) throws ApiException {
         okhttp3.FormBody.Builder formBuilder = new okhttp3.FormBody.Builder();
         for (Entry<String, Object> param : formParams.entrySet()) {
             formBuilder.add(param.getKey(), parameterToString(param.getValue()));
@@ -1173,7 +1031,7 @@ public class ApiClient {
      * @param formParams Form parameters in the form of Map
      * @return RequestBody
      */
-    public RequestBody buildRequestBodyMultipart(Map<String, Object> formParams) {
+    public RequestBody buildRequestBodyMultipart(Map<String, Object> formParams) throws ApiException {
         MultipartBody.Builder mpBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
         for (Entry<String, Object> param : formParams.entrySet()) {
             if (param.getValue() instanceof File) {

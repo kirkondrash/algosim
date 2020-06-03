@@ -1,0 +1,409 @@
+openapi: "3.0.0"
+info:
+  version: 0.0.1
+  title: Algosim repo
+  description: |
+    A repo service for collab project of HSE and Deutsche Bank aiming to improve trading algorithms testing.
+    For now, just stores in folders sources and artifacts. Meta and statuses are stored in-memory.
+  contact:
+    name: developers
+    email: kirkondrash@yandex.ru
+servers:
+  - url: http://localhost:8080/api
+         
+paths:
+  /getTopCode:
+    get:
+      tags:
+        - repo
+      description: Returns top 10 algos ids
+      operationId: getTopCode
+      responses:
+        '200':
+          description: Source code
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdArray'
+  /algoCode/{id}:
+    post:
+      tags:
+        - repo
+      description: Uploads the algorithm source 
+      operationId: createAlgorithmCode
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm to upload
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      requestBody:
+        description: Source code to be uploaded
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SrcCode'
+      responses:
+        '201':
+          description: Source code successfully uploaded
+    put:
+      description: Replaces the algorithm source
+      operationId: updateAlgorithmCode
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm to replace
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      requestBody:
+        description: Source code to be uploaded
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SrcCode'
+      responses:
+        '200':
+          description: Source code successfully replaced
+    get:
+      description: Returns algorithm source
+      operationId: readAlgorithmCode
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm to fetch
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      responses:
+        '200':
+          description: Source code successfully fetched
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Source code not found for this UUI
+    delete:
+      description: Deletes algorithm source
+      operationId: deleteAlgorithmCode
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm to delete
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      responses:
+        '204':
+          description: Source code successfully deleted
+        '404':
+          description: Source code not found for this id
+  /algoMeta/{id}:
+    post:
+      description: Upoads algorithm metadata like description or author
+      operationId: createAlgorithmMeta
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm which metadata is uploaded
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      requestBody:
+        description: Metadata to be uploaded
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SrcMeta'
+      responses:
+        '201':
+          description: Metadata successfully uploaded
+        '404':
+          description: Source not found for this id
+    put:
+      description: Replaces algorithm metadata like description or author
+      operationId: updateAlgorithmMeta
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm which metadata is replaced
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      requestBody:
+        description: Metadata to be uploaded
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SrcMeta'
+      responses:
+        '200':
+          description: Metadata successfully replaced
+        '404':
+          description: Source code / metadata not found for this id
+    get:
+      description: Returns algorithm metadata
+      operationId: readAlgorithmMeta
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm which metadata is fetched
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      responses:
+        '200':
+          description: Metadata successfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SrcMeta'
+        '404':
+          description: Metadata not found for this id
+    delete:
+      description: Deletes algorithm metadata based on the id supplied
+      operationId: deleteAlgorithmMeta
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm which metadata will be deleted
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      responses:
+        '204':
+          description: Metadata successfully deleted
+        '404':
+          description: Metadata not found for this id
+  /algoJar/{id}:
+    post:
+      description: Uploads algorithm artifact
+      operationId: createAlgorithmJar
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm which jar is uploaded
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      requestBody:
+        description: Artifact to be uploaded
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SrcJar'
+      responses:
+        '201':
+          description: Artifact successfully uploaded
+        '404':
+          description: Source code not found for this id
+    put:
+      description: Replaces algorithm artifact
+      operationId: updateAlgorithmJar
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm which jar is uploaded
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      requestBody:
+        description: Artifact to be uploaded
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SrcJar'
+      responses:
+        '200':
+          description: Artifact successfully replaced
+        '404':
+          description: Source code / artifact not found for this id
+    get:
+      description: Returns algorithm jar
+      operationId: readAlgorithmJar
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm which jar will be fetched
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      responses:
+        '200':
+          description: Artifact successfully fetched
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: Artifact not found for this id
+    delete:
+      description: deletes the algorithm jar based on the id supplied
+      operationId: deleteAlgorithmJar
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm to delete
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      responses:
+        '204':
+          description: Artifact successfully deleted
+        '404':
+          description: Artifact not found for this id
+  /algoStatus/{id}:
+    post:
+      description: Uploads the algorithm status and/or benchmarks 
+      operationId: createAlgorithmStatus
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm which status will be uploaded
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      requestBody:
+        description: Status to be uploaded
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SrcStatus'
+      responses:
+        '200':
+          description: Status successfully uploaded
+        '404':
+          description: Source code not found for this id
+    put:
+      description: Replaces the algorithm status and/or benchmarks 
+      operationId: updateAlgorithmStatus
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm which status will be replaced
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      requestBody:
+        description: Status to be uploaded
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SrcStatus'
+      responses:
+        '200':
+          description: Status successfully replaced
+        '404':
+          description: Source code / status not found for this id
+    get:
+      description: Returns an algorithm status 
+      operationId: readAlgorithmStatus
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm which status will be fetched
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      responses:
+        '200':
+          description: Status successfully fetched
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SrcStatus'
+        '404':
+          description: Status not found for this id
+    delete:
+      description: Returns an algorithm status
+      operationId: deleteAlgorithmStatus
+      parameters:
+        - name: id
+          in: path
+          description: id of algorithm which status will be deleted
+          required: true
+          schema:
+            $ref: '#/components/schemas/SrcId'
+      responses:
+        '200':
+          description: Status successfully deleted
+        '404':
+          description: Status not found for this id
+
+security:
+  - basicAuth: []
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+  schemas:
+    IdArray:
+      type: object
+      properties:
+        id:
+          type: array
+          items: 
+            type: string
+
+    SrcCode:
+      type: object
+      properties:
+        code:
+          type: string
+          format: binary
+      
+    SrcMeta:
+      type: object
+      properties:
+        description:
+          type: string
+          example: Based on Stealth
+        author:
+          type: string
+          example: John Doe
+          
+    SrcJar:
+      type: object
+      properties:
+        jar:
+          type: string
+          format: binary
+
+    SrcId:
+      type: string
+      
+    SrcStatus:
+      type: object
+      required: 
+        - status
+      properties:
+        status:
+          type: string
+          enum:
+            - SCHEDULED FOR COMPILATION
+            - COMPILING
+            - SUCCESSFULLY COMPILED
+            - COMPILATION FAILED
+            - SCHEDULED FOR EXECUTION
+            - EXECUTING
+            - SUCCESSFULLY EXECUTED
+            - EXECUTION FAILED
+        errorTrace:
+          type: string
+        metrics:
+          type: string
+          example: "{\"winloss\":1.23,\"profitloss\":4.56}"

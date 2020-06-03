@@ -2,70 +2,59 @@ version: '3.7'
 
 services:
    repo:
-     build:
-       context: repo
-       dockerfile: Dockerfile-repo
-       target: repo-dist
-     volumes:
-       - ./configs/envoy-configs/repo-envoy.yaml:/etc/envoy-config.yaml
-     networks:
-       envoymesh:
-        aliases:
-          - repo
-     expose:
-       - "8000"
-     environment:
-       - SERVICE_NAME=repo
+     image: repo-server
+     command:
+       - "--server.port=8080"
+       - "--server.address=0.0.0.0"
+       - "--spring.datasource.driverClassName=org.postgresql.Driver"
+       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
+       - "--spring.datasource.username=postgres"
+       - "--spring.datasource.password=postgres"
    compiler:
-     build:
-       context: compiler
-       dockerfile: Dockerfile-compiler
-       target: compiler-dist
+     image: compiler-server
+     command:
+       - "--server.port=8080"
+       - "--server.address=0.0.0.0"
+       - "--framework.project.path=/framework"
+       - "--repo.basePath=http://repo:8080/api"
+       - "--spring.datasource.driverClassName=org.postgresql.Driver"
+       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
+       - "--spring.datasource.username=postgres"
+       - "--spring.datasource.password=postgres"
      volumes:
-       - ./configs/envoy-configs/compiler-envoy.yaml:/etc/envoy-config.yaml
        - ~/.m2:/root/.m2
-     networks:
-       envoymesh:
-        aliases:
-          - compiler
-     expose:
-       - "8000"
-     environment:
-       - SERVICE_NAME=compiler
    executor:
-     build:
-       context: executor
-       dockerfile: Dockerfile-executor
-       target: executor-dist
-     volumes:
-       - ./configs/envoy-configs/executor-envoy.yaml:/etc/envoy-config.yaml
-       - ./quotes:/quotes
-     networks:
-       envoymesh:
-        aliases:
-          - executor
-     expose:
-       - "8000"
-     environment:
-       - SERVICE_NAME=executor
+     image: executor-server
+     command:
+       - "--server.port=8080"
+       - "--server.address=0.0.0.0"
+       - "--framework.quotes.path=/quotes"
+       - "--repo.basePath=http://repo:8080/api"
+       - "--spring.datasource.driverClassName=org.postgresql.Driver"
+       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
+       - "--spring.datasource.username=postgres"
+       - "--spring.datasource.password=postgres"
    gateway:
-     depends_on:
-       - repo
-     build:
-       context: gateway
-       dockerfile: Dockerfile-gateway
-       target: gateway-dist
-     volumes:
-       - ./configs/envoy-configs/gateway-envoy.yaml:/etc/envoy-config.yaml
-     networks:
-       - envoymesh
-     expose:
-       - "8000"
-       - "8001"
+     image: gateway-server
+     command:
+       - "--server.port=8080"
+       - "--server.address=0.0.0.0"
+       - "--repo.basePath=http://repo:8080/api"
+       - "--compiler.basePath=http://compiler:8080/api"
+       - "--executor.basePath=http://executor:8080/api"
+       - "--spring.datasource.driverClassName=org.postgresql.Driver"
+       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
+       - "--spring.datasource.username=postgres"
+       - "--spring.datasource.password=postgres"
      ports:
-       - "8000:8000"
-       - "8001:8001"
+       - 8080:8080
+   database:
+     image: postgres:12-alpine
+     ports:
+       - 5432:5432
      environment:
-       - SERVICE_NAME=gateway
-networks:
-  envoymesh: {}
+       - POSTGRES_PASSWORD=postgres
+     volumes:
+       - ./db-init.sh:/docker-entrypoint-initdb.d/db-init.sh
+
+

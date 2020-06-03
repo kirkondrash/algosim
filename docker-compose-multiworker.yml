@@ -1,0 +1,90 @@
+version: '3.7'
+
+services:
+   repo:
+     image: repo-server
+     command:
+       - "--server.port=8080"
+       - "--server.address=0.0.0.0"
+       - "--spring.datasource.driverClassName=org.postgresql.Driver"
+       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
+       - "--spring.datasource.username=postgres"
+       - "--spring.datasource.password=postgres"
+     networks:
+       envoymesh:
+         aliases:
+           - repo
+   compiler:
+     image: compiler-server
+     command:
+       - "--server.port=8080"
+       - "--server.address=0.0.0.0"
+       - "--framework.project.path=/framework"
+       - "--spring.datasource.driverClassName=org.postgresql.Driver"
+       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
+       - "--spring.datasource.username=postgres"
+       - "--spring.datasource.password=postgres"
+       - "--repo.basePath=http://router:8000/repo/api"
+     volumes:
+       - ~/.m2:/root/.m2
+     networks:
+       envoymesh:
+         aliases:
+           - compiler
+   executor:
+     image: executor-server
+     command:
+       - "--server.port=8080"
+       - "--server.address=0.0.0.0"
+       - "--framework.quotes.path=/quotes"
+       - "--spring.datasource.driverClassName=org.postgresql.Driver"
+       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
+       - "--spring.datasource.username=postgres"
+       - "--spring.datasource.password=postgres"
+       - "--repo.basePath=http://router:8000/repo/api"
+     networks:
+       envoymesh:
+         aliases:
+           - executor
+   gateway:
+     image: gateway-server
+     command:
+       - "--server.port=8080"
+       - "--server.address=0.0.0.0"
+       - "--spring.datasource.driverClassName=org.postgresql.Driver"
+       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
+       - "--spring.datasource.username=postgres"
+       - "--spring.datasource.password=postgres"
+       - "--repo.basePath=http://router:8000/repo/api"
+       - "--compiler.basePath=http://router:8000/compiler/api"
+       - "--executor.basePath=http://router:8000/executor/api"
+     networks:
+       envoymesh:
+         aliases:
+           - gateway
+   router:
+     image: envoyproxy/envoy-alpine:v1.14.1
+     ports:
+       - 8000:8000
+       - 8001:8001
+     volumes:
+       - ./envoy-config.yaml:/etc/envoy/envoy.yaml
+     networks:
+       envoymesh:
+         aliases:
+           - router
+   database:
+     image: postgres:12-alpine
+     ports:
+       - 5432:5432
+     environment:
+       - POSTGRES_PASSWORD=postgres
+     volumes:
+       - ./db-init.sh:/docker-entrypoint-initdb.d/db-init.sh
+     networks:
+       envoymesh:
+         aliases:
+           - router
+networks:
+  envoymesh: {}
+

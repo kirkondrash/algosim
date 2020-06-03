@@ -1,1 +1,1 @@
-web: java -Xverify:none -jar $MODULE/target/app.jar
+web: java -Xverify:none -jar $MODULE/target/$MODULE.jar

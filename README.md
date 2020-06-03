@@ -1,34 +1,91 @@
-![sequence-diagram](configs/algosim-sequence.png "Взаимодействие сервисов")
+![sequence-diagram](algosim-sequence.png "Взаимодействие сервисов")
 ***
 TODO:
-- для compiler/executor родительский worker-класс с настройками ThreadPool
-- concurrent maps для хранения данных в сервисах;
-- ??? нужна ли ??? оптимизация executeOrders - [concurrent?]map of sets:
-  - для openOrderList - ключ stoploss/makeprofit цены, значение сеты ордеров им соответствующие;
-  - для waitOrderList - ключ opening цены, значение сеты ордеров им соответствующие;
-  - соответственно затем стрим + фильтр ключи между текущим и предыдущим уровнем цены
+- boot dataSource на каждый сервис для настроек и вместо Map в репо
+- batch запрос статусов из repo
+- пробросить опрос статуса на gateway
+- КУРСАЧ: сменить слайд с терминалами вместо Alternatives на State of things;
+- КУРСАЧ: раскрыть предложение "a clear unambiguous process of *creating* and *verifying* *algorithms* wielding exchange markets logic has to be introduced" - по слайду объяснений на каждое слово;
+- КУРСАЧ: слайд на Functional/Non-functional requirements;
+Future TODO:
+- profit&loss по всем валютам с приведением к базовой по курсу закрытия дня
+- интерфейс для того чтобы доставать ордера из БД для пользователя (и добавлять туда currencyrate)
+- Учёт спреда 
+- Принудительное закрытие ордеров по текущей цене
+- Компиляции/исполнение алгоритма c коллбэками и закрытиям по таймауту
+- Индикаторы
+- пояснить что пока что без кредитных плечей итд
 Optional TODO:
-- host и basepath сервисов как параметры/файлы пропертей
+- как разобраться с maven-зависимостями?
+- довести до ума логирование framework
 - поправить swagger-ui чтоьы выстраивались корректные запросы с учетом envoy-прокси
 - BUG: запросы работают либо без Accept, либо с "Accept: application/json, application/octet-stream"; c "Accept: application/octet-stream, application/json" НЕ работают, разобраться почему
-- перейти на единый формат сериализации (gson/jackson) в клиентах и серверах, сделать единый артефакт с моделями
 ***
 Структура репо:
-- Dockerfile-base, Dockerfile-dist-{jdk,jre}, start-service.sh - для сборки базовых образов. В base (он с jdk,maven, исходным кодом клиентов) собирается артефакт сервиса, в dist (тонкий образ, alpine+envoy+(jre|jdk)) он запускается.
 - docker-compose.yml
-- configs/:
-  - algosim-sequnce.{png,txt} - последовательность взаимодействия сервисов 
-  - envoy-configs/ - конфигурационные файлы маршрутизации
-  - openapi-specs/ - openapi спецификации всех сервисов
-  - generator-configs/ - конфиги для генерации заглушек серверов/клиентов сервисов. По факту всё уже сгенерировано и лежит в соответствующих папках
+- algosim-sequnce.{png,txt} - последовательность взаимодействия сервисов 
 - framework/ - непосредственно код логики трейдинга
-- clients/ - сгенерированные  и допиленные клиенты ко всем сервисам
-- {gateway,repo,compiler,executor}/ - сгенерированные сервисы
+- clients/ - сгенерированные  и допиленные клиенты ко всем серверам
+- {gateway,repo,compiler,executor}/ - сервера-компоненты платформы
+- models/ - модели и переиспользуемые классы всех серверов
+- quotes/ - тестовый набор данных 
 ***
-Порядок действий (из корня проекта):
-1. Сначала собрать algosim-base (там все клиенты), algosim-dist-{jre,jdk} (envoy+jre для финальных контейнеров). Почему-то не кэшируетсяв мультистейдже, приходится отдельно, потом разберусь. 
-  - `docker build -t algosim-base -f Dockerfile-base .`
-  - `docker build -t algosim-dist-jre -f Dockerfile-dist-jre .`
-  - `docker build -t algosim-dist-jdk -f Dockerfile-dist-jdk .`
-2. Потом уже собрать  и запустить сервисы по `docker-compose up --build`. Для того чтобы запустить сборку без использования закэшированных слоев (если вам кажется, что что-то не подхватывается при сборке) - `docker-compose build --no-cache`.
-3. Несолько compiler-worker'ов - `docker-compose up --scale compiler=3`
+Запуск платформы в контейнерах:
+1. `mvn clean package -P docker`
+2. `docker-compose up`
+  + Обращение к компонентам только через захардкоженно переданный как параметр хост и порт.
+  + `curl -X POST "http://localhost:8080/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@framework/src/main/java/TradingAlgorithmImpl.java" -F "userId=kirko" -F "userAlgoName=right" -u "user:password"`
+  + `curl "http://localhost:8080/getTop" -u "user:password" | jq`
+3. `docker-compose down -v`
+***
+Несолько compiler- и executor- worker'ов:
+1. `mvn clean package -P docker`
+2. `docker-compose -f docker-compose-multiworker.yml up --scale compiler=2 --scale executor=2`. 
+  + В таком случае на хостнеймах компонент платформы должен стоять loab-balancer. В docker-compose его роль исполняет образ envoy. Envoy обчеспечивает роутинг на все компоненты через соответствующий префикс.
+  + `curl -X POST "http://localhost:8000/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@framework/src/main/java/TradingAlgorithmImpl.java" -F "userId=kirko" -F "userAlgoName=right" -u "user:password"`
+  + `curl "http://localhost:8000/getTop" -u "user:password" | jq`
+  + `curl "http://localhost:8000/repo/api/algoStatus/kirko_right" -u "user:password"`
+  + `for i in {21..40}; do curl -X POST "http://localhost:8000/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@framework/src/main/java/TradingAlgorithmImpl.java" -F "userId=kirko" -F "userAlgoName=$i" -u user:password; sleep 1; done`
+  + `for i in {21..40}; do curl -X POST "http://localhost:8000/executor/api/execute/kirko_$i" -H "accept: application/json"  -u admin:admin;  done`
+4. `docker-compose -f docker-compose-multiworker.yml down -v`
+***
+Запуск jar-артефактов:
+1. `mvn clean package -P boot` 
+2. 
+   + `java -Xverify:none -jar repo/target/repo-server-1.1.0-SNAPSHOT.jar --server.port=8081 --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
+   + `java -Xverify:none -jar compiler/target/compiler-server-1.1.0-SNAPSHOT.jar --server.port=8082 --framework.project.path=./framework --repo.basePath=http://127.0.0.1:8081/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
+   + `java -Xverify:none -jar executor/target/executor-server-1.1.0-SNAPSHOT.jar --server.port=8083 --framework.quotes.path=./quotes --repo.basePath=http://127.0.0.1:8081/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
+   + `java -Xverify:none -jar gateway/target/gateway-server-1.1.0-SNAPSHOT.jar --server.port=8080 --repo.basePath=http://127.0.0.1:8081/api --compiler.basePath=http://127.0.0.1:8082/api --executor.basePath=http://127.0.0.1:8083/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
+   + Запустить БД и все изменения из db-init.sh
+***
+Аргументы артефактов (параметры):
+
+Oбщие:
++ `--server.port=8080`
++ `--server.address=0.0.0.0`
++ `--spring.datasource.driverClassName=org.postgresql.Driver`
++ `--spring.datasource.url=jdbc:postgresql://database:5432/algosim`
++ `--spring.datasource.username=postgres`
++ `--spring.datasource.password=postgres`
+
+В compiler'e:
++ `--framework.project.path=./framework`
++ `--repo.basePath=http://repo:8080/api`
+
+В executor'e:
++ `--framework.quotes.path=./quotes`
++ `--repo.basePath=http://repo:8080/api`
+
+В gateway'e:
++ `--repo.basePath=http://repo:8080/api`
++ `--compiler.basePath=http://compiler:8080/api`
++ `--executor.basePath=http://executor:8080/api`
+
+***
+Аргументы фреймворка (system properties):
++ `-DpathToQuotes=/Users/kirkondrash/Desktop/algosim/quotes`
++ `-Dpostgres.username=postgres`
++ `-Dpostgres.password=postgres`
++ `-Dpostgres.url=jdbc:postgresql://127.0.0.1:5432/algosim`
++ `-Dframework.debug`
++ `-Dframework.algo_id=user_id`

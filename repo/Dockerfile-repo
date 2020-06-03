@@ -1,7 +1,0 @@
-FROM algosim-base AS repo-builder
-WORKDIR /app
-COPY . /app
-RUN mvn package
-
-FROM algosim-dist-jre AS repo-dist
-COPY --from=repo-builder /app/target/repo-server.jar  /app/app.jar

@@ -1,0 +1,68 @@
+title AlgoSim
+
+actor User
+
+User->GW:POST /algoCode: loads source code
+
+note over GW:id assigned to sources
+
+GW->Repo: POST /algoCode/{id}
+activate Repo
+note over Repo,GW:sources are pushed to the repo
+GW<-Repo:OK
+deactivate Repo
+
+abox over GW:id: QUEUED for COMPILING
+loop compiler not ready 
+GW->Compiler: POST /compile/{id}
+activate Compiler
+Compiler->GW:Busy
+deactivate Compiler
+end
+
+GW->Compiler: POST /compile/{id}
+activate Compiler
+abox over GW:id: COMPILING
+Compiler->Repo: GET /algoCode/{id}
+activate Repo
+note over Repo,Compiler:sources are fetched by id
+Repo->Compiler: OK - sources
+deactivate Repo
+note over Compiler:compilation
+Compiler->Repo:POST /algoJar/{id}
+activate Repo
+note over Repo,Compiler:artifact is pushed to repo
+Repo->Compiler:OK
+deactivate Repo
+Compiler->GW:OK
+deactivate Compiler
+
+abox over GW:id: SUCCESSFULLY COMPILED
+abox over GW:id: QUEUED for EXECUTING
+
+loop executor not ready 
+GW->Executor: POST /execute/{id}
+activate Executor
+Executor->GW:Busy
+deactivate Executor
+end
+
+GW->Executor: POST /execute/{id}
+activate Executor
+abox over GW:id: EXECUTING
+Executor->Repo: GET /algoJar/{id}
+activate Repo
+note over Repo,Executor:artifact is fetched by id
+Repo->Executor: OK - artifact
+deactivate Repo
+note over Executor:execution and evaluation
+Executor->Repo:POST /algoStatus/{id}
+activate Repo
+note over Repo,Executor:results are pushed to repo
+Repo->Executor:OK
+deactivate Repo
+Executor->GW:OK
+deactivate Executor
+
+abox over GW:id: SUCCESSFULLY EXECUTED
+note over GW: that's all!
