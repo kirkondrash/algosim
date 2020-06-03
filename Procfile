@@ -1,1 +1,1 @@
-web: java -Xverify:none -jar $MODULE/target/$MODULE.jar
+web: java -Dserver.port=$PORT -Xverify:none -jar $MODULE/target/$MODULE.jar
