@@ -1,9 +1,8 @@
 #!/bin/bash
 set -e
 
-psql -U postgres <<-EOSQL
-    create database algosim;
-    \connect algosim;
+psql -h ec2-3-223-21-106.compute-1.amazonaws.com -p 5432 -U vipyqoydutqrav dc8un8r1avea3f<<-EOSQL
+
     create table bhacklogins(
       login          varchar     not null,
       password       varchar     not null,
