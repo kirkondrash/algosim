@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-psql -h ec2-3-223-21-106.compute-1.amazonaws.com -p 5432 -U vipyqoydutqrav dc8un8r1avea3f<<-EOSQL
+psql -h ec2-54-217-204-34.eu-west-1.compute.amazonaws.com -p 5432 -U rmvvexocwzltmj dd3tph3p1qadvs<<-EOSQL
 
     create table bhacklogins(
       login          varchar     not null,
