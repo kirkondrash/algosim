@@ -39,7 +39,7 @@
                             <outputDirectory>${project.build.directory}/jib-extra-directory/framework</outputDirectory>
                             <resources>
                                 <resource>
-                                    <directory>../framework</directory>
+                                    <directory>../algosim-framework</directory>
                                 </resource>
                             </resources>
                         </configuration>
