@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import javax.sql.DataSource;
 import java.io.File;
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -24,12 +25,13 @@ public class RepoApiClientInstance {
 
     @Autowired
     public RepoApiClientInstance(@Value("${repo.basePath:http://repo:8080/api}") String basePath, DataSource dataSource) throws SQLException {
-        Statement stmt = dataSource.getConnection().createStatement();
-        ResultSet rs = stmt.executeQuery("select login, password from bhacklogins where permit='admin' limit 1");
-        if (rs.next()) {
-            this.localVarApiClient = new ApiClient(rs.getString("login"), rs.getString("password"), basePath);
-        } else {
-            throw new RuntimeException("No tech user found!");
+        try (Connection conn = dataSource.getConnection(); Statement stmt = conn.createStatement()) {
+            ResultSet rs = stmt.executeQuery("select login, password from bhacklogins where permit='admin' limit 1;");
+            if (rs.next()) {
+                this.localVarApiClient = new ApiClient(rs.getString("login"), rs.getString("password"), basePath);
+            } else {
+                throw new RuntimeException("No tech user found!");
+            }
         }
     }
 
