@@ -406,4 +406,4 @@ components:
           type: string
         metrics:
           type: string
-          example: "{\"winloss\":1.23,\"profitloss\":4.56}"
+          example: "1.23"

@@ -1,9 +1,8 @@
 package hse.algosim.server.gateway.api;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import hse.algosim.client.api.ApiException;
 import hse.algosim.client.repo.api.RepoApiClientInstance;
+import hse.algosim.server.exceptions.ResourceNotFoundException;
 import hse.algosim.server.gateway.queues.TaskManager;
 import hse.algosim.server.model.IdArray;
 import hse.algosim.server.model.SrcStatus;
@@ -13,13 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -27,7 +26,6 @@ import java.util.*;
 public class AlgoCodeApiController implements AlgoCodeApi {
 
     private final NativeWebRequest request;
-    private static final ObjectMapper mapper = new ObjectMapper();
     private TaskManager taskManager;
     private RepoApiClientInstance repoApiClient;
 
@@ -70,17 +68,14 @@ public class AlgoCodeApiController implements AlgoCodeApi {
             ids.getId().forEach( id -> {
                 try {
                     SrcStatus status = repoApiClient.readAlgorithmStatus(id);
-                    JsonNode winLossNode = mapper.readTree(status.getMetrics()).get("winloss");
                     Map<String,Object> node = new HashMap<>();
                     node.put("id",id);
-                    node.put("score", winLossNode.asDouble());
+                    node.put("score", status.getMetrics());
                     res.add(node);
                 } catch (ApiException ae) {
                     System.out.println(ae.getResponseBody());
                     System.out.println(ae.getCode());
                     ae.printStackTrace();
-                } catch (IOException ioe) {
-                    ioe.printStackTrace();
                 }
             });
         } catch (ApiException ae) {
@@ -89,6 +84,19 @@ public class AlgoCodeApiController implements AlgoCodeApi {
             ae.printStackTrace();
         }
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @Override
+    public ResponseEntity<SrcStatus> readAlgorithmStatus(@PathVariable("id") String id) {
+        try {
+            SrcStatus status = repoApiClient.readAlgorithmStatus(id);
+            return new ResponseEntity<>(status, HttpStatus.OK);
+        } catch (ApiException ae) {
+            System.out.println(ae.getResponseBody());
+            System.out.println(ae.getCode());
+            ae.printStackTrace();
+            throw new ResourceNotFoundException("Status not found for this id");
+        }
     }
 
 }
