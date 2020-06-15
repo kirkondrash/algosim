@@ -1,10 +1,13 @@
 package hse.algosim.server.gateway.api;
 
+import hse.algosim.server.model.SrcStatus;
 import hse.algosim.server.model.UserCodeInfo;
 import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -50,6 +53,17 @@ public interface AlgoCodeApi {
     default ResponseEntity<List<Map<String,Object>>> getTop() {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
+    }
+
+    @ApiOperation(value = "", nickname = "readAlgorithmStatus", notes = "Returns an algorithm status", response = SrcStatus.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Status successfully fetched", response = SrcStatus.class),
+            @ApiResponse(code = 404, message = "Status not found for this id") })
+    @RequestMapping(value = "/algoStatus/{id}",
+            produces = { MediaType.APPLICATION_JSON_VALUE },
+            method = RequestMethod.GET)
+    default ResponseEntity<SrcStatus> readAlgorithmStatus(@ApiParam(value = "id of algorithm which status will be fetched",required=true) @PathVariable("id") String id) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
 }

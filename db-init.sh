@@ -2,6 +2,25 @@
 set -e
 
 psql -h ec2-54-217-204-34.eu-west-1.compute.amazonaws.com -p 5432 -U rmvvexocwzltmj dd3tph3p1qadvs<<-EOSQL
+    create table statuses(
+      id             serial      primary key,
+      algo_id        varchar     not null unique,
+      status         varchar     not null,
+      error_trace    varchar,
+      winloss        varchar
+    );
+
+    create table sources(
+      id             serial      primary key,
+      algo_id        varchar     not null unique,
+      path           varchar
+    );
+
+    create table artifacts(
+      id             serial      primary key,
+      algo_id        varchar     not null unique,
+      path           varchar
+    );
 
     create table bhacklogins(
       login          varchar     not null,

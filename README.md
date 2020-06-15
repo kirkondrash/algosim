@@ -1,13 +1,7 @@
 ![sequence-diagram](algosim-sequence.png "Взаимодействие сервисов")
 ***
-TODO:
-- boot dataSource на каждый сервис для настроек и вместо Map в репо
-- batch запрос статусов из repo
-- пробросить опрос статуса на gateway
-- КУРСАЧ: сменить слайд с терминалами вместо Alternatives на State of things;
-- КУРСАЧ: раскрыть предложение "a clear unambiguous process of *creating* and *verifying* *algorithms* wielding exchange markets logic has to be introduced" - по слайду объяснений на каждое слово;
-- КУРСАЧ: слайд на Functional/Non-functional requirements;
 Future TODO:
+- batch запрос статусов из repo
 - profit&loss по всем валютам с приведением к базовой по курсу закрытия дня
 - интерфейс для того чтобы доставать ордера из БД для пользователя (и добавлять туда currencyrate)
 - Учёт спреда 

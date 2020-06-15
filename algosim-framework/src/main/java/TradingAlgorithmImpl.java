@@ -57,10 +57,7 @@ public class TradingAlgorithmImpl implements TradingAlgorithm {
 
     @Override
     public void evaluateResult() throws SQLException {
-        System.out.println(
-                String.format("{ \"winloss\": %f, \"profitloss\": %f}",
-                        ordersBase.evaluateWinLoss(),
-                        ordersBase.evaluateProfitLoss()));
+        System.out.println(ordersBase.evaluateWinLoss());
         ordersBase.clearDB();
     }
 

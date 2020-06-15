@@ -2,11 +2,14 @@ package hse.algosim.server.repo.api;
 
 import hse.algosim.server.exceptions.ResourceAlreadyExistsException;
 import hse.algosim.server.exceptions.ResourceNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.PathResource;
 import org.springframework.core.io.Resource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,8 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -25,7 +26,12 @@ import java.util.Optional;
 public class AlgoCodeApiController implements AlgoCodeApi {
 
     private final NativeWebRequest request;
-    private static final Map<String,File> codeFiles = new HashMap<>();
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    private static final String getPathSql = "select path from sources where algo_id=?;";
+    private static final String insertPathSql = "insert into sources(algo_id, path) values (?,?);";
+    private static final String deletePathSql = "delete from sources where algo_id=?;";
 
     @org.springframework.beans.factory.annotation.Autowired
     public AlgoCodeApiController(NativeWebRequest request) {
@@ -39,12 +45,13 @@ public class AlgoCodeApiController implements AlgoCodeApi {
 
     @Override
     public ResponseEntity<Void> createAlgorithmCode(@PathVariable("id") String id, @Valid MultipartFile code) {
-        synchronized (codeFiles) {
-            if (codeFiles.containsKey(id))
-                throw new ResourceAlreadyExistsException("Source code already uploaded for this id");
+        try {
+            jdbcTemplate.queryForObject(getPathSql, new Object[]{id}, (rs, rowNum) -> rs.getString("path"));
+        } catch (EmptyResultDataAccessException e) {
             saveFile(id, code);
+            return new ResponseEntity<>(HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        throw new ResourceAlreadyExistsException("Source code already uploaded for this id");
     }
 
     @Override
@@ -59,37 +66,36 @@ public class AlgoCodeApiController implements AlgoCodeApi {
 
     @Override
     public ResponseEntity<Void> updateAlgorithmCode(@PathVariable("id") String id, @Valid MultipartFile code) {
-        synchronized (codeFiles) {
-            File oldCode = getFile(id);
-            oldCode.delete();
-            saveFile(id, code);
-        }
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        File oldCode = getFile(id);
+        oldCode.delete();
+        jdbcTemplate.update(deletePathSql, id);
+        saveFile(id, code);
+        return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
     @Override
     public ResponseEntity<Void> deleteAlgorithmCode(@PathVariable("id") String id) {
-        synchronized (codeFiles) {
-            File code = getFile(id);
-            code.delete();
-            codeFiles.remove(id);
-        }
+        File code = getFile(id);
+        code.delete();
+        jdbcTemplate.update(deletePathSql, id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     public File getFile(String id){
-        File code = codeFiles.get(id);
-        if (code == null)
+        try {
+            String codePath = jdbcTemplate.queryForObject(getPathSql, new Object[]{id}, (rs, rowNum) -> rs.getString("path"));
+            return new File(codePath);
+        } catch (EmptyResultDataAccessException e) {
             throw new ResourceNotFoundException("Source code not found for this id");
-        return code;
+        }
     }
 
     public void saveFile(String id, MultipartFile code){
         try {
             File receivedFile = new File("files/"+ id).getAbsoluteFile();
             receivedFile.getParentFile().mkdirs();
-            codeFiles.put(id,receivedFile);
             code.transferTo(receivedFile);
+            jdbcTemplate.update(insertPathSql, id, receivedFile.getAbsolutePath());
         } catch (IOException e) {
             e.printStackTrace();
         }
