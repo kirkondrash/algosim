@@ -28,28 +28,23 @@
                             </execution>
                         </executions>
                     </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>heroku</id>
+            <build>
+                <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-resources-plugin</artifactId>
-                        <version>3.1.0</version>
-                        <executions>
-                            <execution>
-                                <id>copy-resources</id>
-                                <!-- here the phase you need -->
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>copy-resources</goal>
-                                </goals>
-                                <configuration>
-                                    <outputDirectory>${project.build.directory}/jib-extra-directory/framework</outputDirectory>
-                                    <resources>
-                                        <resource>
-                                            <directory>../algosim-framework</directory>
-                                        </resource>
-                                    </resources>
-                                </configuration>
-                            </execution>
-                        </executions>
+                        <groupId>com.heroku.sdk</groupId>
+                        <artifactId>heroku-maven-plugin</artifactId>
+                        <version>3.0.2</version>
+                        <configuration>
+                            <appName>algosym-gateway-server</appName>
+                            <processTypes>
+                                <web>java -Xverify:none -cp target/classes:target/dependency/* hse.algosim.server.gateway.OpenAPI2SpringBoot --server.port=$PORT --repo.basePath=https://algosym-repo-server.herokuapp.com/api --compiler.basePath=https://algosym-compiler-server.herokuapp.com/api --executor.basePath=https://algosym-executor-server.herokuapp.com/api --spring.datasource.hikari.minimum-idle=$CONN --spring.datasource.hikari.maximum-pool-size=$CONN</web>
+                            </processTypes>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>

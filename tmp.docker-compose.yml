@@ -15,7 +15,7 @@ services:
      command:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
-       - "--framework.project.path=/framework"
+       - "--framework.project.path=/algosim-framework"
        - "--repo.basePath=http://repo:8080/api"
        - "--spring.datasource.driverClassName=org.postgresql.Driver"
        - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
