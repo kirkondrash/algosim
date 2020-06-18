@@ -29,7 +29,7 @@
 - server-models/ - модели и переиспользуемые классы всех серверов
 - quotes/ - тестовый набор данных 
 ***
-Запуск платформы в контейнерах:
+###Запуск платформы в контейнерах:
 1. `mvn clean package -P docker`
 2. `docker-compose up`
   + Обращение к компонентам только через захардкоженно переданный как параметр хост и порт.
@@ -37,7 +37,7 @@
   + `curl "http://localhost:8080/getTop" -u "user:password" | jq`
 3. `docker-compose down -v`
 ***
-Несолько compiler- и executor- worker'ов:
+###Несколько compiler- и executor- worker'ов (балансировка и горизонтальное масштабирование):
 1. `mvn clean package -P docker`
 2. `docker-compose -f docker-compose-multiworker.yml up --scale compiler=2 --scale executor=2`. 
   + В таком случае на хостнеймах компонент платформы должен стоять loab-balancer. В docker-compose его роль исполняет образ envoy. Envoy обчеспечивает роутинг на все компоненты через соответствующий префикс.
@@ -48,7 +48,7 @@
   + `for i in {21..40}; do curl -X POST "http://localhost:8000/executor/api/execute/kirko_$i" -H "accept: application/json"  -u admin:admin;  done`
 4. `docker-compose -f docker-compose-multiworker.yml down -v`
 ***
-Запуск jar-артефактов:
+###Запуск jar-артефактов:
 1. `mvn clean package -P boot` 
 2. 
    + `java -Xverify:none -jar repo/target/repo-server-1.1.0-SNAPSHOT.jar --server.port=8081 --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim?reWriteBatchedInserts=true`
@@ -57,9 +57,9 @@
    + `java -Xverify:none -jar gateway/target/gateway-server-1.1.0-SNAPSHOT.jar --server.port=8080 --repo.basePath=http://127.0.0.1:8081/api --compiler.basePath=http://127.0.0.1:8082/api --executor.basePath=http://127.0.0.1:8083/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim?reWriteBatchedInserts=true`
    + Запустить БД и все изменения из db-init.sh
 ***
-Аргументы артефактов (параметры):
+###Аргументы артефактов (параметры):
 
-Oбщие:
+####Oбщие (везде):
 + `--server.port=8080`
 + `--server.address=0.0.0.0`
 + `--spring.datasource.driverClassName=org.postgresql.Driver`
@@ -67,21 +67,21 @@ Oбщие:
 + `--spring.datasource.username=postgres`
 + `--spring.datasource.password=postgres`
 
-В compiler'e:
+####В compiler'e:
 + `--framework.project.path=./algosim-framework`
 + `--repo.basePath=http://repo:8080/api`
 
-В executor'e:
+####В executor'e:
 + `--framework.quotes.path=./quotes`
 + `--repo.basePath=http://repo:8080/api`
 
-В gateway'e:
+####В gateway'e:
 + `--repo.basePath=http://repo:8080/api`
 + `--compiler.basePath=http://compiler:8080/api`
 + `--executor.basePath=http://executor:8080/api`
 
 ***
-Аргументы фреймворка (system properties):
+###Аргументы фреймворка (system properties):
 + `-DpathToQuotes=/Users/kirkondrash/Desktop/algosim/quotes`
 + `-Dpostgres.username=postgres`
 + `-Dpostgres.password=postgres`
@@ -91,32 +91,32 @@ Oбщие:
 
 ---
 
-Heroku: https://dashboard.heroku.com/teams/dbtc/apps
+###Heroku: https://dashboard.heroku.com/teams/dbtc/apps
 
 + repo - https://algosym-repo-server.herokuapp.com/swagger-ui.html
 + gateway - https://algosym-gateway-server.herokuapp.com/swagger-ui.html
 + compiler - https://algosym-compiler-server.herokuapp.com/swagger-ui.html
 + executor - https://algosym-executor-server.herokuapp.com/swagger-ui.html
 
-Примеры команд:
+####Примеры команд:
 + `curl -X POST "https://algosym-gateway-server.herokuapp.com/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@algosim-framework/src/main/java/TradingAlgorithmImpl.java" -F "userId=kirko" -F "userAlgoName=right1" -u "user:password"`
 + `curl  "https://algosym-gateway-server.herokuapp.com/getTop" -u "user:password"`
 + `curl  "https://algosym-gateway-server.herokuapp.com/algoStatus/kirko_right1" -u "user:password"`
 
-Запуск на heroku без пуша в мастер
+####Запуск на heroku без пуша в мастер
 + `mvn -pl executor-server -Pheroku clean heroku:deploy`
 + `mvn -pl repo-server -Pheroku clean heroku:deploy`
 + `mvn -pl gateway-server -Pheroku clean heroku:deploy`
 + для compiler'a отсутствует из-за сложностей добавления mvnw :(
 + Также можно сделать через UI во вкладке deploy, если приложение подключено к github repo
 
-Добавление на хероку к существующим приложениям (БД postgresql - аддон рукщлг, уже настроена и подвключена через spring datasource в UI - settings/config vars):
+####Добавление на хероку к существующим приложениям (БД postgresql - аддон рукщлг, уже настроена и подвключена через spring datasource в UI - settings/config vars):
 + `heroku git:remote --remote heroku-repo --app algosym-repo-server`
 + `heroku git:remote --remote heroku-gateway --app algosym-gateway-server`
 + `heroku git:remote --remote heroku-cimpiler --app algosym-compiler-server`
 + `heroku git:remote --remote heroku-executor --app algosym-executor-server`
 
-Запуск на хероку через пуш (БД postgresql - аддон зероку, настроена через spring datasource в UI - settings/config vars):
+####Запуск на хероку через пуш (БД postgresql - аддон зероку, настроена через spring datasource в UI - settings/config vars):
 + `git push heroku-repo master`
 + `git push heroku-gateway master`
 + `git push heroku-compiler master`
