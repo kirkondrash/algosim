@@ -48,7 +48,9 @@ public class CompilerServer {
             mavenInvocationRequest.setOutputHandler(ioh);
             mavenInvocationRequest.setErrorHandler(ioh);
 
+            System.out.println("BEFORE MAVEN EXEC");
             InvocationResult res = mavenInvoker.execute( mavenInvocationRequest );
+            System.out.println("AFTER MAVEN EXEC");
             if (res.getExitCode() == 0){
                 srcStatus.setStatus(SrcStatus.StatusEnum.SUCCESSFULLY_COMPILED);
                 try {
@@ -57,8 +59,8 @@ public class CompilerServer {
                     if (ae.getCode() == 409) {
                         repoApiClient.updateAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
                     } else {
-                    System.out.println(ae.getResponseBody());
-                }
+                        System.out.println(ae.getResponseBody());
+                    }
                 }
             }
             else {
@@ -68,11 +70,13 @@ public class CompilerServer {
                 srcStatus = srcStatus.status(SrcStatus.StatusEnum.COMPILATION_FAILED).errorTrace(stringWriter.toString());
             }
         } catch (MavenInvocationException | ApiException | IOException e) {
+            System.out.println("CATCH");
             System.out.println(srcStatus.toString());
             e.printStackTrace();
             e.printStackTrace(printWriter);
             srcStatus = srcStatus.status(SrcStatus.StatusEnum.COMPILATION_FAILED).errorTrace(stringWriter.toString());
         } finally {
+            System.out.println("FINALLY");
             try {
                 deleteFolder(projectDir.toPath());
                 repoApiClient.updateAlgorithmStatus(
