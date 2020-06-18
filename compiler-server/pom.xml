@@ -140,6 +140,9 @@
                                 <ports>
                                     <port>8080</port>
                                 </ports>
+                                <environment>
+                                    <MAVEN_EXEC>/usr/share/maven/bin/mvn</MAVEN_EXEC>
+                                </environment>
                             </container>
                             <extraDirectories>
                                 <paths>

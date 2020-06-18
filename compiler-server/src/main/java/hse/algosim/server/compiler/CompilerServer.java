@@ -19,7 +19,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class CompilerServer {
 
-    private final static Invoker mavenInvoker = new DefaultInvoker().setMavenHome(new File(System.getenv("MAVEN_HOME")));
+    private final static Invoker mavenInvoker = new DefaultInvoker().setMavenExecutable(new File(System.getenv("MAVEN_EXEC")));
 
     public static void runCompilation(RepoApiClientInstance repoApiClient, String id, String pathToFramework) {
         StringWriter stringWriter = new StringWriter();
