@@ -5,26 +5,23 @@ import hse.algosim.client.repo.api.RepoApiClientInstance;
 import hse.algosim.server.model.SrcStatus;
 import org.apache.maven.shared.invoker.*;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.stream.Collectors;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class CompilerServer {
 
     private final static Invoker mavenInvoker = new DefaultInvoker().setMavenExecutable(new File(System.getenv("MAVEN_EXEC")));
+    private final static ProcessBuilder pb = new ProcessBuilder();
 
     public static void runCompilation(RepoApiClientInstance repoApiClient, String id, String pathToFramework) {
-        StringWriter stringWriter = new StringWriter();
-        PrintWriter printWriter = new PrintWriter(stringWriter);
-        SrcStatus srcStatus = new SrcStatus();
+        SrcStatus srcStatus = null;
         String projectDirName = String.format("projects/%s", id);
         File projectDir = new File(projectDirName);
         projectDir.mkdirs();
@@ -38,51 +35,40 @@ public class CompilerServer {
                     Paths.get(projectDirName + "/src/main/java/TradingAlgorithmImpl.java"),
                     REPLACE_EXISTING);
 
-            InvocationRequest mavenInvocationRequest = new DefaultInvocationRequest();
-            mavenInvocationRequest.setThreads("2.0C");
-            mavenInvocationRequest.setBatchMode(true);
-            mavenInvocationRequest.setGoals( Arrays.asList( "clean", "package", "-P package-target") );
-            mavenInvocationRequest.setBaseDirectory(projectDir);
+            Process p = pb
+                    .command(Arrays.asList(
+                            "/app/mvnw",
+                            "clean",
+                            "package",
+                            "-P package-target"))
+                    .directory(projectDir)
+                    .redirectErrorStream(true)
+                    .start();
+            try (BufferedReader pOutputReader = new BufferedReader(new InputStreamReader(p.getInputStream()))){
 
-            InvocationOutputHandler ioh = s -> printWriter.print(s);
-            mavenInvocationRequest.setOutputHandler(ioh);
-            mavenInvocationRequest.setErrorHandler(ioh);
+                srcStatus = new SrcStatus()
+                        .status(SrcStatus.StatusEnum.COMPILATION_FAILED)
+                        .errorTrace(pOutputReader.lines().collect(Collectors.joining(System.lineSeparator())));
 
-            System.out.println("BEFORE MAVEN EXEC");
-            InvocationResult res = mavenInvoker.execute( mavenInvocationRequest );
-            System.out.println("AFTER MAVEN EXEC");
-            if (res.getExitCode() == 0){
-                srcStatus.setStatus(SrcStatus.StatusEnum.SUCCESSFULLY_COMPILED);
-                try {
-                    repoApiClient.createAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
-                } catch (ApiException ae) {
-                    if (ae.getCode() == 409) {
-                        repoApiClient.updateAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
-                    } else {
-                        System.out.println(ae.getResponseBody());
+                if (p.waitFor() == 0) {
+                    srcStatus = new SrcStatus().status(SrcStatus.StatusEnum.SUCCESSFULLY_COMPILED);
+                    try {
+                        repoApiClient.createAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
+                    } catch (ApiException ae) {
+                        if (ae.getCode() == 409) {
+                            repoApiClient.updateAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
+                        } else {
+                            System.out.println(ae.getResponseBody());
+                        }
                     }
                 }
             }
-            else {
-                if (res.getExecutionException()!=null){
-                    res.getExecutionException().printStackTrace(printWriter);
-                }
-                srcStatus = srcStatus.status(SrcStatus.StatusEnum.COMPILATION_FAILED).errorTrace(stringWriter.toString());
-            }
-        } catch (MavenInvocationException | ApiException | IOException e) {
-            System.out.println("CATCH");
-            System.out.println(srcStatus.toString());
-            e.printStackTrace();
-            e.printStackTrace(printWriter);
+            
+        } catch (InterruptedException | ApiException | IOException e) {
+            StringWriter stringWriter = new StringWriter();
+            e.printStackTrace(new PrintWriter(stringWriter));
             srcStatus = srcStatus.status(SrcStatus.StatusEnum.COMPILATION_FAILED).errorTrace(stringWriter.toString());
-        } catch (Exception e) {
-            System.out.println("CATCH EXCEPTION");
-            System.out.println(srcStatus.toString());
-            e.printStackTrace();
-            e.printStackTrace(printWriter);
-            srcStatus = srcStatus.status(SrcStatus.StatusEnum.COMPILATION_FAILED).errorTrace(stringWriter.toString());
-        }finally {
-            System.out.println("FINALLY");
+        } finally {
             try {
                 deleteFolder(projectDir.toPath());
                 repoApiClient.updateAlgorithmStatus(
