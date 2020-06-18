@@ -46,10 +46,10 @@ Optional TODO:
 Запуск jar-артефактов:
 1. `mvn clean package -P boot` 
 2. 
-   + `java -Xverify:none -jar repo/target/repo-server-1.1.0-SNAPSHOT.jar --server.port=8081 --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
-   + `java -Xverify:none -jar compiler/target/compiler-server-1.1.0-SNAPSHOT.jar --server.port=8082 --framework.project.path=./framework --repo.basePath=http://127.0.0.1:8081/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
-   + `java -Xverify:none -jar executor/target/executor-server-1.1.0-SNAPSHOT.jar --server.port=8083 --framework.quotes.path=./quotes --repo.basePath=http://127.0.0.1:8081/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
-   + `java -Xverify:none -jar gateway/target/gateway-server-1.1.0-SNAPSHOT.jar --server.port=8080 --repo.basePath=http://127.0.0.1:8081/api --compiler.basePath=http://127.0.0.1:8082/api --executor.basePath=http://127.0.0.1:8083/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
+   + `java -Xverify:none -jar repo/target/repo-server-1.1.0-SNAPSHOT.jar --server.port=8081 --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim?reWriteBatchedInserts=true`
+   + `java -Xverify:none -jar compiler/target/compiler-server-1.1.0-SNAPSHOT.jar --server.port=8082 --framework.project.path=./framework --repo.basePath=http://127.0.0.1:8081/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim?reWriteBatchedInserts=true`
+   + `java -Xverify:none -jar executor/target/executor-server-1.1.0-SNAPSHOT.jar --server.port=8083 --framework.quotes.path=./quotes --repo.basePath=http://127.0.0.1:8081/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim?reWriteBatchedInserts=true`
+   + `java -Xverify:none -jar gateway/target/gateway-server-1.1.0-SNAPSHOT.jar --server.port=8080 --repo.basePath=http://127.0.0.1:8081/api --compiler.basePath=http://127.0.0.1:8082/api --executor.basePath=http://127.0.0.1:8083/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim?reWriteBatchedInserts=true`
    + Запустить БД и все изменения из db-init.sh
 ***
 Аргументы артефактов (параметры):
@@ -58,7 +58,7 @@ Oбщие:
 + `--server.port=8080`
 + `--server.address=0.0.0.0`
 + `--spring.datasource.driverClassName=org.postgresql.Driver`
-+ `--spring.datasource.url=jdbc:postgresql://database:5432/algosim`
++ `--spring.datasource.url=jdbc:postgresql://database:5432/algosim?reWriteBatchedInserts=true`
 + `--spring.datasource.username=postgres`
 + `--spring.datasource.password=postgres`
 

@@ -6,7 +6,7 @@ import java.sql.SQLException;
 import java.util.Properties;
 
 public class PostgreSQLManager {
-    private static final String url = String.format("%s?reWriteBatchedInserts=true",System.getProperty("postgres.url"));
+    private static final String url = System.getProperty("postgres.url");
     private static final String user = System.getProperty("postgres.username");
     private static final String password = System.getProperty("postgres.password");
     private static Properties queries = null;

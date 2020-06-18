@@ -7,7 +7,7 @@ services:
        - "--server.port=8080"
        - "--server.address=0.0.0.0"
        - "--spring.datasource.driverClassName=org.postgresql.Driver"
-       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
+       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim?reWriteBatchedInserts=true"
        - "--spring.datasource.username=postgres"
        - "--spring.datasource.password=postgres"
    compiler:
@@ -18,7 +18,7 @@ services:
        - "--framework.project.path=/algosim-framework"
        - "--repo.basePath=http://repo:8080/api"
        - "--spring.datasource.driverClassName=org.postgresql.Driver"
-       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
+       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim?reWriteBatchedInserts=true"
        - "--spring.datasource.username=postgres"
        - "--spring.datasource.password=postgres"
      volumes:
@@ -31,7 +31,7 @@ services:
        - "--framework.quotes.path=/quotes"
        - "--repo.basePath=http://repo:8080/api"
        - "--spring.datasource.driverClassName=org.postgresql.Driver"
-       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
+       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim?reWriteBatchedInserts=true"
        - "--spring.datasource.username=postgres"
        - "--spring.datasource.password=postgres"
    gateway:
@@ -43,7 +43,7 @@ services:
        - "--compiler.basePath=http://compiler:8080/api"
        - "--executor.basePath=http://executor:8080/api"
        - "--spring.datasource.driverClassName=org.postgresql.Driver"
-       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
+       - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim?reWriteBatchedInserts=true"
        - "--spring.datasource.username=postgres"
        - "--spring.datasource.password=postgres"
      ports:
