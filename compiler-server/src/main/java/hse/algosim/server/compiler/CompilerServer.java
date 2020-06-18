@@ -33,23 +33,29 @@ public class CompilerServer {
                     id,
                     new SrcStatus().status(SrcStatus.StatusEnum.COMPILING));
             copyFolder(Paths.get(pathToFramework),projectDir.toPath());
+            System.out.println("ALGO COMPILING");
             Files.move(
                     repoApiClient.readAlgorithmCode(id).toPath(),
                     Paths.get(projectDirName + "/src/main/java/TradingAlgorithmImpl.java"),
                     REPLACE_EXISTING);
 
+            System.out.println("ALGO MOVED");
             InvocationRequest mavenInvocationRequest = new DefaultInvocationRequest();
             mavenInvocationRequest.setThreads("2.0C");
             mavenInvocationRequest.setBatchMode(true);
             mavenInvocationRequest.setGoals( Arrays.asList( "clean", "package", "-P package-target") );
             mavenInvocationRequest.setBaseDirectory(projectDir);
 
+            System.out.println("mavenInvocationRequest SET");
+
             InvocationOutputHandler ioh = s -> printWriter.print(s);
             mavenInvocationRequest.setOutputHandler(ioh);
             mavenInvocationRequest.setErrorHandler(ioh);
 
             InvocationResult res = mavenInvoker.execute( mavenInvocationRequest );
+            System.out.println("mavenInvocationRequest EXECUTED");
             if (res.getExitCode() == 0){
+                System.out.println("SUCCESSFULLY_COMPILED");
                 srcStatus.setStatus(SrcStatus.StatusEnum.SUCCESSFULLY_COMPILED);
                 try {
                     repoApiClient.createAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
@@ -62,6 +68,7 @@ public class CompilerServer {
                 }
             }
             else {
+                System.out.println("UNSUCCESSFULLY_COMPILED");
                 if (res.getExecutionException()!=null){
                     res.getExecutionException().printStackTrace(printWriter);
                 }

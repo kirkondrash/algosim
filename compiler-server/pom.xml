@@ -30,10 +30,14 @@
                                     <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${project.build.directory}/algosim-framework</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>../algosim-framework</directory>
+                                            <directory>..</directory>
+                                            <includes>
+                                                <include>algosim-framework/</include>
+                                                <include>mvnw</include>
+                                            </includes>
                                         </resource>
                                     </resources>
                                 </configuration>
@@ -71,10 +75,15 @@
                                     <goal>copy-resources</goal>
                                 </goals>
                                 <configuration>
-                                    <outputDirectory>${project.build.directory}/algosim-framework</outputDirectory>
+                                    <outputDirectory>${project.build.directory}/</outputDirectory>
                                     <resources>
                                         <resource>
-                                            <directory>../algosim-framework</directory>
+                                            <directory>..</directory>
+                                            <includes>
+                                                <include>algosim-framework/</include>
+                                                <include>mvnw</include>
+                                                <include>.mvn/</include>
+                                            </includes>
                                         </resource>
                                     </resources>
                                 </configuration>
