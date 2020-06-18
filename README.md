@@ -108,7 +108,7 @@
 + `mvn -pl repo-server -Pheroku clean heroku:deploy`
 + `mvn -pl gateway-server -Pheroku clean heroku:deploy`
 + для compiler'a отсутствует из-за сложностей добавления mvnw :(
-+ Также можно сделать через UI во вкладке deploy, если приложение подключено к github repo
++ Также можно сделать через UI во вкладке deploy, если приложение подключено к github repo (тоже для всех кроме compiler'a)
 
 ####Добавление на хероку к существующим приложениям (БД postgresql - аддон рукщлг, уже настроена и подвключена через spring datasource в UI - settings/config vars):
 + `heroku git:remote --remote heroku-repo --app algosym-repo-server`
