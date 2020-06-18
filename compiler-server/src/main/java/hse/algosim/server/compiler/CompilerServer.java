@@ -75,7 +75,13 @@ public class CompilerServer {
             e.printStackTrace();
             e.printStackTrace(printWriter);
             srcStatus = srcStatus.status(SrcStatus.StatusEnum.COMPILATION_FAILED).errorTrace(stringWriter.toString());
-        } finally {
+        } catch (Exception e) {
+            System.out.println("CATCH EXCEPTION");
+            System.out.println(srcStatus.toString());
+            e.printStackTrace();
+            e.printStackTrace(printWriter);
+            srcStatus = srcStatus.status(SrcStatus.StatusEnum.COMPILATION_FAILED).errorTrace(stringWriter.toString());
+        }finally {
             System.out.println("FINALLY");
             try {
                 deleteFolder(projectDir.toPath());
