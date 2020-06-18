@@ -113,7 +113,7 @@
 ####Добавление на хероку к существующим приложениям (БД postgresql - аддон рукщлг, уже настроена и подвключена через spring datasource в UI - settings/config vars):
 + `heroku git:remote --remote heroku-repo --app algosym-repo-server`
 + `heroku git:remote --remote heroku-gateway --app algosym-gateway-server`
-+ `heroku git:remote --remote heroku-cimpiler --app algosym-compiler-server`
++ `heroku git:remote --remote heroku-cоmpiler --app algosym-compiler-server`
 + `heroku git:remote --remote heroku-executor --app algosym-executor-server`
 
 ####Запуск на хероку через пуш (БД postgresql - аддон зероку, настроена через spring datasource в UI - settings/config vars):
