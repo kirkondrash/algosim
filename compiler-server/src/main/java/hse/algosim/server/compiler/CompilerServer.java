@@ -3,7 +3,6 @@ package hse.algosim.server.compiler;
 import hse.algosim.client.api.ApiException;
 import hse.algosim.client.repo.api.RepoApiClientInstance;
 import hse.algosim.server.model.SrcStatus;
-import org.apache.maven.shared.invoker.*;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -17,7 +16,6 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
 public class CompilerServer {
 
-    private final static Invoker mavenInvoker = new DefaultInvoker().setMavenExecutable(new File(System.getenv("MAVEN_EXEC")));
     private final static ProcessBuilder pb = new ProcessBuilder();
 
     public static void runCompilation(RepoApiClientInstance repoApiClient, String id, String pathToFramework) {
@@ -37,10 +35,9 @@ public class CompilerServer {
 
             Process p = pb
                     .command(Arrays.asList(
-                            "/app/mvnw",
+                            System.getenv("MAVEN_EXEC"),
                             "clean",
-                            "package",
-                            "-P package-target"))
+                            "package"))
                     .directory(projectDir)
                     .redirectErrorStream(true)
                     .start();
