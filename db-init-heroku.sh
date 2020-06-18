@@ -1,9 +1,7 @@
 #!/bin/bash
 set -e
 
-psql -U postgres <<-EOSQL
-    create database algosim;
-    \connect algosim;
+psql -h ec2-54-217-204-34.eu-west-1.compute.amazonaws.com -p 5432 -U rmvvexocwzltmj dd3tph3p1qadvs<<-EOSQL
     create table statuses(
       id             serial      primary key,
       algo_id        varchar     not null unique,
