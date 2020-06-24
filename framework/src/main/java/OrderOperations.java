@@ -8,5 +8,5 @@ public interface OrderOperations<T> {
     T buyLimit(BigDecimal pips) throws TradingLogicException;
     T sellLimit(BigDecimal pips) throws TradingLogicException;
     T stopLoss(BigDecimal pips) throws TradingLogicException;
-    T makeProfit(BigDecimal pips) throws TradingLogicException;
+    T takeProfit(BigDecimal pips) throws TradingLogicException;
 }
