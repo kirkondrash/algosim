@@ -15,6 +15,8 @@ public class SrcStatus   {
    * Gets or Sets status
    */
   public enum StatusEnum {
+    @JsonProperty("SOURCE_UPLOADED")
+    SOURCE_UPLOADED,
     @JsonProperty("SCHEDULED_FOR_COMPILATION")
     SCHEDULED_FOR_COMPILATION,
     @JsonProperty("COMPILING")

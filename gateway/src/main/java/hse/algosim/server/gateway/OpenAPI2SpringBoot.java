@@ -6,6 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
@@ -16,6 +17,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         "hse.algosim.client.repo.api",
         "hse.algosim.client.compiler.api",
         "hse.algosim.client.executor.api"})
+@EnableScheduling
 public class OpenAPI2SpringBoot implements CommandLineRunner {
 
     @Override

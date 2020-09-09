@@ -24,15 +24,9 @@ public class RepoApiClientInstance {
     private ApiClient localVarApiClient;
 
     @Autowired
-    public RepoApiClientInstance(@Value("${repo.basePath:http://repo:8080/api}") String basePath, DataSource dataSource) throws SQLException {
-        try (Connection conn = dataSource.getConnection(); Statement stmt = conn.createStatement()) {
-            ResultSet rs = stmt.executeQuery("select login, password from bhacklogins where permit='admin' limit 1;");
-            if (rs.next()) {
-                this.localVarApiClient = new ApiClient(rs.getString("login"), rs.getString("password"), basePath);
-            } else {
-                throw new RuntimeException("No tech user found!");
-            }
-        }
+    public RepoApiClientInstance(@Value("${repo.basePath:http://repo:8080/api}") String basePath) {
+        this.localVarApiClient = new ApiClient(
+                System.getenv("API_CLIENT_USER"), System.getenv("API_CLIENT_PASSWORD"), basePath);
     }
 
     public ApiClient getApiClient() {

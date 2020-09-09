@@ -1,8 +1,10 @@
 package hse.algosim.server.executor.api;
 
+import hse.algosim.client.api.ApiException;
 import hse.algosim.client.repo.api.RepoApiClientInstance;
 import hse.algosim.server.FiniteQueueExecutor;
 import hse.algosim.server.executor.ExecutorServer;
+import hse.algosim.server.model.SrcStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -46,9 +48,13 @@ public class ExecuteApiController extends FiniteQueueExecutor implements Execute
                     env.getProperty("spring.datasource.password"),
                     env.getProperty("spring.datasource.url")
                     ));
+            SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id);
+            repoApiClient.updateAlgorithmStatus(id, srcStatus.status(SrcStatus.StatusEnum.SCHEDULED_FOR_EXECUTION));
         }catch (RejectedExecutionException re){
             System.out.println(String.format("Execution queue full for %s on %s", id,hostname));
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+        } catch (ApiException e) {
+            e.printStackTrace();
         }
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);

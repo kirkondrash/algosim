@@ -1,19 +1,25 @@
 package hse.algosim.server.repo.api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import hse.algosim.server.exceptions.ResourceAlreadyExistsException;
 import hse.algosim.server.exceptions.ResourceNotFoundException;
 import hse.algosim.server.model.IdArray;
 import hse.algosim.server.model.SrcStatus;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.validation.Valid;
 import java.util.Optional;
@@ -23,6 +29,8 @@ import java.util.Optional;
 public class AlgoStatusApiController implements AlgoStatusApi {
 
     private final NativeWebRequest request;
+
+    private static final SseEmitter emitter = new SseEmitter(0l);
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -42,13 +50,15 @@ public class AlgoStatusApiController implements AlgoStatusApi {
         return Optional.ofNullable(request);
     }
 
+    @SneakyThrows
     @Override
     public ResponseEntity<Void> createAlgorithmStatus(@PathVariable("id") String id, @Valid @RequestBody SrcStatus srcStatus) {
         try {
-            jdbcTemplate.queryForObject(getStatusSql, new Object[]{id}, (rs, rowNum) ->
-                    new SrcStatus().status(SrcStatus.StatusEnum.valueOf(rs.getString("status"))).metrics(rs.getString("metrics")).errorTrace(rs.getString("error_trace")));
+            jdbcTemplate.queryForObject(getStatusSql, new Object[]{id}, (rs, rowNum) -> null);
         } catch (EmptyResultDataAccessException e) {
             jdbcTemplate.update(insertStatusSql, id, srcStatus.getStatus().toString(),srcStatus.getErrorTrace(),srcStatus.getMetrics());
+            SseEmitter.SseEventBuilder sseEventBuilder = SseEmitter.event().name(srcStatus.getStatus().toString()).data(id);
+            emitter.send(sseEventBuilder);
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
         throw new ResourceAlreadyExistsException("Status already uploaded for this id");
@@ -65,12 +75,14 @@ public class AlgoStatusApiController implements AlgoStatusApi {
         }
     }
 
+    @SneakyThrows
     @Override
     public ResponseEntity<Void> updateAlgorithmStatus(@PathVariable("id") String id, @Valid @RequestBody SrcStatus srcStatus) {
         try {
-            jdbcTemplate.queryForObject(getStatusSql, new Object[]{id}, (rs, rowNum) ->
-                    new SrcStatus().status(SrcStatus.StatusEnum.valueOf(rs.getString("status"))).metrics(rs.getString("winloss")).errorTrace(rs.getString("error_trace")));
+            jdbcTemplate.queryForObject(getStatusSql, new Object[]{id}, (rs, rowNum) -> null);
             jdbcTemplate.update(updateStatusSql, srcStatus.getStatus().toString(),srcStatus.getErrorTrace(),srcStatus.getMetrics(), id);
+            SseEmitter.SseEventBuilder sseEventBuilder = SseEmitter.event().name(srcStatus.getStatus().toString()).data(id);
+            emitter.send(sseEventBuilder);
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         } catch (EmptyResultDataAccessException e) {
             throw new ResourceNotFoundException("Status not found for this id");
@@ -93,5 +105,10 @@ public class AlgoStatusApiController implements AlgoStatusApi {
     public ResponseEntity<IdArray> getTopCode() {
         IdArray res = new IdArray().id(jdbcTemplate.query(getTopStatusSql, (rs, rowNum) -> rs.getString("algo_id")));
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/stream-sse-mvc", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+    public SseEmitter streamSseMvc() {
+        return emitter;
     }
 }

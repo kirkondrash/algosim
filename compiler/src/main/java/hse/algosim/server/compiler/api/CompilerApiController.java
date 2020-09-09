@@ -1,8 +1,10 @@
 package hse.algosim.server.compiler.api;
 
+import hse.algosim.client.api.ApiException;
 import hse.algosim.client.repo.api.RepoApiClientInstance;
 import hse.algosim.server.FiniteQueueExecutor;
 import hse.algosim.server.compiler.CompilerServer;
+import hse.algosim.server.model.SrcStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -39,9 +41,13 @@ public class CompilerApiController extends FiniteQueueExecutor implements Compil
     public ResponseEntity<Void> compileAlgorithm(@PathVariable("id") String id) {
         try {
             singleThreadExecutor.submit(()-> CompilerServer.runCompilation(repoApiClient,id, env.getProperty("framework.project.path")));
+            SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id);
+            repoApiClient.updateAlgorithmStatus(id, srcStatus.status(SrcStatus.StatusEnum.SCHEDULED_FOR_COMPILATION));
         }catch (RejectedExecutionException re){
             System.out.println(String.format("Compilation queue full for %s on %s", id,hostname));
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
+        } catch (ApiException e) {
+            e.printStackTrace();
         }
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);

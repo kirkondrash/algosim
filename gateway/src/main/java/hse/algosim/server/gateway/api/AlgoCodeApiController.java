@@ -3,7 +3,7 @@ package hse.algosim.server.gateway.api;
 import hse.algosim.client.api.ApiException;
 import hse.algosim.client.repo.api.RepoApiClientInstance;
 import hse.algosim.server.exceptions.ResourceNotFoundException;
-import hse.algosim.server.gateway.queues.TaskManager;
+import hse.algosim.server.gateway.scheduling_services.TaskManager;
 import hse.algosim.server.model.IdArray;
 import hse.algosim.server.model.SrcStatus;
 import hse.algosim.server.model.UserCodeInfo;
