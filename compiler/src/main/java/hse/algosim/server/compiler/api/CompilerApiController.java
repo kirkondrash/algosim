@@ -42,7 +42,8 @@ public class CompilerApiController extends FiniteQueueExecutor implements Compil
         try {
             singleThreadExecutor.submit(()-> CompilerServer.runCompilation(repoApiClient,id, env.getProperty("framework.project.path")));
             SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id);
-            repoApiClient.updateAlgorithmStatus(id, srcStatus.status(SrcStatus.StatusEnum.SCHEDULED_FOR_COMPILATION));
+            srcStatus.setStatus(SrcStatus.StatusEnum.SCHEDULED_FOR_COMPILATION);
+            repoApiClient.updateAlgorithmStatus(id, srcStatus);
         }catch (RejectedExecutionException re){
             System.out.println(String.format("Compilation queue full for %s on %s", id,hostname));
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);

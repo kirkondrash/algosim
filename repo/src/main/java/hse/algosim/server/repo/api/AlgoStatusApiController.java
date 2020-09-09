@@ -68,7 +68,11 @@ public class AlgoStatusApiController implements AlgoStatusApi {
     public ResponseEntity<SrcStatus> readAlgorithmStatus(@PathVariable("id") String id) {
         try {
             SrcStatus status = jdbcTemplate.queryForObject(getStatusSql, new Object[]{id}, (rs, rowNum) ->
-                    new SrcStatus().status(SrcStatus.StatusEnum.valueOf(rs.getString("status"))).metrics(rs.getString("winloss")).errorTrace(rs.getString("error_trace")));
+                    SrcStatus.builder()
+                            .status(SrcStatus.StatusEnum.valueOf(rs.getString("status")))
+                            .metrics(rs.getString("winloss"))
+                            .errorTrace(rs.getString("error_trace")))
+                    .build();
             return new ResponseEntity<>(status, HttpStatus.OK);
         } catch (EmptyResultDataAccessException e) {
             throw new ResourceNotFoundException("Status not found for this id");
@@ -93,7 +97,11 @@ public class AlgoStatusApiController implements AlgoStatusApi {
     public ResponseEntity<Void> deleteAlgorithmStatus(@PathVariable("id") String id) {
         try {
             jdbcTemplate.queryForObject(getStatusSql, new Object[]{id}, (rs, rowNum) ->
-                    new SrcStatus().status(SrcStatus.StatusEnum.valueOf(rs.getString("status"))).metrics(rs.getString("winloss")).errorTrace(rs.getString("error_trace")));
+                    SrcStatus.builder()
+                            .status(SrcStatus.StatusEnum.valueOf(rs.getString("status")))
+                            .metrics(rs.getString("winloss"))
+                            .errorTrace(rs.getString("error_trace")))
+                    .build();
             jdbcTemplate.update(deleteStatusSql, id);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (EmptyResultDataAccessException e) {
@@ -103,7 +111,7 @@ public class AlgoStatusApiController implements AlgoStatusApi {
 
     @Override
     public ResponseEntity<IdArray> getTopCode() {
-        IdArray res = new IdArray().id(jdbcTemplate.query(getTopStatusSql, (rs, rowNum) -> rs.getString("algo_id")));
+        IdArray res = new IdArray(jdbcTemplate.query(getTopStatusSql, (rs, rowNum) -> rs.getString("algo_id")));
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 

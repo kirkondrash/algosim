@@ -37,11 +37,11 @@ public class TaskManager {
         try {
             code.transferTo(f);
             repoApiClient.createAlgorithmCode(id,f);
-            repoApiClient.createAlgorithmStatus(id, new SrcStatus().status(SrcStatus.StatusEnum.SOURCE_UPLOADED));
+            repoApiClient.createAlgorithmStatus(id, SrcStatus.builder().status(SrcStatus.StatusEnum.SOURCE_UPLOADED).build());
         } catch (ApiException ae){
             if (ae.getCode() == 409){
                 repoApiClient.updateAlgorithmCode(id,f);
-                repoApiClient.updateAlgorithmStatus(id, new SrcStatus().status(SrcStatus.StatusEnum.SOURCE_UPLOADED));
+                repoApiClient.updateAlgorithmStatus(id, SrcStatus.builder().status(SrcStatus.StatusEnum.SOURCE_UPLOADED).build());
             } else {
                 throw ae;
             }

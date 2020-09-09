@@ -49,7 +49,7 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     ) {
         String codeId = String.format("%s_%s",userId,userAlgoName);
         HttpStatus responseStatus = HttpStatus.OK;
-        UserCodeInfo userCodeInfo = new UserCodeInfo().id(codeId).info("Successfully uploaded");
+        UserCodeInfo userCodeInfo = UserCodeInfo.builder().id(codeId).info("Successfully uploaded").build();
         try {
             taskManager.scheduleCodeAnalysis(codeId, code);
         } catch (ApiException e) {

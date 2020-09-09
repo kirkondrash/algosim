@@ -17,12 +17,12 @@ public class ExecutorServer {
                                     String dbUser,
                                     String dbPassword,
                                     String dbURL){
-        SrcStatus srcStatus = new SrcStatus();
+        SrcStatus.SrcStatusBuilder srcStatus = SrcStatus.builder();
         File jar = null;
         try {
             repoApiClient.updateAlgorithmStatus(
                     id,
-                    new SrcStatus().status(SrcStatus.StatusEnum.EXECUTING));
+                    SrcStatus.builder().status(SrcStatus.StatusEnum.EXECUTING).build());
             jar = repoApiClient.readAlgorithmJar(id);
 
             Process p = pb
@@ -39,19 +39,19 @@ public class ExecutorServer {
             try ( BufferedReader pErrorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
                   BufferedReader pOutputReader = new BufferedReader(new InputStreamReader(p.getInputStream()))){
 
-            srcStatus = srcStatus
+            srcStatus
                     .status(SrcStatus.StatusEnum.SUCCESSFULLY_EXECUTED)
                     .errorTrace(pErrorReader.lines().collect(Collectors.joining(System.lineSeparator())))
                     .metrics(pOutputReader.lines().collect(Collectors.joining(System.lineSeparator())));
 
                 if (p.waitFor() != 0) {
-                    srcStatus.setStatus(SrcStatus.StatusEnum.EXECUTION_FAILED);
+                    srcStatus.status(SrcStatus.StatusEnum.EXECUTION_FAILED);
                 }
             }
         } catch (InterruptedException | ApiException | IOException e ){
             StringWriter stringWriter = new StringWriter();
             e.printStackTrace(new PrintWriter(stringWriter));
-            srcStatus = srcStatus
+            srcStatus
                     .status(SrcStatus.StatusEnum.EXECUTION_FAILED)
                     .errorTrace(stringWriter.toString());
         } finally {
@@ -61,7 +61,7 @@ public class ExecutorServer {
             try {
                 repoApiClient.updateAlgorithmStatus(
                         id,
-                        srcStatus);
+                        srcStatus.build());
             } catch (ApiException ae) {
                 System.out.println(ae.getResponseBody());
             }

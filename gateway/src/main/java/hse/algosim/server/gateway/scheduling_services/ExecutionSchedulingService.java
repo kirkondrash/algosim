@@ -35,7 +35,7 @@ class ExecutionSchedulingService implements SchedulingService{
         attemptToExecuteScheduling(scheduledForExecutionIds, (id) -> {
             try {
                 executorApiClient.executeAlgorithm(id);
-                System.out.println(id + " sent to worker for execution");
+                log.info(id + " sent to worker for execution");
                 return true;
             } catch (ApiException ae) {
                 if (ae.getCode() == 503) {
@@ -62,7 +62,7 @@ class ExecutionSchedulingService implements SchedulingService{
                 break;
             case EXECUTION_FAILED:
                 SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id);
-                System.out.println(String.format("%s: %s", id, srcStatus.toString()));
+                log.warn("{}: {}", id, srcStatus.toString());
                 break;
             default:
                 break;

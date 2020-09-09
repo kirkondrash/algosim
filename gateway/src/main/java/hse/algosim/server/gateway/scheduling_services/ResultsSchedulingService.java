@@ -4,12 +4,14 @@ import hse.algosim.client.repo.api.RepoApiClientInstance;
 import hse.algosim.server.model.SrcStatus;
 import hse.algosim.server.model.SrcStatus.StatusEnum;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 
 @Component
+@Slf4j
 class ResultsSchedulingService implements SchedulingService{
 
     private List<StatusEnum> applicableStatuses = List.of(StatusEnum.SUCCESSFULLY_EXECUTED);
@@ -29,6 +31,6 @@ class ResultsSchedulingService implements SchedulingService{
     @Override
     public void handle(StatusEnum status, String id) {
         SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id);
-        System.out.println(String.format("%s: %s", id, srcStatus.toString()));
+        log.info("{}: {}", id, srcStatus.toString());
     }
 }

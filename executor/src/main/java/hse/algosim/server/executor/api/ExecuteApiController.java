@@ -49,7 +49,8 @@ public class ExecuteApiController extends FiniteQueueExecutor implements Execute
                     env.getProperty("spring.datasource.url")
                     ));
             SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id);
-            repoApiClient.updateAlgorithmStatus(id, srcStatus.status(SrcStatus.StatusEnum.SCHEDULED_FOR_EXECUTION));
+            srcStatus.setStatus(SrcStatus.StatusEnum.SCHEDULED_FOR_EXECUTION);
+            repoApiClient.updateAlgorithmStatus(id, srcStatus);
         }catch (RejectedExecutionException re){
             System.out.println(String.format("Execution queue full for %s on %s", id,hostname));
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);

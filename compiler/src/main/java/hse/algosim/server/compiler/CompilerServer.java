@@ -24,14 +24,14 @@ public class CompilerServer {
     public static void runCompilation(RepoApiClientInstance repoApiClient, String id, String pathToFramework) {
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
-        SrcStatus srcStatus = new SrcStatus();
+        SrcStatus.SrcStatusBuilder srcStatus = SrcStatus.builder();
         String projectDirName = String.format("projects/%s", id);
         File projectDir = new File(projectDirName);
         projectDir.mkdirs();
         try{
             repoApiClient.updateAlgorithmStatus(
                     id,
-                    new SrcStatus().status(SrcStatus.StatusEnum.COMPILING));
+                    SrcStatus.builder().status(SrcStatus.StatusEnum.COMPILING).build());
             copyFolder(Paths.get(pathToFramework),projectDir.toPath());
             Files.move(
                     repoApiClient.readAlgorithmCode(id).toPath(),
@@ -50,7 +50,7 @@ public class CompilerServer {
 
             InvocationResult res = mavenInvoker.execute( mavenInvocationRequest );
             if (res.getExitCode() == 0){
-                srcStatus.setStatus(SrcStatus.StatusEnum.SUCCESSFULLY_COMPILED);
+                srcStatus.status(SrcStatus.StatusEnum.SUCCESSFULLY_COMPILED);
                 try {
                     repoApiClient.createAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
                 } catch (ApiException ae) {
@@ -65,17 +65,21 @@ public class CompilerServer {
                 if (res.getExecutionException()!=null){
                     res.getExecutionException().printStackTrace(printWriter);
                 }
-                srcStatus = srcStatus.status(SrcStatus.StatusEnum.COMPILATION_FAILED).errorTrace(stringWriter.toString());
+                 srcStatus
+                        .status(SrcStatus.StatusEnum.COMPILATION_FAILED)
+                        .errorTrace(stringWriter.toString());
             }
         } catch (MavenInvocationException | ApiException | IOException e) {
             e.printStackTrace(printWriter);
-            srcStatus = srcStatus.status(SrcStatus.StatusEnum.COMPILATION_FAILED).errorTrace(stringWriter.toString());
+            srcStatus
+                    .status(SrcStatus.StatusEnum.COMPILATION_FAILED)
+                    .errorTrace(stringWriter.toString());
         } finally {
             try {
                 deleteFolder(projectDir.toPath());
                 repoApiClient.updateAlgorithmStatus(
                         id,
-                        srcStatus);
+                        srcStatus.build());
             } catch (ApiException ae) {
                 System.out.println(ae.getResponseBody());
             } catch (IOException ioe) {

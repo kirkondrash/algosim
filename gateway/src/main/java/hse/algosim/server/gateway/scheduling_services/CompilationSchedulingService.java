@@ -35,7 +35,7 @@ public class CompilationSchedulingService implements SchedulingService{
         attemptToExecuteScheduling(scheduledForCompilationIds, (id) -> {
             try {
                 compilerApiClient.compileAlgorithm(id);
-                System.out.println(id + " sent to worker for compilation");
+                log.info(id + " sent to worker for compilation");
                 return true;
             } catch (ApiException ae) {
                 if (ae.getCode() == 503) {
@@ -62,7 +62,7 @@ public class CompilationSchedulingService implements SchedulingService{
                 break;
             case COMPILATION_FAILED:
                 SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id);
-                System.out.println(String.format("%s: %s", id, srcStatus.toString()));
+                log.warn("{}: {}", id, srcStatus.toString());
                 break;
             default:
                 break;
