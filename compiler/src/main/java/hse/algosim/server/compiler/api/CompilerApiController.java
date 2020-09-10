@@ -1,10 +1,11 @@
 package hse.algosim.server.compiler.api;
 
-import hse.algosim.client.api.ApiException;
-import hse.algosim.client.repo.api.RepoApiClientInstance;
+import feign.FeignException;
+import hse.algosim.client.repo.api.RepoApiClient;
 import hse.algosim.server.FiniteQueueExecutor;
-import hse.algosim.server.compiler.CompilerServer;
+import hse.algosim.server.compiler.CompilerService;
 import hse.algosim.server.model.SrcStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -19,17 +20,20 @@ import java.util.concurrent.RejectedExecutionException;
 
 @Controller
 @RequestMapping("${openapi.algosimCompiler.base-path:/api}")
+@Slf4j
 public class CompilerApiController extends FiniteQueueExecutor implements CompilerApi {
 
     @Autowired
     private Environment env;
-    private RepoApiClientInstance repoApiClient;
+    private RepoApiClient repoApiClient;
+    private CompilerService compilerService;
     private final NativeWebRequest request;
 
     @Autowired
-    public CompilerApiController(NativeWebRequest request, RepoApiClientInstance repoApiClient) {
+    public CompilerApiController(NativeWebRequest request, RepoApiClient repoApiClient, CompilerService compilerService) {
         this.request = request;
         this.repoApiClient = repoApiClient;
+        this.compilerService = compilerService;
     }
 
     @Override
@@ -40,15 +44,16 @@ public class CompilerApiController extends FiniteQueueExecutor implements Compil
     @Override
     public ResponseEntity<Void> compileAlgorithm(@PathVariable("id") String id) {
         try {
-            singleThreadExecutor.submit(()-> CompilerServer.runCompilation(repoApiClient,id, env.getProperty("framework.project.path")));
-            SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id);
+            singleThreadExecutor.submit(()-> compilerService.runCompilation(repoApiClient,id, env.getProperty("framework.project.path")));
+            SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id).getBody();
             srcStatus.setStatus(SrcStatus.StatusEnum.SCHEDULED_FOR_COMPILATION);
             repoApiClient.updateAlgorithmStatus(id, srcStatus);
         }catch (RejectedExecutionException re){
             System.out.println(String.format("Compilation queue full for %s on %s", id,hostname));
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
-        } catch (ApiException e) {
-            e.printStackTrace();
+        } catch (FeignException e) {
+            log.error(e.responseBody().toString());
+            log.error("{}",e.getCause());
         }
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);

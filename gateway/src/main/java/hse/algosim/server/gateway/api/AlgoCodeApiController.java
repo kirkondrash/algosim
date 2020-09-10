@@ -1,13 +1,14 @@
 package hse.algosim.server.gateway.api;
 
-import hse.algosim.client.api.ApiException;
-import hse.algosim.client.repo.api.RepoApiClientInstance;
+import feign.FeignException;
+import hse.algosim.client.repo.api.RepoApiClient;
 import hse.algosim.server.exceptions.ResourceNotFoundException;
-import hse.algosim.server.gateway.scheduling_services.TaskManager;
+import hse.algosim.server.gateway.scheduling_services.SchedulingManager;
 import hse.algosim.server.model.IdArray;
 import hse.algosim.server.model.SrcStatus;
 import hse.algosim.server.model.UserCodeInfo;
 import io.swagger.annotations.ApiParam;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,17 +24,18 @@ import java.util.*;
 
 @Controller
 @RequestMapping("${openapi.algosimGateway.base-path:/}")
+@Slf4j
 public class AlgoCodeApiController implements AlgoCodeApi {
 
     private final NativeWebRequest request;
-    private TaskManager taskManager;
-    private RepoApiClientInstance repoApiClient;
+    private SchedulingManager schedulingManager;
+    private RepoApiClient repoApiClient;
 
     @Autowired
-    public AlgoCodeApiController(NativeWebRequest request, RepoApiClientInstance repoApiClient, TaskManager taskManager) {
+    public AlgoCodeApiController(NativeWebRequest request, RepoApiClient repoApiClient, SchedulingManager schedulingManager) {
         this.request = request;
         this.repoApiClient = repoApiClient;
-        this.taskManager = taskManager;
+        this.schedulingManager = schedulingManager;
     }
 
     @Override
@@ -51,9 +53,9 @@ public class AlgoCodeApiController implements AlgoCodeApi {
         HttpStatus responseStatus = HttpStatus.OK;
         UserCodeInfo userCodeInfo = UserCodeInfo.builder().id(codeId).info("Successfully uploaded").build();
         try {
-            taskManager.scheduleCodeAnalysis(codeId, code);
-        } catch (ApiException e) {
-            userCodeInfo.setInfo(e.getResponseBody());
+            schedulingManager.scheduleCodeAnalysis(codeId, code);
+        } catch (FeignException e) {
+            userCodeInfo.setInfo(e.contentUTF8());
             responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
         }
 
@@ -64,24 +66,22 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     public ResponseEntity<List<Map<String,Object>>> getTop(){
         List<Map<String,Object>> res = new ArrayList<>();
         try {
-            IdArray ids = repoApiClient.getTopCode();
+            IdArray ids = repoApiClient.getTopCode().getBody();
             ids.getId().forEach( id -> {
                 try {
-                    SrcStatus status = repoApiClient.readAlgorithmStatus(id);
+                    SrcStatus status = repoApiClient.readAlgorithmStatus(id).getBody();
                     Map<String,Object> node = new HashMap<>();
                     node.put("id",id);
                     node.put("score", status.getMetrics());
                     res.add(node);
-                } catch (ApiException ae) {
-                    System.out.println(ae.getResponseBody());
-                    System.out.println(ae.getCode());
-                    ae.printStackTrace();
+                } catch (FeignException e) {
+                    log.error(e.responseBody().toString());
+                    log.error("{}",e.getCause());
                 }
             });
-        } catch (ApiException ae) {
-            System.out.println(ae.getResponseBody());
-            System.out.println(ae.getCode());
-            ae.printStackTrace();
+        } catch (FeignException e) {
+            log.error(e.responseBody().toString());
+            log.error("{}",e.getCause());
         }
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
@@ -89,12 +89,11 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     @Override
     public ResponseEntity<SrcStatus> readAlgorithmStatus(@PathVariable("id") String id) {
         try {
-            SrcStatus status = repoApiClient.readAlgorithmStatus(id);
+            SrcStatus status = repoApiClient.readAlgorithmStatus(id).getBody();
             return new ResponseEntity<>(status, HttpStatus.OK);
-        } catch (ApiException ae) {
-            System.out.println(ae.getResponseBody());
-            System.out.println(ae.getCode());
-            ae.printStackTrace();
+        } catch (FeignException e) {
+            log.error(e.responseBody().toString());
+            log.error("{}",e.getCause());
             throw new ResourceNotFoundException("Status not found for this id");
         }
     }

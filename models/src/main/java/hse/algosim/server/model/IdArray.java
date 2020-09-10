@@ -15,6 +15,7 @@ import java.util.List;
 @ToString
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class IdArray   {
   @JsonProperty("id")
   @Valid

@@ -113,7 +113,7 @@
 
         <dependency>
             <groupId>hse.algosim.client</groupId>
-            <artifactId>repo-client</artifactId>
+            <artifactId>client-apis</artifactId>
             <version>${project.version}</version>
         </dependency>
 

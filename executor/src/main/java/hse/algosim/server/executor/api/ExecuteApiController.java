@@ -1,10 +1,11 @@
 package hse.algosim.server.executor.api;
 
-import hse.algosim.client.api.ApiException;
-import hse.algosim.client.repo.api.RepoApiClientInstance;
+import feign.FeignException;
+import hse.algosim.client.repo.api.RepoApiClient;
 import hse.algosim.server.FiniteQueueExecutor;
-import hse.algosim.server.executor.ExecutorServer;
+import hse.algosim.server.executor.ExecutorService;
 import hse.algosim.server.model.SrcStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
@@ -19,17 +20,20 @@ import java.util.concurrent.RejectedExecutionException;
 
 @Controller
 @RequestMapping("${openapi.algosimExecutor.base-path:/api}")
+@Slf4j
 public class ExecuteApiController extends FiniteQueueExecutor implements ExecuteApi {
 
     @Autowired
     private Environment env;
-    private RepoApiClientInstance repoApiClient;
+    private RepoApiClient repoApiClient;
+    private ExecutorService executorService;
     private final NativeWebRequest request;
 
     @Autowired
-    public ExecuteApiController(NativeWebRequest request, RepoApiClientInstance repoApiClient) {
+    public ExecuteApiController(NativeWebRequest request, RepoApiClient repoApiClient, ExecutorService executorService) {
         this.request = request;
         this.repoApiClient = repoApiClient;
+        this.executorService = executorService;
     }
 
     @Override
@@ -40,7 +44,7 @@ public class ExecuteApiController extends FiniteQueueExecutor implements Execute
     @Override
     public ResponseEntity<Void> executeAlgorithm(@PathVariable("id") String id) {
         try {
-            singleThreadExecutor.submit(()-> ExecutorServer.runExecution(
+            singleThreadExecutor.submit(()-> executorService.runExecution(
                     repoApiClient,
                     id,
                     env.getProperty("framework.quotes.path"),
@@ -48,14 +52,14 @@ public class ExecuteApiController extends FiniteQueueExecutor implements Execute
                     env.getProperty("spring.datasource.password"),
                     env.getProperty("spring.datasource.url")
                     ));
-            SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id);
+            SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id).getBody();
             srcStatus.setStatus(SrcStatus.StatusEnum.SCHEDULED_FOR_EXECUTION);
             repoApiClient.updateAlgorithmStatus(id, srcStatus);
         }catch (RejectedExecutionException re){
             System.out.println(String.format("Execution queue full for %s on %s", id,hostname));
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
-        } catch (ApiException e) {
-            e.printStackTrace();
+        } catch (FeignException e) {
+            log.error("{}",e.getCause());
         }
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);

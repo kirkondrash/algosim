@@ -1,11 +1,10 @@
 package hse.algosim.server.gateway.scheduling_services;
 
-import hse.algosim.client.api.ApiException;
-import hse.algosim.client.executor.api.ExecutorApiClientInstance;
-import hse.algosim.client.repo.api.RepoApiClientInstance;
+import feign.FeignException;
+import hse.algosim.client.executor.api.ExecutorApiClient;
+import hse.algosim.client.repo.api.RepoApiClient;
 import hse.algosim.server.model.SrcStatus;
 import hse.algosim.server.model.SrcStatus.StatusEnum;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -21,11 +20,11 @@ class ExecutionSchedulingService implements SchedulingService{
 
     private Queue<String> scheduledForExecutionIds = new ConcurrentLinkedQueue<>();
     private List<StatusEnum> applicableStatuses = List.of(StatusEnum.SUCCESSFULLY_COMPILED, StatusEnum.SCHEDULED_FOR_EXECUTION, StatusEnum.EXECUTING, StatusEnum.EXECUTION_FAILED);
-    private RepoApiClientInstance repoApiClient;
-    private ExecutorApiClientInstance executorApiClient;
+    private RepoApiClient repoApiClient;
+    private ExecutorApiClient executorApiClient;
 
     @Autowired
-    public ExecutionSchedulingService(RepoApiClientInstance repoApiClient, ExecutorApiClientInstance executorApiClient) {
+    public ExecutionSchedulingService(RepoApiClient repoApiClient, ExecutorApiClient executorApiClient) {
         this.repoApiClient = repoApiClient;
         this.executorApiClient = executorApiClient;
     }
@@ -37,11 +36,12 @@ class ExecutionSchedulingService implements SchedulingService{
                 executorApiClient.executeAlgorithm(id);
                 log.info(id + " sent to worker for execution");
                 return true;
-            } catch (ApiException ae) {
-                if (ae.getCode() == 503) {
-                    log.info("Executor busy!");
+            } catch (FeignException e){
+                if (e.status() == 503){
+                    log.warn("Executor busy!");
                 } else {
-                    System.out.println(ae.getResponseBody());
+                    log.error(e.responseBody().toString());
+                    log.error("{}",e.getCause());
                 }
                 return false;
             }
@@ -53,7 +53,6 @@ class ExecutionSchedulingService implements SchedulingService{
         return applicableStatuses.contains(status);
     }
 
-    @SneakyThrows
     @Override
     public void handle(StatusEnum status, String id) {
         switch (status){ // can be refactored later, for now ok
@@ -61,7 +60,7 @@ class ExecutionSchedulingService implements SchedulingService{
                 scheduledForExecutionIds.add(id);
                 break;
             case EXECUTION_FAILED:
-                SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id);
+                SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id).getBody();
                 log.warn("{}: {}", id, srcStatus.toString());
                 break;
             default:

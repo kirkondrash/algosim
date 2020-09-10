@@ -1,9 +1,8 @@
 package hse.algosim.server.gateway.scheduling_services;
 
-import hse.algosim.client.repo.api.RepoApiClientInstance;
+import hse.algosim.client.repo.api.RepoApiClient;
 import hse.algosim.server.model.SrcStatus;
 import hse.algosim.server.model.SrcStatus.StatusEnum;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -15,10 +14,10 @@ import java.util.List;
 class ResultsSchedulingService implements SchedulingService{
 
     private List<StatusEnum> applicableStatuses = List.of(StatusEnum.SUCCESSFULLY_EXECUTED);
-    private RepoApiClientInstance repoApiClient;
+    private RepoApiClient repoApiClient;
 
     @Autowired
-    public ResultsSchedulingService(RepoApiClientInstance repoApiClient) {
+    public ResultsSchedulingService(RepoApiClient repoApiClient) {
         this.repoApiClient = repoApiClient;
     }
 
@@ -27,10 +26,9 @@ class ResultsSchedulingService implements SchedulingService{
         return applicableStatuses.contains(status);
     }
 
-    @SneakyThrows
     @Override
     public void handle(StatusEnum status, String id) {
-        SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id);
+        SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id).getBody();
         log.info("{}: {}", id, srcStatus.toString());
     }
 }
