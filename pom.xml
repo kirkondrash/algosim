@@ -67,6 +67,12 @@
             </dependency>
 
             <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-openfeign</artifactId>
+                <version>${spring-boot.version}</version>
+            </dependency>
+
+            <dependency>
                 <groupId>io.swagger</groupId>
                 <artifactId>swagger-annotations</artifactId>
                 <version>${swagger-core-version}</version>
@@ -164,11 +170,6 @@
                 <version>${netty-reactor.version}</version>
             </dependency>
 
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-openfeign</artifactId>
-                <version>${spring-boot.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
