@@ -7,17 +7,18 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
         "hse.algosim.server.compiler",
         "hse.algosim.server.security",
-        "hse.algosim.server.config",
-        "hse.algosim.client.repo.api"})
+        "hse.algosim.server.config"})
 @EnableFeignClients("hse.algosim.client")
-
-public class OpenAPI2SpringBoot implements CommandLineRunner {
+@EnableAsync
+public class CompilerServerSpringBootMain implements CommandLineRunner {
 
     @Override
     public void run(String... arg0) throws Exception {
@@ -27,7 +28,7 @@ public class OpenAPI2SpringBoot implements CommandLineRunner {
     }
 
     public static void main(String[] args) throws Exception {
-        new SpringApplication(OpenAPI2SpringBoot.class).run(args);
+        new SpringApplication(CompilerServerSpringBootMain.class).run(args);
     }
 
     static class ExitException extends RuntimeException implements ExitCodeGenerator {

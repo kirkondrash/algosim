@@ -1,4 +1,4 @@
-package hse.algosim.server.compiler;
+package hse.algosim.server.compiler.service;
 
 import feign.FeignException;
 import hse.algosim.client.repo.api.RepoApiClient;
@@ -6,8 +6,10 @@ import hse.algosim.server.model.SrcStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.apache.maven.shared.invoker.*;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,13 +23,24 @@ import java.util.Comparator;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-@Component
+@Service
 @Slf4j
 public class CompilerService {
 
     private final Invoker mavenInvoker = new DefaultInvoker().setMavenHome(new File(System.getenv("MAVEN_HOME")));
+    private final RepoApiClient repoApiClient;
+    private final String frameworkProjectPath;
 
-    public void runCompilation(RepoApiClient repoApiClient, String id, String pathToFramework) {
+    @Autowired
+    public CompilerService(
+            RepoApiClient repoApiClient,
+            @Value("${framework.project.path}") String frameworkProjectPath) {
+        this.repoApiClient = repoApiClient;
+        this.frameworkProjectPath = frameworkProjectPath;
+    }
+
+    @Async("boundedTaskExecutor")
+    public void runCompilation(String id) {
         StringWriter stringWriter = new StringWriter();
         PrintWriter printWriter = new PrintWriter(stringWriter);
         SrcStatus.SrcStatusBuilder srcStatus = SrcStatus.builder();
@@ -38,7 +51,7 @@ public class CompilerService {
             repoApiClient.updateAlgorithmStatus(
                     id,
                     SrcStatus.builder().status(SrcStatus.StatusEnum.COMPILING).build());
-            copyFolder(Paths.get(pathToFramework),projectDir.toPath());
+            copyFolder(Paths.get(frameworkProjectPath),projectDir.toPath());
             byte[] code = repoApiClient.readAlgorithmCode(id).getBody();
             FileUtils.writeByteArrayToFile(new File(projectDirName + "/src/main/java/TradingAlgorithmImpl.java"), code);
 

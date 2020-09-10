@@ -1,6 +1,5 @@
 package hse.algosim.server.repo.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import hse.algosim.server.exceptions.ResourceAlreadyExistsException;
 import hse.algosim.server.exceptions.ResourceNotFoundException;
 import hse.algosim.server.model.IdArray;
@@ -11,7 +10,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;

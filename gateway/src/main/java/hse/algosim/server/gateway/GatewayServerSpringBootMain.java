@@ -14,13 +14,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @ComponentScan(basePackages = {
         "hse.algosim.server.gateway",
         "hse.algosim.server.security",
-        "hse.algosim.server.config",
-        "hse.algosim.client.repo.api",
-        "hse.algosim.client.compiler.api",
-        "hse.algosim.client.executor.api"})
+        "hse.algosim.server.config"})
 @EnableScheduling
 @EnableFeignClients("hse.algosim.client")
-public class OpenAPI2SpringBoot implements CommandLineRunner {
+public class GatewayServerSpringBootMain implements CommandLineRunner {
 
     @Override
     public void run(String... arg0) throws Exception {
@@ -30,7 +27,7 @@ public class OpenAPI2SpringBoot implements CommandLineRunner {
     }
 
     public static void main(String[] args) throws Exception {
-        new SpringApplication(OpenAPI2SpringBoot.class).run(args);
+        new SpringApplication(GatewayServerSpringBootMain.class).run(args);
     }
 
     static class ExitException extends RuntimeException implements ExitCodeGenerator {

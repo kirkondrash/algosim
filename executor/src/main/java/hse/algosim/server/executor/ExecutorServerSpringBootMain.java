@@ -1,17 +1,23 @@
-package hse.algosim.server.repo;
+package hse.algosim.server.executor;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"hse.algosim.server.repo", "hse.algosim.server.security", "hse.algosim.server.config"})
-public class OpenAPI2SpringBoot implements CommandLineRunner {
+@ComponentScan(basePackages = {
+        "hse.algosim.server.executor",
+        "hse.algosim.server.security",
+        "hse.algosim.server.config"})
+@EnableFeignClients("hse.algosim.client")
+@EnableAsync
+public class ExecutorServerSpringBootMain implements CommandLineRunner {
 
     @Override
     public void run(String... arg0) throws Exception {
@@ -21,7 +27,7 @@ public class OpenAPI2SpringBoot implements CommandLineRunner {
     }
 
     public static void main(String[] args) throws Exception {
-        new SpringApplication(OpenAPI2SpringBoot.class).run(args);
+        new SpringApplication(ExecutorServerSpringBootMain.class).run(args);
     }
 
     static class ExitException extends RuntimeException implements ExitCodeGenerator {
@@ -44,14 +50,6 @@ public class OpenAPI2SpringBoot implements CommandLineRunner {
                         .allowedMethods("*")
                         .allowedHeaders("Content-Type");
             }*/
-            @Override
-            public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-                configurer
-                        .favorPathExtension(false)
-                        .favorParameter(false);
-            }
-
         };
     }
-
 }

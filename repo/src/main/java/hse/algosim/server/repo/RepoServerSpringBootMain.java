@@ -1,22 +1,17 @@
-package hse.algosim.server.executor;
+package hse.algosim.server.repo;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {
-        "hse.algosim.server.executor",
-        "hse.algosim.server.security",
-        "hse.algosim.server.config",
-        "hse.algosim.client.repo.api"})
-@EnableFeignClients("hse.algosim.client")
-public class OpenAPI2SpringBoot implements CommandLineRunner {
+@ComponentScan(basePackages = {"hse.algosim.server.repo", "hse.algosim.server.security", "hse.algosim.server.config"})
+public class RepoServerSpringBootMain implements CommandLineRunner {
 
     @Override
     public void run(String... arg0) throws Exception {
@@ -26,7 +21,7 @@ public class OpenAPI2SpringBoot implements CommandLineRunner {
     }
 
     public static void main(String[] args) throws Exception {
-        new SpringApplication(OpenAPI2SpringBoot.class).run(args);
+        new SpringApplication(RepoServerSpringBootMain.class).run(args);
     }
 
     static class ExitException extends RuntimeException implements ExitCodeGenerator {
@@ -49,6 +44,14 @@ public class OpenAPI2SpringBoot implements CommandLineRunner {
                         .allowedMethods("*")
                         .allowedHeaders("Content-Type");
             }*/
+            @Override
+            public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+                configurer
+                        .favorPathExtension(false)
+                        .favorParameter(false);
+            }
+
         };
     }
+
 }
