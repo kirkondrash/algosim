@@ -64,7 +64,7 @@
                         <version>2.2.0</version>
                         <configuration>
                             <from>
-                                <image>maven:3.6.3-jdk-8-slim</image>
+                                <image>maven:3.6.3-jdk-11-slim</image>
                             </from>
                             <to>
                                 <image>${project.artifactId}</image>

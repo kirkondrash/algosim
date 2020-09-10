@@ -6,33 +6,21 @@ import io.swagger.annotations.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.context.request.NativeWebRequest;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import javax.validation.Valid;
-import java.util.Optional;
 
-@Validated
+@Valid
 @Api(value = "algoStatus", description = "the algoStatus API", tags={ "status" })
 public interface AlgoStatusApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     @ApiOperation(value = "", nickname = "createAlgorithmStatus", notes = "Uploads the algorithm status and/or benchmarks")
     @ApiResponses(value = {
             @ApiResponse(code = 201, message = "Status successfully uploaded"),
             @ApiResponse(code = 409, message = "Source code not found for this id")
     })
-    @RequestMapping(value = "/algoStatus/{id}",
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE },
-            method = RequestMethod.POST)
+    @PostMapping(value = "/algoStatus/{id}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
     default ResponseEntity<Void> createAlgorithmStatus(@ApiParam(value = "id of algorithm which status will be uploaded",required=true) @PathVariable("id") String id, @ApiParam(value = "Status to be uploaded" ,required=true )  @Valid @RequestBody SrcStatus srcStatus) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
@@ -41,9 +29,7 @@ public interface AlgoStatusApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Status successfully fetched", response = SrcStatus.class),
             @ApiResponse(code = 404, message = "Status not found for this id") })
-    @RequestMapping(value = "/algoStatus/{id}",
-            produces = { MediaType.APPLICATION_JSON_VALUE },
-            method = RequestMethod.GET)
+    @GetMapping(value = "/algoStatus/{id}", produces = { MediaType.APPLICATION_JSON_VALUE })
     default ResponseEntity<SrcStatus> readAlgorithmStatus(@ApiParam(value = "id of algorithm which status will be fetched",required=true) @PathVariable("id") String id) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
@@ -52,10 +38,7 @@ public interface AlgoStatusApi {
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "Status successfully replaced"),
             @ApiResponse(code = 404, message = "Source code / status not found for this id") })
-    @RequestMapping(value = "/algoStatus/{id}",
-            consumes = { MediaType.APPLICATION_JSON_VALUE },
-            produces = { MediaType.APPLICATION_JSON_VALUE },
-            method = RequestMethod.PUT)
+    @PutMapping(value = "/algoStatus/{id}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
     default ResponseEntity<Void> updateAlgorithmStatus(@ApiParam(value = "id of algorithm which status will be replaced",required=true) @PathVariable("id") String id, @ApiParam(value = "Status to be uploaded" ,required=true )  @Valid @RequestBody SrcStatus srcStatus) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
@@ -64,9 +47,7 @@ public interface AlgoStatusApi {
     @ApiResponses(value = {
             @ApiResponse(code = 204, message = "Status successfully deleted"),
             @ApiResponse(code = 404, message = "Status not found for this id") })
-    @RequestMapping(value = "/algoStatus/{id}",
-            produces = { MediaType.APPLICATION_JSON_VALUE },
-            method = RequestMethod.DELETE)
+    @DeleteMapping(value = "/algoStatus/{id}", produces = { MediaType.APPLICATION_JSON_VALUE })
     default ResponseEntity<Void> deleteAlgorithmStatus(@ApiParam(value = "id of algorithm which status will be deleted",required=true) @PathVariable("id") String id) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
@@ -74,10 +55,12 @@ public interface AlgoStatusApi {
     @ApiOperation(value = "", nickname = "getTopCode", notes = "Returns top 10 algos ids", response = IdArray.class)
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Source code ids", response = IdArray.class) })
-    @RequestMapping(value = "/getTopCode",
-            produces = { MediaType.APPLICATION_JSON_VALUE },
-            method = RequestMethod.GET)
+    @GetMapping(value = "/getTopCode", produces = { MediaType.APPLICATION_JSON_VALUE })
     default ResponseEntity<IdArray> getTopCode() {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
+
+    @ApiOperation(value = "", nickname = "statusUpdateSSE", notes = "Returns updates of statuses in repo in server-sent-event fashion", response = SseEmitter.class)
+    @GetMapping(path = "/statusUpdateSSE", produces = MediaType.APPLICATION_STREAM_JSON_VALUE)
+    SseEmitter statusUpdateSSE();
 }

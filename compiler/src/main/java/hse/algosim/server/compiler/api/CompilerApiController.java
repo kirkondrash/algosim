@@ -2,7 +2,8 @@ package hse.algosim.server.compiler.api;
 
 import feign.FeignException;
 import hse.algosim.client.repo.api.RepoApiClient;
-import hse.algosim.server.compiler.service.CompilerService;
+import hse.algosim.server.compiler.service.CompilerApiService;
+import hse.algosim.server.compiler.service.CompilerRunner;
 import hse.algosim.server.model.SrcStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,30 +23,23 @@ import java.util.concurrent.RejectedExecutionException;
 public class CompilerApiController implements CompilerApi {
 
     private final static String hostname = Optional.ofNullable(System.getenv("HOSTNAME")).orElse("undefined");
-    private final ThreadPoolTaskExecutor taskExecutor;
-    private final RepoApiClient repoApiClient;
-    private final CompilerService compilerService;
+    private final CompilerApiService compilerApiService;
 
     @Autowired
-    public CompilerApiController(ThreadPoolTaskExecutor taskExecutor, RepoApiClient repoApiClient, CompilerService compilerService){
-        this.taskExecutor = taskExecutor;
-        this.repoApiClient = repoApiClient;
-        this.compilerService = compilerService;
+    public CompilerApiController(CompilerApiService compilerApiService){
+        this.compilerApiService = compilerApiService;
     }
 
     @Override
     public ResponseEntity<Void> compileAlgorithm(@PathVariable("id") String id) {
         try {
-            compilerService.runCompilation(id);
-            SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id).getBody();
-            srcStatus.setStatus(SrcStatus.StatusEnum.SCHEDULED_FOR_COMPILATION);
-            repoApiClient.updateAlgorithmStatus(id, srcStatus);
+            compilerApiService.compileAlgorithm(id);
         }catch (RejectedExecutionException re){
             log.warn("Compilation queue full for {} on {}", id,hostname);
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
         } catch (FeignException e) {
             log.error(e.responseBody().toString());
-            log.error("{}",e.getCause());
+            log.error("Exception while setting {} status before compilation", id, e);
         }
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
@@ -53,7 +47,7 @@ public class CompilerApiController implements CompilerApi {
 
     @Override
     public ResponseEntity<Void> getReadiness() {
-        if (taskExecutor.getThreadPoolExecutor().getQueue().size()<2)
+        if (compilerApiService.getReadiness())
             return new ResponseEntity<>(HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);

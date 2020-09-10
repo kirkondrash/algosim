@@ -12,16 +12,23 @@ psql -U postgres <<-EOSQL
       winloss        varchar
     );
 
+    create table meta(
+      id             serial      primary key,
+      algo_id        varchar     not null unique,
+      author         varchar     not null,
+      description    varchar
+    );
+
     create table sources(
       id             serial      primary key,
       algo_id        varchar     not null unique,
-      path           varchar
+      path           varchar     not null
     );
 
     create table artifacts(
       id             serial      primary key,
       algo_id        varchar     not null unique,
-      path           varchar
+      path           varchar     not null
     );
 
     create table bhacklogins(

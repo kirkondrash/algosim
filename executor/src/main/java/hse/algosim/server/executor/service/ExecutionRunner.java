@@ -8,15 +8,16 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-@Service
+@Component
 @Slf4j
-public class ExecutorService {
+public class ExecutionRunner {
     private final ProcessBuilder pb = new ProcessBuilder();
 
     private final RepoApiClient repoApiClient;
@@ -26,7 +27,7 @@ public class ExecutorService {
     private final String dataSourceUrl;
 
     @Autowired
-    public ExecutorService(
+    public ExecutionRunner(
             RepoApiClient repoApiClient,
             @Value("${framework.quotes.path}") String frameworkQuotesPath,
             @Value("${spring.datasource.username}") String dataSourceUser,
@@ -89,7 +90,7 @@ public class ExecutorService {
                         id,
                         srcStatus.build());
             } catch (FeignException e) {
-                log.error("{}",e.getCause());
+                log.error("Exception while setting {} status after execution: {}",id, srcStatus.build(), e);
             }
         }
     }

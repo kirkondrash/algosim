@@ -9,6 +9,7 @@ import org.apache.maven.shared.invoker.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -23,16 +24,16 @@ import java.util.Comparator;
 
 import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 
-@Service
+@Component
 @Slf4j
-public class CompilerService {
+public class CompilerRunner {
 
     private final Invoker mavenInvoker = new DefaultInvoker().setMavenHome(new File(System.getenv("MAVEN_HOME")));
     private final RepoApiClient repoApiClient;
     private final String frameworkProjectPath;
 
     @Autowired
-    public CompilerService(
+    public CompilerRunner(
             RepoApiClient repoApiClient,
             @Value("${framework.project.path}") String frameworkProjectPath) {
         this.repoApiClient = repoApiClient;
@@ -75,7 +76,7 @@ public class CompilerService {
                         repoApiClient.updateAlgorithmJar(id,new File(projectDirName + "/target/algosim-framework-1.1.0-SNAPSHOT.jar"));
                     } else {
                         log.error(e.responseBody().toString());
-                        log.error("{}",e.getCause());
+                        log.error("Exception while uploading {} jar",id,e);
                     }
                 }
             }
@@ -100,7 +101,7 @@ public class CompilerService {
                         srcStatus.build());
             } catch (FeignException e) {
                 log.error(e.responseBody().toString());
-                log.error("{}",e.getCause());
+                log.error("Exception while setting {} status after compilation: {}",id, srcStatus.build(), e);
             } catch (IOException ioe) {
                 ioe.printStackTrace();
             }

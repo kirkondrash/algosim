@@ -7,17 +7,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.context.request.NativeWebRequest;
-
-import java.util.Optional;
 
 @Validated
 @Api(value = "execute", description = "the execute API", tags={ "executor" })
 public interface ExecuteApi {
-
-    default Optional<NativeWebRequest> getRequest() {
-        return Optional.empty();
-    }
 
     @ApiOperation(value = "", nickname = "executeAlgorithm", notes = "Gets the artifact from nexus, executes and benchmarks it")
     @ApiResponses(value = { 

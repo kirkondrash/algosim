@@ -2,7 +2,8 @@ package hse.algosim.server.executor.api;
 
 import feign.FeignException;
 import hse.algosim.client.repo.api.RepoApiClient;
-import hse.algosim.server.executor.service.ExecutorService;
+import hse.algosim.server.executor.service.ExecuteApiService;
+import hse.algosim.server.executor.service.ExecutionRunner;
 import hse.algosim.server.model.SrcStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,30 +22,23 @@ import java.util.concurrent.RejectedExecutionException;
 @Slf4j
 public class ExecuteApiController implements ExecuteApi {
 
+    private final ExecuteApiService executeApiService;
     private final static String hostname = Optional.ofNullable(System.getenv("HOSTNAME")).orElse("undefined");
-    private final ThreadPoolTaskExecutor taskExecutor;
-    private final RepoApiClient repoApiClient;
-    private final ExecutorService executorService;
 
     @Autowired
-    public ExecuteApiController(ThreadPoolTaskExecutor taskExecutor, RepoApiClient repoApiClient, ExecutorService executorService) {
-        this.taskExecutor = taskExecutor;
-        this.repoApiClient = repoApiClient;
-        this.executorService = executorService;
+    public ExecuteApiController(ExecuteApiService executeApiService) {
+        this.executeApiService = executeApiService;
     }
 
     @Override
     public ResponseEntity<Void> executeAlgorithm(@PathVariable("id") String id) {
         try {
-            executorService.runExecution(id);
-            SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id).getBody();
-            srcStatus.setStatus(SrcStatus.StatusEnum.SCHEDULED_FOR_EXECUTION);
-            repoApiClient.updateAlgorithmStatus(id, srcStatus);
+            executeApiService.executeAlgorithm(id);
         }catch (RejectedExecutionException re){
             log.warn("Execution queue full for {} on {}", id,hostname);
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);
         } catch (FeignException e) {
-            log.error("{}",e.getCause());
+            log.error("Exception while setting {} status before execution",id, e);
         }
 
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
@@ -52,7 +46,7 @@ public class ExecuteApiController implements ExecuteApi {
 
     @Override
     public ResponseEntity<Void> getReadiness() {
-        if (taskExecutor.getThreadPoolExecutor().getQueue().size()<2)
+        if (executeApiService.getReadiness())
             return new ResponseEntity<>(HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.SERVICE_UNAVAILABLE);

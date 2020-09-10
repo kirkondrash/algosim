@@ -7,21 +7,22 @@ import hse.algosim.server.model.SrcStatus;
 import hse.algosim.server.model.SrcStatus.StatusEnum;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 @Slf4j
 @Component
 class ExecutionSchedulingService implements SchedulingService{
 
-    private Queue<String> scheduledForExecutionIds = new ConcurrentLinkedQueue<>();
-    private List<StatusEnum> applicableStatuses = List.of(StatusEnum.SUCCESSFULLY_COMPILED, StatusEnum.SCHEDULED_FOR_EXECUTION, StatusEnum.EXECUTING, StatusEnum.EXECUTION_FAILED);
-    private RepoApiClient repoApiClient;
-    private ExecutorApiClient executorApiClient;
+    private final Queue<String> scheduledForExecutionIds = new ConcurrentLinkedQueue<>();
+    private final List<StatusEnum> applicableStatuses = List.of(StatusEnum.SUCCESSFULLY_COMPILED, StatusEnum.SCHEDULED_FOR_EXECUTION, StatusEnum.EXECUTING, StatusEnum.EXECUTION_FAILED);
+    private final RepoApiClient repoApiClient;
+    private final ExecutorApiClient executorApiClient;
 
     @Autowired
     public ExecutionSchedulingService(RepoApiClient repoApiClient, ExecutorApiClient executorApiClient) {
@@ -29,23 +30,25 @@ class ExecutionSchedulingService implements SchedulingService{
         this.executorApiClient = executorApiClient;
     }
 
-    @Scheduled(fixedDelay = 2000)
-    public void algorithmCompilationAttempting() {
-        attemptToExecuteScheduling(scheduledForExecutionIds, (id) -> {
+    @Override
+    public void attemptToExecuteScheduling() {
+        Set<String> successfullyScheduledIds = new HashSet<>();
+        for (String scheduledId: scheduledForExecutionIds){
             try {
-                executorApiClient.executeAlgorithm(id);
-                log.info(id + " sent to worker for execution");
-                return true;
+                executorApiClient.executeAlgorithm(scheduledId);
+                successfullyScheduledIds.add(scheduledId);
+                log.info(scheduledId + " sent to worker for execution");
             } catch (FeignException e){
                 if (e.status() == 503){
                     log.warn("Executor busy!");
                 } else {
                     log.error(e.responseBody().toString());
-                    log.error("{}",e.getCause());
+                    log.error("Exception while trying to schedule {} execution", scheduledId,e);
                 }
-                return false;
+                break;
             }
-        });
+        }
+        scheduledForExecutionIds.removeAll(successfullyScheduledIds);
     }
 
     @Override

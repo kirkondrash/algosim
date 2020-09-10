@@ -1,3 +1,6 @@
+!!! ГОНКА между SCHEDULED FOR COMPILATION и COMPILING когда нет очереди
+Сравнение с мастером
+
 ![sequence-diagram](algosim-sequence.png "Взаимодействие сервисов")
 ***
 Future TODO:

@@ -11,14 +11,5 @@ public interface SchedulingService {
 
     void handle(StatusEnum status, String id);
 
-    default void attemptToExecuteScheduling(Queue<String> scheduledIds, Function<String, Boolean> schedulingAction){
-        for (String scheduledId: scheduledIds){
-            if (schedulingAction.apply(scheduledId)) {
-                scheduledIds.remove(scheduledId);
-            } else {
-                break;
-            }
-        }
-    }
-
+    default void attemptToExecuteScheduling() {};
 }

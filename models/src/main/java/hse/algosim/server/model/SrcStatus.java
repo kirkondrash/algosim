@@ -2,30 +2,25 @@ package hse.algosim.server.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
 import lombok.NoArgsConstructor;
-import lombok.AllArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Getter
-@Setter
-@ToString
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@Validated
 @Entity
 @Table(name = "statuses")
 public class SrcStatus   {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE)
+  @JsonIgnore
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
   @JsonIgnore
   @Column(name = "algo_id")
@@ -53,6 +48,7 @@ public class SrcStatus   {
   }
 
   @NotNull
+  @Enumerated(EnumType.STRING)
   private StatusEnum status;
 
   @JsonProperty("errorTrace")
@@ -62,4 +58,9 @@ public class SrcStatus   {
   @JsonProperty("metrics")
   @Column(name = "winloss")
   private String metrics;
+
+  @Override
+  public String toString() {
+    return "SrcStatus(status=" + this.getStatus() + ", errorTrace=" + this.getErrorTrace() + ", metrics=" + this.getMetrics() + ")";
+  }
 }

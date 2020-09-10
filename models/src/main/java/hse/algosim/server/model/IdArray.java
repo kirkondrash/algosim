@@ -11,11 +11,9 @@ import java.util.List;
  */
 
 @Getter
-@Setter
-@ToString
-@Builder
-@AllArgsConstructor
+@Builder(toBuilder = true)
 @NoArgsConstructor
+@AllArgsConstructor
 public class IdArray   {
   @JsonProperty("id")
   @Valid

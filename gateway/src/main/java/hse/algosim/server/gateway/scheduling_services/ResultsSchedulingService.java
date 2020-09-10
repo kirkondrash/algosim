@@ -13,8 +13,8 @@ import java.util.List;
 @Slf4j
 class ResultsSchedulingService implements SchedulingService{
 
-    private List<StatusEnum> applicableStatuses = List.of(StatusEnum.SUCCESSFULLY_EXECUTED);
-    private RepoApiClient repoApiClient;
+    private final List<StatusEnum> applicableStatuses = List.of(StatusEnum.SUCCESSFULLY_EXECUTED);
+    private final RepoApiClient repoApiClient;
 
     @Autowired
     public ResultsSchedulingService(RepoApiClient repoApiClient) {
