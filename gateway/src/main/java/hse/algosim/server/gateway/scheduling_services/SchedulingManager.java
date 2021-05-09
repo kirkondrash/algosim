@@ -81,7 +81,7 @@ public class SchedulingManager {
     }
 
     private void handleStatusUpdate(ServerSentEvent<String> content){
-        log.info("Server-sent event: name[{}], content[{}] ",
+        log.info("Server-sent event: event[{}], id[{}] ",
                 content.event(), content.data());
 
         StatusEnum statusEnum = SrcStatus.StatusEnum.valueOf(content.event());

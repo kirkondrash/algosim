@@ -41,6 +41,7 @@ services:
        - "--server.address=0.0.0.0"
        - "--framework.quotes.path=/quotes"
        - "--repo.basePath=http://repo:8080/api"
+       - "--gateway.basePath=http://gateway:8080"
        - "--spring.datasource.driverClassName=org.postgresql.Driver"
        - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
        - "--spring.datasource.username=postgres"

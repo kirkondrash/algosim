@@ -5,7 +5,9 @@ import hse.algosim.client.repo.api.RepoApiClient;
 import hse.algosim.server.exceptions.ResourceNotFoundException;
 import hse.algosim.server.gateway.scheduling_services.SchedulingManager;
 import hse.algosim.server.gateway.service.AlgoCodeApiService;
+import hse.algosim.server.gateway.service.RecommendationModelService;
 import hse.algosim.server.model.IdArray;
+import hse.algosim.server.model.RecommendationModel;
 import hse.algosim.server.model.SrcStatus;
 import hse.algosim.server.model.UserCodeInfo;
 import io.swagger.annotations.ApiParam;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,10 +34,12 @@ import java.util.Map;
 public class AlgoCodeApiController implements AlgoCodeApi {
 
     private final AlgoCodeApiService algoCodeApiService;
+    private final RecommendationModelService recommendationModelService;
 
     @Autowired
-    public AlgoCodeApiController(AlgoCodeApiService algoCodeApiService) {
+    public AlgoCodeApiController(AlgoCodeApiService algoCodeApiService, RecommendationModelService recommendationModelService) {
         this.algoCodeApiService = algoCodeApiService;
+        this.recommendationModelService = recommendationModelService;
     }
 
     @Override
@@ -65,4 +70,14 @@ public class AlgoCodeApiController implements AlgoCodeApi {
         return new ResponseEntity<>(algoCodeApiService.readAlgorithmStatus(id), HttpStatus.OK);
     }
 
+    @Override
+    public ResponseEntity<String> getRecommendation(String id) {
+        return ResponseEntity.status(HttpStatus.FOUND).header("Location",recommendationModelService.readModel(id).getUrl()).build();
+    }
+
+    @Override
+    public ResponseEntity<Void> registerRecommendation(RecommendationModel model) {
+        recommendationModelService.createOrUpdateModel(model);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -43,21 +43,14 @@ public class TradingAlgorithmImpl extends TradingAlgorithm {
             *  - takeProfit(BigDecimal pips) - open order to preserve the profits when the rate goes up the 'pips' value.
              */
 
-            /* For example, different trade tactics for currency pairs including russian rouble */
-            if (tick.getCurrencyPair().contains("RUB")) {
+            if (getBoolRecommendation("simple")){
                 Order o1 = new Order(currencyRate, tick.getCurrencyPair(), 50)
                         .buyNow()
-                        .stopLoss(tick.getRate().subtract(new BigDecimal(String.valueOf(stopLoss * 100))));
+                        .stopLoss(tick.getRate().subtract(new BigDecimal(String.valueOf(stopLoss * 100))))
+                        .takeProfit(tick.getRate().add(new BigDecimal(String.valueOf(takeProfit * 100))));
                 /* all orders MUST be put into the order base to be taken into account */
                 ordersBase.put(o1);
-            } else {
-                Order o2 = new Order(currencyRate, tick.getCurrencyPair(), 10)
-                        .sellStop(tick.getRate().subtract(new BigDecimal("0.05")))
-                        .stopLoss(tick.getRate().add(new BigDecimal(String.valueOf(stopLoss))))
-                        .takeProfit(tick.getRate().subtract(new BigDecimal(String.valueOf(takeProfit))));
-                /* all orders MUST be put into the order base to be taken into account */
-                ordersBase.put(o2);
-            }
+            };
         }
     }
 

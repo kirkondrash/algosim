@@ -9,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.util.Arrays;
@@ -25,6 +24,7 @@ public class ExecutionRunner {
     private final String dataSourceUser;
     private final String dataSourcePassword;
     private final String dataSourceUrl;
+    private final String gatewayBasePath;
 
     @Autowired
     public ExecutionRunner(
@@ -32,12 +32,14 @@ public class ExecutionRunner {
             @Value("${framework.quotes.path}") String frameworkQuotesPath,
             @Value("${spring.datasource.username}") String dataSourceUser,
             @Value("${spring.datasource.password}") String dataSourcePassword,
-            @Value("${spring.datasource.url}") String dataSourceUrl) {
+            @Value("${spring.datasource.url}") String dataSourceUrl,
+            @Value("${gateway.basePath}") String gatewayBasePath) {
         this.repoApiClient = repoApiClient;
         this.frameworkQuotesPath = frameworkQuotesPath;
         this.dataSourceUser = dataSourceUser;
         this.dataSourcePassword = dataSourcePassword;
         this.dataSourceUrl = dataSourceUrl;
+        this.gatewayBasePath = gatewayBasePath;
     }
 
     @Async("boundedTaskExecutor")
@@ -60,6 +62,7 @@ public class ExecutionRunner {
                             String.format("-Dpostgres.username=%s", dataSourceUser),
                             String.format("-Dpostgres.password=%s", dataSourcePassword),
                             String.format("-Dpostgres.url=%s", dataSourceUrl),
+                            String.format("-Drecommendation.basePath=%s", gatewayBasePath+"/recommendation"),
                             "-jar",
                             jar.getAbsolutePath()))
                     .start();

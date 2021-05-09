@@ -31,6 +31,14 @@ psql -U postgres <<-EOSQL
       path           varchar     not null
     );
 
+    create table model(
+      id             serial      primary key,
+      name            varchar     not null,
+      url            varchar     not null,
+      startup_script varchar     not null,
+      description    varchar
+    );
+
     create table bhacklogins(
       login          varchar     not null,
       password       varchar     not null,
