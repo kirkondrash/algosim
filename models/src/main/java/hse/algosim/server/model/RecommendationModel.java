@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Builder(toBuilder = true)
@@ -26,15 +28,18 @@ public class RecommendationModel {
   @NotNull
   private String name;
 
-  @JsonProperty("url")
+  @JsonProperty("container_port")
   @NotNull
-  private String url;
+  private String containerPort;
 
-  @JsonProperty("startup_script")
-  @NotNull
-  private String startupScript;
+  @JsonProperty("additional_args")
+  private String additionalArgs;
 
   @JsonProperty("description")
   private String description;
+
+  @JsonIgnore
+  @OneToMany(mappedBy = "algo")
+  private Set<ModelToAlgo> algos;
 
 }

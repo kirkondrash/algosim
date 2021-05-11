@@ -2,6 +2,8 @@ package hse.algosim.server.executor.service;
 
 import feign.FeignException;
 import hse.algosim.client.repo.api.RepoApiClient;
+import hse.algosim.server.model.ModelToAlgo;
+import hse.algosim.server.model.SrcMeta;
 import hse.algosim.server.model.SrcStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.util.Arrays;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
@@ -20,6 +23,7 @@ public class ExecutionRunner {
     private final ProcessBuilder pb = new ProcessBuilder();
 
     private final RepoApiClient repoApiClient;
+    private final DockerService dockerService;
     private final String frameworkQuotesPath;
     private final String dataSourceUser;
     private final String dataSourcePassword;
@@ -28,12 +32,14 @@ public class ExecutionRunner {
 
     @Autowired
     public ExecutionRunner(
+            DockerService dockerService,
             RepoApiClient repoApiClient,
             @Value("${framework.quotes.path}") String frameworkQuotesPath,
             @Value("${spring.datasource.username}") String dataSourceUser,
             @Value("${spring.datasource.password}") String dataSourcePassword,
             @Value("${spring.datasource.url}") String dataSourceUrl,
             @Value("${gateway.basePath}") String gatewayBasePath) {
+        this.dockerService = dockerService;
         this.repoApiClient = repoApiClient;
         this.frameworkQuotesPath = frameworkQuotesPath;
         this.dataSourceUser = dataSourceUser;
@@ -54,6 +60,16 @@ public class ExecutionRunner {
             byte[] code = repoApiClient.readAlgorithmJar(id).getBody();
             FileUtils.writeByteArrayToFile(jar, code);
 
+            SrcMeta srcMeta =  repoApiClient
+                    .readAlgorithmMeta(id)
+                    .getBody();
+
+            srcMeta = dockerService.runImages(srcMeta);
+
+            dockerService.waitForModelBoot(srcMeta);
+
+            repoApiClient.updateAlgorithmMeta(srcMeta.getAlgoUserId(),srcMeta);
+
             Process p = pb
                     .command(Arrays.asList(
                             "java",
@@ -69,7 +85,7 @@ public class ExecutionRunner {
             try ( BufferedReader pErrorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
                   BufferedReader pOutputReader = new BufferedReader(new InputStreamReader(p.getInputStream()))){
 
-            srcStatus
+                srcStatus
                     .status(SrcStatus.StatusEnum.SUCCESSFULLY_EXECUTED)
                     .errorTrace(pErrorReader.lines().collect(Collectors.joining(System.lineSeparator())))
                     .metrics(pOutputReader.lines().collect(Collectors.joining(System.lineSeparator())));
@@ -77,8 +93,9 @@ public class ExecutionRunner {
                 if (p.waitFor() != 0) {
                     srcStatus.status(SrcStatus.StatusEnum.EXECUTION_FAILED);
                 }
+                dockerService.killModels(srcMeta);
             }
-        } catch (InterruptedException | FeignException | IOException e ){
+        } catch (InterruptedException | IOException | RuntimeException e ){
             StringWriter stringWriter = new StringWriter();
             e.printStackTrace(new PrintWriter(stringWriter));
             srcStatus

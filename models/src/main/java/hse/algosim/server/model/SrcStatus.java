@@ -52,7 +52,7 @@ public class SrcStatus   {
   private StatusEnum status;
 
   @JsonProperty("errorTrace")
-  @Column(name = "error_trace")
+  @Column(name = "error_trace",length = 10000)
   private String errorTrace;
 
   @JsonProperty("metrics")

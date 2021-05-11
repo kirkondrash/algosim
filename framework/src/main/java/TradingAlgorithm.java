@@ -58,7 +58,7 @@ public abstract class TradingAlgorithm {
             HttpResponse<String> response = httpClient.send(
                     HttpRequest
                             .newBuilder()
-                            .uri(URI.create(recommendationBasePath+"/"+modelName))
+                            .uri(URI.create(recommendationBasePath+"?modelName="+modelName+"&algoId="+System.getProperty("framework.algo_id")))
                             .GET()
                             .build(),
                     HttpResponse.BodyHandlers.ofString()

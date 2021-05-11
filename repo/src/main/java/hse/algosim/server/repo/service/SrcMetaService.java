@@ -34,7 +34,7 @@ public class SrcMetaService {
     }
 
     @SneakyThrows
-    public void updateAlgorithmStatus(String id, SrcMeta srcMeta) {
+    public void updateAlgorithmMeta(String id, SrcMeta srcMeta) {
         deleteAlgorithmMeta(id);
         createAlgorithmMeta(id, srcMeta);
     }

@@ -6,10 +6,7 @@ import hse.algosim.server.exceptions.ResourceNotFoundException;
 import hse.algosim.server.gateway.scheduling_services.SchedulingManager;
 import hse.algosim.server.gateway.service.AlgoCodeApiService;
 import hse.algosim.server.gateway.service.RecommendationModelService;
-import hse.algosim.server.model.IdArray;
-import hse.algosim.server.model.RecommendationModel;
-import hse.algosim.server.model.SrcStatus;
-import hse.algosim.server.model.UserCodeInfo;
+import hse.algosim.server.model.*;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +20,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("${openapi.algosimGateway.base-path:/}")
@@ -46,13 +41,18 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     public ResponseEntity<UserCodeInfo> codeBenchmark(
             @ApiParam(value = "code", required=true) @Valid @RequestPart("code") MultipartFile code,
             @ApiParam(value = "user id", required=true) @RequestPart(value="userId")  String userId,
-            @ApiParam(value = "user's name of algorithm", required=true) @RequestPart(value="userAlgoName")  String userAlgoName
+            @ApiParam(value = "user's name of algorithm", required=true) @RequestPart(value="userAlgoName")  String userAlgoName,
+            @ApiParam(value = "recommendation models used") @RequestPart(value = "models", required = false) String commaSeparatedModels
     ) {
         UserCodeInfo userCodeInfo;
         HttpStatus responseStatus = HttpStatus.OK;
 
         try {
-             userCodeInfo = algoCodeApiService.codeBenchMark(code, userId, userAlgoName);
+            Set<RecommendationModel> modelList = (commaSeparatedModels ==null) ? new HashSet<>() :
+                    Arrays.stream(commaSeparatedModels.split(","))
+                    .map(recommendationModelService::readModel)
+                    .collect(Collectors.toSet());
+             userCodeInfo = algoCodeApiService.codeBenchMark(code, userId, userAlgoName, modelList);
         } catch (FeignException e) {
             userCodeInfo = UserCodeInfo.builder().info(e.contentUTF8()).build();
             responseStatus = HttpStatus.INTERNAL_SERVER_ERROR;
@@ -71,8 +71,8 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     }
 
     @Override
-    public ResponseEntity<String> getRecommendation(String id) {
-        return ResponseEntity.status(HttpStatus.FOUND).header("Location",recommendationModelService.readModel(id).getUrl()).build();
+    public ResponseEntity<String> getRecommendation(String modelName, String algoId) {
+        return ResponseEntity.status(HttpStatus.FOUND).header("Location","http://localhost:"+recommendationModelService.readModelForAlgo(modelName, algoId).getHostPort().toString()).build();
     }
 
     @Override

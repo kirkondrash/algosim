@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.List;
+import java.util.Set;
 
 /**
  * SrcMeta
@@ -33,7 +35,9 @@ public class SrcMeta {
   private String description;
 
   @JsonProperty("author")
-  @NotNull
   private String author;
 
+  @JsonProperty("models")
+  @OneToMany(mappedBy = "model")
+  private Set<ModelToAlgo> models;
 }

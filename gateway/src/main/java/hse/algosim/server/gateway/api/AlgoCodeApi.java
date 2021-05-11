@@ -29,7 +29,8 @@ public interface AlgoCodeApi {
     default ResponseEntity<UserCodeInfo> codeBenchmark(
             @ApiParam(value = "code", required=true) @Valid @RequestPart("code") MultipartFile code,
             @ApiParam(value = "user id", required=true) @RequestPart(value="userId")  String userId,
-            @ApiParam(value = "user's name of algorithm", required=true) @RequestPart(value="userAlgoName")  String userAlgoName
+            @ApiParam(value = "user's name of algorithm", required=true) @RequestPart(value="userAlgoName")  String userAlgoName,
+            @ApiParam(value = "recommendation models used") @RequestPart(value = "models", required = false) String commaSeparatedModels
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
@@ -62,10 +63,13 @@ public interface AlgoCodeApi {
     @ApiResponses(value = {
             @ApiResponse(code = 302, message = "URL redirect", response = String.class),
             @ApiResponse(code = 404, message = "Model not found for this id") })
-    @RequestMapping(value = "/recommendation/{id}",
+    @RequestMapping(value = "/recommendation",
             produces = { MediaType.TEXT_PLAIN_VALUE },
             method = RequestMethod.GET)
-    default ResponseEntity<String> getRecommendation(@ApiParam(value = "id of recommendation model which url will be returned",required=true) @PathVariable("id") String id) {
+    default ResponseEntity<String> getRecommendation(
+            @ApiParam(value = "id of recommendation model which url will be returned",required=true) @RequestParam("modelName") String modelName,
+            @ApiParam(value = "id of algo for which uthe model is fetched",required=true) @RequestParam("algoId") String algoId
+            ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
