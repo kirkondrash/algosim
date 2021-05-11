@@ -68,7 +68,7 @@ public class ExecutionRunner {
 
             dockerService.waitForModelBoot(srcMeta);
 
-            repoApiClient.updateAlgorithmMeta(srcMeta.getAlgoUserId(),srcMeta);
+            repoApiClient.updateAlgorithmMeta(id,srcMeta);
 
             Process p = pb
                     .command(Arrays.asList(
@@ -94,6 +94,7 @@ public class ExecutionRunner {
                     srcStatus.status(SrcStatus.StatusEnum.EXECUTION_FAILED);
                 }
                 dockerService.killModels(srcMeta);
+                repoApiClient.updateAlgorithmMeta(id,srcMeta.toBuilder().models(null).build());
             }
         } catch (InterruptedException | IOException | RuntimeException e ){
             StringWriter stringWriter = new StringWriter();

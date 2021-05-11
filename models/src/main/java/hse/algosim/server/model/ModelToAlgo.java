@@ -21,13 +21,9 @@ public class ModelToAlgo {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  @ManyToOne
+  @ManyToOne(cascade = CascadeType.ALL)
   @JoinColumn(name = "name")
   private RecommendationModel model;
-
-  @ManyToOne
-  @JoinColumn(name = "algo_id")
-  private SrcMeta algo;
 
   private Integer hostPort;
 

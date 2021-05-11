@@ -43,7 +43,7 @@ public class TradingAlgorithmImpl extends TradingAlgorithm {
             *  - takeProfit(BigDecimal pips) - open order to preserve the profits when the rate goes up the 'pips' value.
              */
 
-            if (getBoolRecommendation("simple")){
+            if (getBoolRecommendation("random_boolean")){
                 Order o1 = new Order(currencyRate, tick.getCurrencyPair(), 50)
                         .buyNow()
                         .stopLoss(tick.getRate().subtract(new BigDecimal(String.valueOf(stopLoss * 100))))

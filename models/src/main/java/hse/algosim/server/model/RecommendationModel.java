@@ -38,8 +38,4 @@ public class RecommendationModel {
   @JsonProperty("description")
   private String description;
 
-  @JsonIgnore
-  @OneToMany(mappedBy = "algo")
-  private Set<ModelToAlgo> algos;
-
 }

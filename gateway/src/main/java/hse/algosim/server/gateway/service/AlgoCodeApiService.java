@@ -64,4 +64,13 @@ public class AlgoCodeApiService {
             throw new ResourceNotFoundException("Status not found for this id");
         }
     }
+
+    public ModelToAlgo readModelForAlgo(String modelName, String algoId) {
+        return repoApiClient.readAlgorithmMeta(algoId).getBody()
+                .getModels()
+                .stream()
+                .filter(m -> m.getModel().getName().equals(modelName))
+                .findFirst()
+                .orElseThrow(()-> new ResourceNotFoundException(String.format("Model %s not found for algo %s", modelName, algoId)));
+    }
 }

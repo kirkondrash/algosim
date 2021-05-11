@@ -38,6 +38,6 @@ public class SrcMeta {
   private String author;
 
   @JsonProperty("models")
-  @OneToMany(mappedBy = "model")
+  @OneToMany(cascade = CascadeType.ALL)
   private Set<ModelToAlgo> models;
 }

@@ -30,15 +30,6 @@ public class RecommendationModelService {
         return recommendationModelRepository.findByName(id).orElseThrow(()-> new ResourceNotFoundException(String.format("Model not found for %s", id)));
     }
 
-    public ModelToAlgo readModelForAlgo(String modelName, String algoId) {
-        return readModel(modelName)
-                .getAlgos()
-                .stream()
-                .filter(m -> m.getAlgo().getAlgoUserId().equals(algoId))
-                .findFirst()
-                .orElseThrow(()-> new ResourceNotFoundException(String.format("Model %s not found for algo %s", modelName, algoId)));
-    }
-
     public void deleteModel(String id) {
         RecommendationModel recommendationModel = readModel(id);
         recommendationModelRepository.delete(recommendationModel);
