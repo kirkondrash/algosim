@@ -13,11 +13,14 @@ services:
      environment:
        - API_CLIENT_USER=admin
        - API_CLIENT_PASSWORD=admin
+     depends_on:
+       - database
      healthcheck:
-       test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
-       interval: 30s
-       timeout: 10s
+       test: [ "CMD", "curl", "-f", "http://localhost:8080" ]
+       interval: 5s
+       timeout: 5s
        retries: 5
+       start_period: 40s
    compiler:
      image: compiler-server
      command:
@@ -32,6 +35,8 @@ services:
      environment:
        - API_CLIENT_USER=admin
        - API_CLIENT_PASSWORD=admin
+     depends_on:
+       - repo
      volumes:
        - ~/.m2:/root/.m2
    executor:
@@ -46,9 +51,13 @@ services:
        - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
        - "--spring.datasource.username=postgres"
        - "--spring.datasource.password=postgres"
+     volumes:
+       - /var/run/docker.sock:/var/run/docker.sock
      environment:
        - API_CLIENT_USER=admin
        - API_CLIENT_PASSWORD=admin
+     depends_on:
+       - repo
    gateway:
      image: gateway-server
      command:
@@ -66,6 +75,8 @@ services:
      environment:
        - API_CLIENT_USER=admin
        - API_CLIENT_PASSWORD=admin
+     depends_on:
+       - repo
    database:
      image: postgres:12-alpine
      ports:
@@ -74,5 +85,10 @@ services:
        - POSTGRES_PASSWORD=postgres
      volumes:
        - ./db-init.sh:/docker-entrypoint-initdb.d/db-init.sh
+     healthcheck:
+       test: [ "CMD", "curl", "-f", "http://localhost:5432" ]
+       interval: 5s
+       timeout: 5s
+       retries: 5
 
 

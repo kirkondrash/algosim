@@ -29,7 +29,8 @@ Optional TODO:
 ***
 Запуск платформы в контейнерах:
 1. `mvn clean package -P docker`
-2. `docker-compose up`
+2. `docker-compose up database repo`, дождаться старта репо " Started RepoServerSpringBootMain ..."
+3. `docker-compose up compiler executor gateway`
   + Обращение к компонентам только через захардкоженно переданный как параметр хост и порт.
   + `curl -X POST "http://localhost:8080/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@framework/src/main/java/TradingAlgorithmImpl.java" -F "userId=kirko" -F "userAlgoName=right" -u "user:password"`
   + `curl "http://localhost:8080/getTop" -u "user:password" | jq`
@@ -37,7 +38,8 @@ Optional TODO:
 ***
 Несолько compiler- и executor- worker'ов:
 1. `mvn clean package -P docker`
-2. `docker-compose -f docker-compose-multiworker.yml up --scale compiler=2 --scale executor=2`. 
+2. `docker-compose -f docker-compose-multiworker.yml up database repo`, дождаться старта репо " Started RepoServerSpringBootMain ..."
+3. `docker-compose -f docker-compose-multiworker.yml up --scale compiler=2 --scale executor=2 compiler executor gateway`. 
   + В таком случае на хостнеймах компонент платформы должен стоять loab-balancer. В docker-compose его роль исполняет образ envoy. Envoy обчеспечивает роутинг на все компоненты через соответствующий префикс.
   + `curl -X POST "http://localhost:8000/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@framework/src/main/java/TradingAlgorithmImpl.java" -F "userId=kirko" -F "userAlgoName=right" -u "user:password"`
   + `curl "http://localhost:8000/getTop" -u "user:password" | jq`
@@ -89,5 +91,6 @@ Oбщие:
 + `-Dframework.algo_id=user_id`
 
 ???
++ механизм OSX <-> DOCKER ?
 + какие типы ответов ожидать и какой для этого UX?
 + как обращаться к моделям в докере?

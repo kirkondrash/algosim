@@ -5,7 +5,7 @@ import com.github.dockerjava.api.command.CreateContainerCmd;
 import com.github.dockerjava.api.command.CreateContainerResponse;
 import com.github.dockerjava.api.model.ExposedPort;
 import com.github.dockerjava.api.model.HostConfig;
-import com.github.dockerjava.api.model.PortBinding;
+import com.github.dockerjava.api.model.Network;
 import com.github.dockerjava.api.model.Ports;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 import com.github.dockerjava.core.DockerClientConfig;
@@ -21,14 +21,13 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Component
 @Slf4j
 public class DockerService {
     private DockerClient dockerClient;
+    private String networkId;
 
     public DockerService() {
         DockerClientConfig config = DefaultDockerClientConfig.createDefaultConfigBuilder().build();
@@ -37,6 +36,13 @@ public class DockerService {
                 .dockerHost(config.getDockerHost())
                 .build();
         dockerClient = DockerClientImpl.getInstance(config, httpClient);
+
+        for (Network network : dockerClient.listNetworksCmd().exec()) {
+            if (network.getName().equals("algosim_default")) {
+                networkId = network.getId();
+                break;
+            }
+        }
     }
 
     public ModelToAlgo runImage(ModelToAlgo modelToAlgo) throws IOException {
@@ -53,8 +59,8 @@ public class DockerService {
         }
         CreateContainerResponse container = createContainerCmd.exec();
 
+        dockerClient.connectToNetworkCmd().withContainerId(container.getId()).withNetworkId(networkId).exec();
         dockerClient.startContainerCmd(container.getId()).exec();
-
         return modelToAlgo.toBuilder().containerId(container.getId()).hostPort(assignedHostPort).build();
     }
 

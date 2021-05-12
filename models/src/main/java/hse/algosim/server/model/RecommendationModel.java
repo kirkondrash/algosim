@@ -20,7 +20,7 @@ import java.util.Set;
 @Table(name = "model")
 public class RecommendationModel {
   @Id
-  @JsonIgnore
+//  @JsonIgnore
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 

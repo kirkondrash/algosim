@@ -24,6 +24,7 @@ public abstract class TradingAlgorithm {
         }
     }).followRedirects(HttpClient.Redirect.NORMAL).build();
     String recommendationBasePath;
+    String algoId;
 
     public TradingAlgorithm() throws SQLException {
         if (System.getProperty("framework.debug")!=null){
@@ -32,6 +33,7 @@ public abstract class TradingAlgorithm {
         currencyRates = new CurrencyRates();
         ordersBase = new OrdersDAO(currencyRates);
         recommendationBasePath = System.getProperty("recommendation.basePath");
+        algoId = System.getProperty("framework.algo_id");
     }
 
     public void receiveTick(Tick tick) throws TradingLogicException, SQLException {
@@ -58,17 +60,17 @@ public abstract class TradingAlgorithm {
             HttpResponse<String> response = httpClient.send(
                     HttpRequest
                             .newBuilder()
-                            .uri(URI.create(recommendationBasePath+"?modelName="+modelName+"&algoId="+System.getProperty("framework.algo_id")))
+                            .uri(URI.create(recommendationBasePath+"?modelName="+modelName+"&algoId="+algoId))
                             .GET()
                             .build(),
                     HttpResponse.BodyHandlers.ofString()
             );
             if (response.statusCode()==404){
-                throw new RuntimeException("No model with specified id found!");
+                throw new RuntimeException(String.format("No model with specified id %s found reserved for %s!", modelName,algoId));
             }
             return Boolean.parseBoolean(response.body());
         } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException(String.format("While connecting %s from %s:\n", modelName,algoId),e);
         }
     }
 }
