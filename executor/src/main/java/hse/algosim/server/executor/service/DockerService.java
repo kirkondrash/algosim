@@ -61,7 +61,7 @@ public class DockerService {
 
         dockerClient.connectToNetworkCmd().withContainerId(container.getId()).withNetworkId(networkId).exec();
         dockerClient.startContainerCmd(container.getId()).exec();
-        return modelToAlgo.toBuilder().containerId(container.getId()).hostPort(assignedHostPort).build();
+        return modelToAlgo.toBuilder().containerId(container.getId().substring(0,12)).hostPort(assignedHostPort).build();
     }
 
     public SrcMeta runImages(SrcMeta srcMeta) throws IOException {

@@ -73,8 +73,16 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     @Override
     public ResponseEntity<String> getRecommendation(String modelName, String algoId) {
         ModelToAlgo modelToAlgo = algoCodeApiService.readModelForAlgo(modelName, algoId);
-//      return ResponseEntity.status(HttpStatus.FOUND).header("Location","http://localhost:"+algoCodeApiService.readModelForAlgo(modelName, algoId).getHostPort().toString()).build(); // FOR OSX
-        return ResponseEntity.status(HttpStatus.FOUND).header("Location", String.format("http://%s:%s", modelToAlgo.getContainerId(), modelToAlgo.getModel().getContainerPort())).build(); // FOR DOCKER
+        String recommendationHost, recommendationPort;
+        if (System.getenv("DIND")!= null && System.getenv("DIND").equals("true")){
+            recommendationHost=modelToAlgo.getContainerId();
+            recommendationPort= modelToAlgo.getModel().getContainerPort();
+        } else {
+            recommendationHost="localhost";
+            recommendationPort=modelToAlgo.getHostPort().toString();
+        }
+
+        return ResponseEntity.status(HttpStatus.FOUND).header("Location", String.format("http://%s:%s", recommendationHost, recommendationPort)).build();
     }
 
     @Override

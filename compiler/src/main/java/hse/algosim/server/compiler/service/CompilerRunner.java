@@ -28,8 +28,7 @@ import static java.nio.file.StandardCopyOption.REPLACE_EXISTING;
 @Slf4j
 public class CompilerRunner {
 
-//    private final Invoker mavenInvoker = new DefaultInvoker().setMavenExecutable(new File(System.getenv("MAVEN_HOME"))); // FOR OSX
-    private final Invoker mavenInvoker = new DefaultInvoker().setMavenHome(new File(System.getenv("MAVEN_HOME"))); // FOR DOCKER
+    private final Invoker mavenInvoker = new DefaultInvoker().setMavenHome(new File(System.getenv("MAVEN_HOME")));
     private final RepoApiClient repoApiClient;
     private final String frameworkProjectPath;
 

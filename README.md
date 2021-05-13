@@ -1,16 +1,10 @@
-!!! ГОНКА между SCHEDULED FOR COMPILATION и COMPILING когда нет очереди
-Сравнение с мастером
-
 ![sequence-diagram](algosim-sequence.png "Взаимодействие сервисов")
 ***
 Future TODO:
-- batch запрос статусов из repo
 - profit&loss по всем валютам с приведением к базовой по курсу закрытия дня
 - интерфейс для того чтобы доставать ордера из БД для пользователя (и добавлять туда currencyrate)
 - Учёт спреда 
 - Принудительное закрытие ордеров по текущей цене
-- Компиляции/исполнение алгоритма c коллбэками и закрытиям по таймауту
-- Индикаторы
 - пояснить что пока что без кредитных плечей итд
 Optional TODO:
 - как разобраться с maven-зависимостями?
@@ -29,6 +23,7 @@ Optional TODO:
 ***
 Запуск платформы в контейнерах:
 1. `mvn clean package -P docker`
+1.5 `DIND` переменная окружения должна быть `true` - это необходимо для работы рекомендательной подсистемы
 2. `docker-compose up database repo`, дождаться старта репо " Started RepoServerSpringBootMain ..."
 3. `docker-compose up compiler executor gateway`
   + Обращение к компонентам только через захардкоженно переданный как параметр хост и порт.
@@ -38,6 +33,7 @@ Optional TODO:
 ***
 Несолько compiler- и executor- worker'ов:
 1. `mvn clean package -P docker`
+1.5 `DIND` переменная окружения должна быть `true` - это необходимо для работы рекомендательной подсистемы
 2. `docker-compose -f docker-compose-multiworker.yml up database repo`, дождаться старта репо " Started RepoServerSpringBootMain ..."
 3. `docker-compose -f docker-compose-multiworker.yml up --scale compiler=2 --scale executor=2 compiler executor gateway`. 
   + В таком случае на хостнеймах компонент платформы должен стоять loab-balancer. В docker-compose его роль исполняет образ envoy. Envoy обчеспечивает роутинг на все компоненты через соответствующий префикс.
@@ -50,6 +46,7 @@ Optional TODO:
 ***
 Запуск jar-артефактов:
 1. `mvn clean package -P boot` 
+1.5 `DIND` переменная окружения должна быть `false` - это необходимо для работы рекомендательной подсистемы
 2. 
    + `java -Xverify:none -jar repo/target/repo-server-1.1.0-SNAPSHOT.jar --server.port=8081 --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
    + `java -Xverify:none -jar compiler/target/compiler-server-1.1.0-SNAPSHOT.jar --server.port=8082 --framework.project.path=./framework --repo.basePath=http://127.0.0.1:8081/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
@@ -91,6 +88,9 @@ Oбщие:
 + `-Dframework.algo_id=user_id`
 
 ???
-+ механизм OSX <-> DOCKER ?
 + какие типы ответов ожидать и какой для этого UX?
 + как обращаться к моделям в докере?
+!!!
+указать особенности организации сообщения по сети В докере и БЕЗ него!
+Таймауты и их важность
+Паттерн Страгегия - абстрактный класс TradingAlgorithm

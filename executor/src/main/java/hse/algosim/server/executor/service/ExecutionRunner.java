@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.util.Arrays;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Component
@@ -85,14 +86,16 @@ public class ExecutionRunner {
             try ( BufferedReader pErrorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
                   BufferedReader pOutputReader = new BufferedReader(new InputStreamReader(p.getInputStream()))){
 
-                srcStatus
-                    .status(SrcStatus.StatusEnum.SUCCESSFULLY_EXECUTED)
-                    .errorTrace(pErrorReader.lines().collect(Collectors.joining(System.lineSeparator())))
-                    .metrics(pOutputReader.lines().collect(Collectors.joining(System.lineSeparator())));
-
-                if (p.waitFor() != 0) {
-                    srcStatus.status(SrcStatus.StatusEnum.EXECUTION_FAILED);
+                if (p.waitFor(120, TimeUnit.SECONDS)){
+                    SrcStatus.StatusEnum resultingStatus = (p.exitValue()==0) ? SrcStatus.StatusEnum.SUCCESSFULLY_EXECUTED : SrcStatus.StatusEnum.EXECUTION_FAILED;
+                    srcStatus.status(resultingStatus).errorTrace(pErrorReader.lines().collect(Collectors.joining(System.lineSeparator())))
+                            .metrics(pOutputReader.lines().collect(Collectors.joining(System.lineSeparator())));
+                } else {
+                    srcStatus.status(SrcStatus.StatusEnum.EXECUTION_TIMED_OUT);
+                    p.destroy();
+                    p.waitFor();
                 }
+
                 dockerService.killModels(srcMeta);
                 repoApiClient.updateAlgorithmMeta(id,srcMeta.toBuilder().models(null).build());
             }

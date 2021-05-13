@@ -25,12 +25,12 @@ public class ExecuteApiService {
 
 
     public void executeAlgorithm( String id) {
-        executionRunner.runExecution(id);
-        if (taskExecutor.getThreadPoolExecutor().getQueue().size() > 0) {
+        if (taskExecutor.getThreadPoolExecutor().getActiveCount() > 0 && getReadiness()) {
             SrcStatus.SrcStatusBuilder srcStatus = repoApiClient.readAlgorithmStatus(id).getBody().toBuilder();
             srcStatus.status(SrcStatus.StatusEnum.SCHEDULED_FOR_EXECUTION);
             repoApiClient.updateAlgorithmStatus(id, srcStatus.build());
         }
+        executionRunner.runExecution(id);
     }
 
     public boolean getReadiness(){
