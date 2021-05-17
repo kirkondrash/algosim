@@ -65,6 +65,13 @@ public class AlgoCodeApiService {
         }
     }
 
+    public Set<ModelToAlgo> readModelsForAlgo(String algoId) {
+        return repoApiClient.readAlgorithmMeta(algoId).getBody()
+                .getModels()
+                .stream()
+                .collect(Collectors.toSet());
+    }
+
     public ModelToAlgo readModelForAlgo(String modelName, String algoId) {
         return repoApiClient.readAlgorithmMeta(algoId).getBody()
                 .getModels()

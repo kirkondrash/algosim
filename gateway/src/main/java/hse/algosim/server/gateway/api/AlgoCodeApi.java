@@ -84,4 +84,17 @@ public interface AlgoCodeApi {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
+    @ApiOperation(value = "", nickname = "updateRecommendation", notes = "Updates all algos recommendation instances state")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "State was updated successfully")
+    })
+    @RequestMapping(value = "/recommendation/update",
+            method = RequestMethod.POST)
+    default ResponseEntity<Void> updateRecommendation(
+            @ApiParam(value = "tick value",required=true) @RequestParam("tickValue") String tickValue,
+            @ApiParam(value = "id of algo for which model is updated",required=true) @RequestParam("algoId") String algoId
+    ) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
 }

@@ -43,6 +43,8 @@ public abstract class TradingAlgorithm {
                 tick.getCurrencyPair(),
                 currencyRate.toString()));
 
+        updateModel(tick.getRate().toString());
+
         handleTick(tick, currencyRate);
 
         ordersBase.executeOrders(tick.getCurrencyPair());
@@ -55,7 +57,7 @@ public abstract class TradingAlgorithm {
         ordersBase.clearDB();
     }
 
-    public boolean getBoolRecommendation(String modelName)  {
+    public String getStringRecommendation(String modelName)  {
         try {
             HttpResponse<String> response = httpClient.send(
                     HttpRequest
@@ -68,9 +70,31 @@ public abstract class TradingAlgorithm {
             if (response.statusCode()==404){
                 throw new RuntimeException(String.format("No model with specified id %s found reserved for %s!", modelName,algoId));
             }
-            return Boolean.parseBoolean(response.body());
+            return response.body();
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(String.format("While connecting %s from %s:\n", modelName,algoId),e);
+        }
+    }
+
+    public boolean getBoolRecommendation(String modelName)  {
+        return Boolean.parseBoolean(getStringRecommendation(modelName));
+    }
+
+    private void updateModel(String tickValue)  {
+        try {
+            HttpResponse<Void> response = httpClient.send(
+                    HttpRequest
+                            .newBuilder()
+                            .uri(URI.create(recommendationBasePath + "/update?tickValue=" + tickValue + "&algoId=" + algoId))
+                            .POST(HttpRequest.BodyPublishers.noBody())
+                            .build(),
+                    HttpResponse.BodyHandlers.discarding()
+            );
+            if (response.statusCode()!=200){
+                throw new RuntimeException(String.format("Something went wrong in %s while updating models! %s", algoId, response.toString()));
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(String.format("While updating tick for algo %s models:\n",algoId),e);
         }
     }
 }

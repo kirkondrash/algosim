@@ -19,7 +19,13 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
+import java.net.Authenticator;
+import java.net.PasswordAuthentication;
 import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -89,5 +95,41 @@ public class AlgoCodeApiController implements AlgoCodeApi {
     public ResponseEntity<Void> registerRecommendation(RecommendationModel model) {
         recommendationModelService.createOrUpdateModel(model);
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> updateRecommendation(String tickValue, String algoId) {
+        Set<ModelToAlgo> modelsToAlgo = algoCodeApiService.readModelsForAlgo(algoId);
+        HttpClient httpClient = (HttpClient) HttpClient.newBuilder().authenticator(new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(System.getenv("API_CLIENT_USER"),System.getenv("API_CLIENT_PASSWORD").toCharArray());
+            }
+        }).build();
+        String recommendationHost, recommendationPort;
+
+        for (ModelToAlgo modelToAlgo: modelsToAlgo){
+
+            if (System.getenv("DIND")!= null && System.getenv("DIND").equals("true")){
+                recommendationHost=modelToAlgo.getContainerId();
+                recommendationPort= modelToAlgo.getModel().getContainerPort();
+            } else {
+                recommendationHost="localhost";
+                recommendationPort=modelToAlgo.getHostPort().toString();
+            }
+
+            try {
+                httpClient.send(
+                        HttpRequest
+                                .newBuilder()
+                                .uri(URI.create(String.format("http://%s:%s/%s", recommendationHost, recommendationPort, tickValue)))
+                                .POST(HttpRequest.BodyPublishers.noBody())
+                                .build(),
+                        HttpResponse.BodyHandlers.discarding());
+            } catch (IOException | InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
