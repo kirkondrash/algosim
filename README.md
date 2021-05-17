@@ -23,7 +23,9 @@ Optional TODO:
 ***
 Запуск платформы в контейнерах:
 1. `mvn clean package -P docker`
-2. `docker-compose up`
+1.5 `DIND` переменная окружения должна быть `true` - это необходимо для работы рекомендательной подсистемы
+2. `docker-compose up database repo`, дождаться старта репо " Started RepoServerSpringBootMain ..."
+3. `docker-compose up compiler executor gateway`
   + Обращение к компонентам только через захардкоженно переданный как параметр хост и порт.
   + `curl -X POST "http://localhost:8080/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@framework/src/main/java/TradingAlgorithmImpl.java" -F "userId=kirko" -F "userAlgoName=right" -u "user:password"`
   + `curl "http://localhost:8080/getTop" -u "user:password" | jq`
@@ -31,7 +33,9 @@ Optional TODO:
 ***
 Несолько compiler- и executor- worker'ов:
 1. `mvn clean package -P docker`
-2. `docker-compose -f docker-compose-multiworker.yml up --scale compiler=2 --scale executor=2`. 
+1.5 `DIND` переменная окружения должна быть `true` - это необходимо для работы рекомендательной подсистемы
+2. `docker-compose -f docker-compose-multiworker.yml up database repo`, дождаться старта репо " Started RepoServerSpringBootMain ..."
+3. `docker-compose -f docker-compose-multiworker.yml up --scale compiler=2 --scale executor=2 compiler executor gateway`. 
   + В таком случае на хостнеймах компонент платформы должен стоять loab-balancer. В docker-compose его роль исполняет образ envoy. Envoy обчеспечивает роутинг на все компоненты через соответствующий префикс.
   + `curl -X POST "http://localhost:8000/algoCode" -H "accept: application/json" -H "Content-Type: multipart/form-data" -F "code=@framework/src/main/java/TradingAlgorithmImpl.java" -F "userId=kirko" -F "userAlgoName=right" -u "user:password"`
   + `curl "http://localhost:8000/getTop" -u "user:password" | jq`
@@ -42,10 +46,11 @@ Optional TODO:
 ***
 Запуск jar-артефактов:
 1. `mvn clean package -P boot` 
+1.5 `DIND` переменная окружения должна быть `false` - это необходимо для работы рекомендательной подсистемы
 2. 
    + `java -Xverify:none -jar repo/target/repo-server-1.1.0-SNAPSHOT.jar --server.port=8081 --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
    + `java -Xverify:none -jar compiler/target/compiler-server-1.1.0-SNAPSHOT.jar --server.port=8082 --framework.project.path=./framework --repo.basePath=http://127.0.0.1:8081/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
-   + `java -Xverify:none -jar executor/target/executor-server-1.1.0-SNAPSHOT.jar --server.port=8083 --framework.quotes.path=./quotes --repo.basePath=http://127.0.0.1:8081/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
+   + `java -Xverify:none -jar executor/target/executor-server-1.1.0-SNAPSHOT.jar --server.port=8083 --framework.quotes.path=./quotes --repo.basePath=http://127.0.0.1:8081/api --gateway.basePath=http://127.0.0.1:8080 --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
    + `java -Xverify:none -jar gateway/target/gateway-server-1.1.0-SNAPSHOT.jar --server.port=8080 --repo.basePath=http://127.0.0.1:8081/api --compiler.basePath=http://127.0.0.1:8082/api --executor.basePath=http://127.0.0.1:8083/api --spring.datasource.driverClassName=org.postgresql.Driver --spring.datasource.username=postgres --spring.datasource.password=postgres --spring.datasource.url=jdbc:postgresql://127.0.0.1:5432/algosim`
    + Запустить БД и все изменения из db-init.sh
 ***
@@ -66,6 +71,7 @@ Oбщие:
 В executor'e:
 + `--framework.quotes.path=./quotes`
 + `--repo.basePath=http://repo:8080/api`
++ `--gateway.basePath=http://gateway:8080`
 
 В gateway'e:
 + `--repo.basePath=http://repo:8080/api`

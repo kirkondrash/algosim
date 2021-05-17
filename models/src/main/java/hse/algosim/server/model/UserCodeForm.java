@@ -5,6 +5,7 @@ import lombok.Builder;
 import org.springframework.core.io.Resource;
 
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 /**
  * UserCodeForm
@@ -22,5 +23,8 @@ public class UserCodeForm   {
   @JsonProperty("userAlgoName")
   @NotNull
   private final String userAlgoName;
+
+  @JsonProperty("models")
+  private final List<String> models;
 
 }

@@ -12,32 +12,30 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.Set;
 
-/**
- * SrcMeta
- */
-
 @Getter
 @Builder(toBuilder = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "meta")
-public class SrcMeta {
+@Table(name = "model")
+public class RecommendationModel {
   @Id
-  @JsonIgnore
+//  @JsonIgnore
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
-  @JsonIgnore
-  @Column(name = "algo_id")
-  private String algoUserId;
+
+  @JsonProperty("name")
+  @NotNull
+  private String name;
+
+  @JsonProperty("container_port")
+  @NotNull
+  private String containerPort;
+
+  @JsonProperty("additional_args")
+  private String additionalArgs;
 
   @JsonProperty("description")
   private String description;
 
-  @JsonProperty("author")
-  private String author;
-
-  @JsonProperty("models")
-  @OneToMany(cascade = CascadeType.ALL)
-  private Set<ModelToAlgo> models;
 }

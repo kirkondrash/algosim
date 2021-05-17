@@ -4,6 +4,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,6 +16,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
         "hse.algosim.server.gateway",
         "hse.algosim.server.security",
         "hse.algosim.server.config"})
+@EntityScan("hse.algosim.server.model")
 @EnableScheduling
 @EnableFeignClients("hse.algosim.client")
 public class GatewayServerSpringBootMain implements CommandLineRunner {

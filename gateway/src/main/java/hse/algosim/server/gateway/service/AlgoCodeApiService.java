@@ -4,9 +4,7 @@ import feign.FeignException;
 import hse.algosim.client.repo.api.RepoApiClient;
 import hse.algosim.server.exceptions.ResourceNotFoundException;
 import hse.algosim.server.gateway.scheduling_services.SchedulingManager;
-import hse.algosim.server.model.IdArray;
-import hse.algosim.server.model.SrcStatus;
-import hse.algosim.server.model.UserCodeInfo;
+import hse.algosim.server.model.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,10 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -33,10 +29,10 @@ public class AlgoCodeApiService {
         this.repoApiClient = repoApiClient;
     }
 
-    public UserCodeInfo codeBenchMark(MultipartFile code, String userId, String userAlgoName) throws FeignException{
+    public UserCodeInfo codeBenchMark(MultipartFile code, String userId, String userAlgoName, Set<RecommendationModel> modelList) throws FeignException {
         String codeId = String.format("%s_%s",userId,userAlgoName);
         UserCodeInfo.UserCodeInfoBuilder userCodeInfo = UserCodeInfo.builder().id(codeId).info("Successfully uploaded");
-        schedulingManager.scheduleCodeAnalysis(codeId, code);
+        schedulingManager.scheduleCodeAnalysis(codeId, code, modelList);
         return userCodeInfo.build();
     }
 
@@ -67,5 +63,21 @@ public class AlgoCodeApiService {
             log.error("Exception while trying to read {} status from repo server", id, e);
             throw new ResourceNotFoundException("Status not found for this id");
         }
+    }
+
+    public Set<ModelToAlgo> readModelsForAlgo(String algoId) {
+        return repoApiClient.readAlgorithmMeta(algoId).getBody()
+                .getModels()
+                .stream()
+                .collect(Collectors.toSet());
+    }
+
+    public ModelToAlgo readModelForAlgo(String modelName, String algoId) {
+        return repoApiClient.readAlgorithmMeta(algoId).getBody()
+                .getModels()
+                .stream()
+                .filter(m -> m.getModel().getName().equals(modelName))
+                .findFirst()
+                .orElseThrow(()-> new ResourceNotFoundException(String.format("Model %s not found for algo %s", modelName, algoId)));
     }
 }

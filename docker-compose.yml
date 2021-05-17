@@ -13,11 +13,8 @@ services:
      environment:
        - API_CLIENT_USER=admin
        - API_CLIENT_PASSWORD=admin
-     healthcheck:
-       test: [ "CMD", "curl", "-f", "http://localhost:15672" ]
-       interval: 30s
-       timeout: 10s
-       retries: 5
+     depends_on:
+       - database
    compiler:
      image: compiler-server
      command:
@@ -32,6 +29,8 @@ services:
      environment:
        - API_CLIENT_USER=admin
        - API_CLIENT_PASSWORD=admin
+     depends_on:
+       - repo
      volumes:
        - ~/.m2:/root/.m2
    executor:
@@ -41,13 +40,19 @@ services:
        - "--server.address=0.0.0.0"
        - "--framework.quotes.path=/quotes"
        - "--repo.basePath=http://repo:8080/api"
+       - "--gateway.basePath=http://gateway:8080"
        - "--spring.datasource.driverClassName=org.postgresql.Driver"
        - "--spring.datasource.url=jdbc:postgresql://database:5432/algosim"
        - "--spring.datasource.username=postgres"
        - "--spring.datasource.password=postgres"
+     volumes:
+       - /var/run/docker.sock:/var/run/docker.sock
      environment:
        - API_CLIENT_USER=admin
        - API_CLIENT_PASSWORD=admin
+       - DIND=true
+     depends_on:
+       - repo
    gateway:
      image: gateway-server
      command:
@@ -65,6 +70,8 @@ services:
      environment:
        - API_CLIENT_USER=admin
        - API_CLIENT_PASSWORD=admin
+     depends_on:
+       - repo
    database:
      image: postgres:12-alpine
      ports:
@@ -73,5 +80,3 @@ services:
        - POSTGRES_PASSWORD=postgres
      volumes:
        - ./db-init.sh:/docker-entrypoint-initdb.d/db-init.sh
-
-

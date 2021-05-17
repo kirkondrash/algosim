@@ -2,6 +2,9 @@ package hse.algosim.server.gateway.scheduling_services;
 
 import feign.FeignException;
 import hse.algosim.client.repo.api.RepoApiClient;
+import hse.algosim.server.model.ModelToAlgo;
+import hse.algosim.server.model.RecommendationModel;
+import hse.algosim.server.model.SrcMeta;
 import hse.algosim.server.model.SrcStatus;
 import hse.algosim.server.model.SrcStatus.StatusEnum;
 import lombok.extern.slf4j.Slf4j;
@@ -11,8 +14,6 @@ import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -20,8 +21,9 @@ import reactor.core.publisher.Flux;
 import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
-import java.time.Duration;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Component
 @Slf4j
@@ -41,16 +43,24 @@ public class SchedulingManager {
         this.schedulingServices = schedulingServices;
     }
 
-    public void scheduleCodeAnalysis(String id, MultipartFile code) {
+    public void scheduleCodeAnalysis(String id, MultipartFile code, Set<RecommendationModel> models) {
         File f = new File(id).getAbsoluteFile();
+        SrcStatus srcStatus = SrcStatus.builder().status(SrcStatus.StatusEnum.SOURCE_UPLOADED).build();
+        Set<ModelToAlgo> modelToAlgos = models
+                .stream()
+                .map(m -> ModelToAlgo.builder().model(m).build())
+                .collect(Collectors.toSet());
+        SrcMeta srcMeta = SrcMeta.builder().models(modelToAlgos).build();
         try {
             code.transferTo(f);
             repoApiClient.createAlgorithmCode(id,f);
-            repoApiClient.createAlgorithmStatus(id, SrcStatus.builder().status(SrcStatus.StatusEnum.SOURCE_UPLOADED).build());
+            repoApiClient.createAlgorithmStatus(id, srcStatus);
+            repoApiClient.createAlgorithmMeta(id, srcMeta);
         } catch (FeignException e){
             if (e.status() == 409){
                 repoApiClient.updateAlgorithmCode(id,f);
-                repoApiClient.updateAlgorithmStatus(id, SrcStatus.builder().status(SrcStatus.StatusEnum.SOURCE_UPLOADED).build());
+                repoApiClient.updateAlgorithmStatus(id, srcStatus);
+                repoApiClient.updateAlgorithmMeta(id, srcMeta);
             } else {
                 throw e;
             }
@@ -75,13 +85,13 @@ public class SchedulingManager {
                 .bodyToFlux(type);
         eventStream
                 .subscribe(
-                        content -> handleStatusUpdate(content),
+                        this::handleStatusUpdate,
                         error -> log.error("Error receiving SSE: ", error),
                         () -> log.info("Completed!!!"));
     }
 
     private void handleStatusUpdate(ServerSentEvent<String> content){
-        log.info("Server-sent event: name[{}], content[{}] ",
+        log.info("Server-sent event: event[{}], id[{}] ",
                 content.event(), content.data());
 
         StatusEnum statusEnum = SrcStatus.StatusEnum.valueOf(content.event());

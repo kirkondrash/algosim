@@ -31,7 +31,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String[] USER_AUTH_LIST = {
             "/algoCode",
-            "/getTop"
+            "/getTop",
+            "/recommendation",
     };
 
     private static final String[] ADMIN_AUTH_LIST = {

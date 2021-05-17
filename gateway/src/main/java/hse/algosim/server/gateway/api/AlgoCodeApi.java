@@ -1,5 +1,6 @@
 package hse.algosim.server.gateway.api;
 
+import hse.algosim.server.model.RecommendationModel;
 import hse.algosim.server.model.SrcStatus;
 import hse.algosim.server.model.UserCodeInfo;
 import io.swagger.annotations.*;
@@ -7,10 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
@@ -31,7 +29,8 @@ public interface AlgoCodeApi {
     default ResponseEntity<UserCodeInfo> codeBenchmark(
             @ApiParam(value = "code", required=true) @Valid @RequestPart("code") MultipartFile code,
             @ApiParam(value = "user id", required=true) @RequestPart(value="userId")  String userId,
-            @ApiParam(value = "user's name of algorithm", required=true) @RequestPart(value="userAlgoName")  String userAlgoName
+            @ApiParam(value = "user's name of algorithm", required=true) @RequestPart(value="userAlgoName")  String userAlgoName,
+            @ApiParam(value = "recommendation models used") @RequestPart(value = "models", required = false) String commaSeparatedModels
     ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
 
@@ -57,6 +56,44 @@ public interface AlgoCodeApi {
             produces = { MediaType.APPLICATION_JSON_VALUE },
             method = RequestMethod.GET)
     default ResponseEntity<SrcStatus> readAlgorithmStatus(@ApiParam(value = "id of algorithm which status will be fetched",required=true) @PathVariable("id") String id) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @ApiOperation(value = "", nickname = "getRecommendation", notes = "Returns a redirect to a given model", response = String.class)
+    @ApiResponses(value = {
+            @ApiResponse(code = 302, message = "URL redirect", response = String.class),
+            @ApiResponse(code = 404, message = "Model not found for this id") })
+    @RequestMapping(value = "/recommendation",
+            produces = { MediaType.TEXT_PLAIN_VALUE },
+            method = RequestMethod.GET)
+    default ResponseEntity<String> getRecommendation(
+            @ApiParam(value = "id of recommendation model which url will be returned",required=true) @RequestParam("modelName") String modelName,
+            @ApiParam(value = "id of algo for which uthe model is fetched",required=true) @RequestParam("algoId") String algoId
+            ) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @ApiOperation(value = "", nickname = "registerRecommendation", notes = "Uploads a recommendation model's config file")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Model was registered successfully")
+    })
+    @RequestMapping(value = "/recommendation",
+            consumes = { MediaType.APPLICATION_JSON_VALUE },
+            method = RequestMethod.POST)
+    default ResponseEntity<Void> registerRecommendation(@RequestBody RecommendationModel model) {
+        return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    @ApiOperation(value = "", nickname = "updateRecommendation", notes = "Updates all algos recommendation instances state")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "State was updated successfully")
+    })
+    @RequestMapping(value = "/recommendation/update",
+            method = RequestMethod.POST)
+    default ResponseEntity<Void> updateRecommendation(
+            @ApiParam(value = "tick value",required=true) @RequestParam("tickValue") String tickValue,
+            @ApiParam(value = "id of algo for which model is updated",required=true) @RequestParam("algoId") String algoId
+    ) {
         return new ResponseEntity<>(HttpStatus.NOT_IMPLEMENTED);
     }
 
