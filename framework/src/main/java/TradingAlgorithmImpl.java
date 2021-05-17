@@ -1,64 +1,66 @@
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
-
 import java.math.BigDecimal;
 import java.sql.SQLException;
-import java.time.Instant;
 import java.util.Arrays;
 import java.util.Random;
 
-public class TradingAlgorithmImpl implements TradingAlgorithm {
-    private static Logger log = LogManager.getLogger(OrdersDAO.class);
-    private OrdersDAO ordersBase;
-    private CurrencyRates currencyRates;
+import static java.lang.Thread.sleep;
+
+public class TradingAlgorithmImpl extends TradingAlgorithm {
     private static Random r = new Random(System.currentTimeMillis());
+    /* the user may have some data structure to store calculation intermediate results between the ticks */
 
     public TradingAlgorithmImpl() throws SQLException {
-        if (System.getProperty("framework.debug")!=null){
-            Configurator.setLevel("TradingAlgorithmImpl",Level.DEBUG);
-        }
-
-        currencyRates = new CurrencyRates();
-        ordersBase = new OrdersDAO(currencyRates);
+        super();
+        /* the user may initialize his data structures here */
     }
 
-    public void receiveTick(Tick tick) throws TradingLogicException, SQLException {
-        CurrencyRate currencyRate = currencyRates.updateAndReturnCurrentRate(tick.getCurrencyPair(),tick.getRate());
-        log.debug(String.format("%s - %s: %s",
-                Instant.ofEpochSecond(tick.getTimestamp()).toString(),
-                tick.getCurrencyPair(),
-                currencyRate.toString()));
+    /* The user has to implement handleTick method - fill it with decision making logic.
+       The user is supplied with an Tick object and a CurrencyRate object.
+       CurrencyRate object is mostly needed for correct Order initialisation.
+       Tick class has methods:
+        - getTimestamp() - returns time of the tick, a long,
+        - getCurrencyPair() - returns name of the currency pair in a "USD/RUB" fashion,
+        - getRate() - returns the BigDecimal type currency rate.
+     */
+    public void handleTick(Tick tick, CurrencyRate currencyRate) throws TradingLogicException {
 
         /* put you trading logic here */
 
-        if (r.nextBoolean()) { // imitation of favourable conditions
-            double stopLoss = 0.001 * r.nextDouble(); // imitation of user choice of stop-loss level
-            double makeProfit = 0.001 * r.nextDouble(); // imitation of user choice of make-profit level
+        /* The very core of trading operations is an Order object.
+         *  It constructor takes three parameters - CurrencyRate object, currency pair name (string) and lot value (int).
+         *  The Order class methods to be used here (in a builder fashion) are:
+         *  - buyNow() - open order to buy currency pair right now,
+         *  - sellNow() - open order to sell currency pair right now,
+         *  - buyStop(BigDecimal pips) - open order to buy currency pair when the rate goes up the 'pips' value,
+         *  - sellStop(BigDecimal pips) - open order to sell currency pair when the rate goes down the 'pips' value,
+         *  - buyLimit(BigDecimal pips) - open order to buy currency pair when the rate goes down the 'pips' value,
+         *  - sellLimit(BigDecimal pips) - open order to buy currency pair when the rate goes up the 'pips' value,
+         *  - stopLoss(BigDecimal pips) - close order to reduce the losses when the rate goes through the 'pips' value,
+         *  - takeProfit(BigDecimal pips) - open order to preserve the profits when the rate goes up the 'pips' value.
+         */
 
-                Order o1 = new Order(currencyRate, tick.getCurrencyPair());
-                if (Arrays.asList(tick.getCurrencyPair().split("/")).contains("RUB")) {
-                    o1.buyNow()
-                            .lot(50)
-                            .stopLoss(tick.getRate().subtract(new BigDecimal(String.valueOf(stopLoss * 100))))
-                            .makeProfit(tick.getRate().add(new BigDecimal(String.valueOf(makeProfit * 100))));
-                } else {
-                    o1.buyNow()
-                            .lot(10)
-                            .stopLoss(tick.getRate().subtract(new BigDecimal(String.valueOf(stopLoss))))
-                            .makeProfit(tick.getRate().add(new BigDecimal(String.valueOf(makeProfit))));
-                }
-                ordersBase.put(o1);
+        String[] advice = getStringRecommendation("minmax").split(" ");
+        String action = advice[0];
+
+        if (action.equals("Buy")) {
+            Order o1 = new Order(currencyRate, tick.getCurrencyPair(), 50)
+                    .buyNow()
+                    .stopLoss(tick.getRate().subtract(new BigDecimal("0.1")))
+                    .takeProfit(new BigDecimal(advice[1]));
+            /* all orders MUST be put into the order base to be taken into account */
+            ordersBase.put(o1);
         }
+        ;
 
-        ordersBase.executeOrders(tick.getCurrencyPair());
-    }
-
-    @Override
-    public void evaluateResult() throws SQLException {
-        System.out.println(ordersBase.evaluateWinLoss());
-        ordersBase.clearDB();
+        if (action.equals("Sell")) {
+            Order o1 = new Order(currencyRate, tick.getCurrencyPair(), 50)
+                    .sellNow()
+                    .stopLoss(tick.getRate().add(new BigDecimal("0.1")))
+                    .takeProfit(new BigDecimal(advice[1]));
+            /* all orders MUST be put into the order base to be taken into account */
+            ordersBase.put(o1);
+        }
+        ;
     }
 
 }

@@ -44,7 +44,9 @@ public class SrcStatus   {
     @JsonProperty("SUCCESSFULLY_EXECUTED")
     SUCCESSFULLY_EXECUTED,
     @JsonProperty("EXECUTION_FAILED")
-    EXECUTION_FAILED;
+    EXECUTION_FAILED,
+    @JsonProperty("EXECUTION_TIMED_OUT")
+    EXECUTION_TIMED_OUT;
   }
 
   @NotNull

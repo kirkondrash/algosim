@@ -20,7 +20,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 class ExecutionSchedulingService implements SchedulingService{
 
     private final Queue<String> scheduledForExecutionIds = new ConcurrentLinkedQueue<>();
-    private final List<StatusEnum> applicableStatuses = List.of(StatusEnum.SUCCESSFULLY_COMPILED, StatusEnum.SCHEDULED_FOR_EXECUTION, StatusEnum.EXECUTING, StatusEnum.EXECUTION_FAILED);
+    private final List<StatusEnum> applicableStatuses = List.of(StatusEnum.SUCCESSFULLY_COMPILED, StatusEnum.SCHEDULED_FOR_EXECUTION, StatusEnum.EXECUTING, StatusEnum.EXECUTION_FAILED, StatusEnum.EXECUTION_TIMED_OUT);
     private final RepoApiClient repoApiClient;
     private final ExecutorApiClient executorApiClient;
 
@@ -63,6 +63,7 @@ class ExecutionSchedulingService implements SchedulingService{
                 scheduledForExecutionIds.add(id);
                 break;
             case EXECUTION_FAILED:
+            case EXECUTION_TIMED_OUT:
                 SrcStatus srcStatus = repoApiClient.readAlgorithmStatus(id).getBody();
                 log.warn("{}: {}", id, srcStatus.toString());
                 break;
