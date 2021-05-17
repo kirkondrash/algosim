@@ -22,12 +22,12 @@ public class CompilerApiService {
 
 
     public void compileAlgorithm( String id) {
-        compilerRunner.runCompilation(id);
-        if (taskExecutor.getThreadPoolExecutor().getQueue().size() > 0) {
+        if (taskExecutor.getThreadPoolExecutor().getActiveCount() > 0 && getReadiness()) {
             SrcStatus.SrcStatusBuilder srcStatus = repoApiClient.readAlgorithmStatus(id).getBody().toBuilder();
             srcStatus.status(SrcStatus.StatusEnum.SCHEDULED_FOR_COMPILATION);
             repoApiClient.updateAlgorithmStatus(id, srcStatus.build());
         }
+        compilerRunner.runCompilation(id);
     }
 
     public boolean getReadiness(){
