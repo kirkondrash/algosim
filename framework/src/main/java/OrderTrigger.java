@@ -2,7 +2,7 @@ import java.math.BigDecimal;
 
 public class OrderTrigger {
 
-    enum Type {STOPLOSS, MAKEPROFIT, OPEN}
+    enum Type {STOPLOSS, TAKEPROFIT, OPEN}
 
     private int id;
     private Type type;

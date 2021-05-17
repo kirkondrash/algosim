@@ -37,7 +37,7 @@ public class AlgoMetaApiController implements AlgoMetaApi {
 
     @Override
     public ResponseEntity<Void> updateAlgorithmMeta(@PathVariable("id") String id, @Valid SrcMeta srcMeta) {
-        srcMetaService.updateAlgorithmStatus(id, srcMeta);
+        srcMetaService.updateAlgorithmMeta(id, srcMeta);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 

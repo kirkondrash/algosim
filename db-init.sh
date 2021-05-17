@@ -4,32 +4,6 @@ set -e
 psql -U postgres <<-EOSQL
     create database algosim;
     \connect algosim;
-    create table statuses(
-      id             serial      primary key,
-      algo_id        varchar     not null unique,
-      status         varchar     not null,
-      error_trace    varchar,
-      winloss        varchar
-    );
-
-    create table meta(
-      id             serial      primary key,
-      algo_id        varchar     not null unique,
-      author         varchar     not null,
-      description    varchar
-    );
-
-    create table sources(
-      id             serial      primary key,
-      algo_id        varchar     not null unique,
-      path           varchar     not null
-    );
-
-    create table artifacts(
-      id             serial      primary key,
-      algo_id        varchar     not null unique,
-      path           varchar     not null
-    );
 
     create table bhacklogins(
       login          varchar     not null,

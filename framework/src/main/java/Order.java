@@ -19,13 +19,11 @@ public class Order implements OrderOperations<Order>{
 
     private CurrencyRate currencyRate;
 
-    public Order() {
-    }
-
-    public Order(CurrencyRate currencyRate, String pair) {
+    public Order(CurrencyRate currencyRate, String pair, int lot) {
         this.state = State.WAIT;
         this.pair = pair;
         this.currencyRate = currencyRate;
+        this.lot = lot;
         this.triggers = new ArrayList<>();
     }
 
@@ -45,53 +43,24 @@ public class Order implements OrderOperations<Order>{
         return lot;
     }
 
-    public void setLot(int lot) {
-        this.lot = lot;
-    }
-
     public BigDecimal getOpeningPrice() {
         return openingPrice;
-    }
-
-    public void setOpeningPrice(BigDecimal openingPrice) {
-        this.openingPrice = openingPrice;
     }
 
     public BigDecimal getClosingPrice() {
         return closingPrice;
     }
 
-    public void setClosingPrice(BigDecimal closingPrice) {
-        this.closingPrice = closingPrice;
-    }
-
     public State getState() {
         return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
     }
 
     public Type getType() {
         return type;
     }
 
-    public void setType(Type type) {
-        this.type = type;
-    }
-
     public List<OrderTrigger> getTriggers() {
         return triggers;
-    }
-
-    public void setTriggers(List<OrderTrigger> triggers) {
-        this.triggers = triggers;
-    }
-
-    public Order lot(int lot) {
-        this.lot = lot;
-        return this;
     }
 
     public Order buyNow() throws TradingLogicException {
@@ -190,19 +159,19 @@ public class Order implements OrderOperations<Order>{
         return this;
     }
 
-    public Order makeProfit(BigDecimal pips) throws TradingLogicException {
+    public Order takeProfit(BigDecimal pips) throws TradingLogicException {
         switch (type) {
             case BUY:
                 if (pips.compareTo(openingPrice) != 1)
                     throw new TradingLogicException(String.format(
-                            "Wrong move! Buying MakeProfit level [%.5f] has to be higher than opening[%.5f]!",
+                            "Wrong move! Buying TakeProfit level [%.5f] has to be higher than opening[%.5f]!",
                             pips,
                             openingPrice));
                 break;
             case SELL:
                 if (pips.compareTo(openingPrice) != -1)
                     throw new TradingLogicException(String.format(
-                            "Wrong move! Selling MakeProfit level [%.5f] has to be lower than opening[%.5f]!",
+                            "Wrong move! Selling TakeProfit level [%.5f] has to be lower than opening[%.5f]!",
                             pips,
                             openingPrice));
                 break;
@@ -210,7 +179,7 @@ public class Order implements OrderOperations<Order>{
                 throw new TradingLogicException("Something went wrong! Not typed order!");
 
         }
-        addTrigger(OrderTrigger.Type.MAKEPROFIT, pips);
+        addTrigger(OrderTrigger.Type.TAKEPROFIT, pips);
         return this;
     }
 
@@ -220,7 +189,7 @@ public class Order implements OrderOperations<Order>{
         return this;
     }
 
-    public Order open(CurrencyRate currencyRate) {
+    private Order open(CurrencyRate currencyRate) {
         openingPrice = currencyRate.get();
         state = State.OPENED;
         return this;
@@ -246,21 +215,10 @@ public class Order implements OrderOperations<Order>{
                 triggers.toString());
     }
 
-    public void addTrigger(OrderTrigger.Type type, BigDecimal trigger){
+    private void addTrigger(OrderTrigger.Type type, BigDecimal trigger){
         OrderTrigger ot = new OrderTrigger(type,trigger);
         triggers.removeIf(t -> t.getType().equals(type));
         triggers.add(ot);
-    }
-
-    public boolean isTriggered(OrderTrigger.Type type, CurrencyRate rate){
-        final Iterator<OrderTrigger> each = triggers.iterator();
-        while (each.hasNext()) {
-            OrderTrigger o = each.next();
-            if (o.getType().equals(type)) {
-                return isLevelCrossed(rate, o.getTrigger());
-            }
-        }
-        return false;
     }
 
     private boolean isLevelCrossed(CurrencyRate currentRate, BigDecimal level){

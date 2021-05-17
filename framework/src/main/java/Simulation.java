@@ -6,7 +6,7 @@ public class Simulation {
 
         QuotesDAO quotes = new QuotesDAO();
         final TradingAlgorithm tradingAlgorithm = new TradingAlgorithmImpl();
-        for (Iterator<Tick> tickIterator = quotes.getTicks("test_set_light").iterator(); tickIterator.hasNext(); ) {
+        for (Iterator<Tick> tickIterator = quotes.getTicks("test_set_usd").iterator(); tickIterator.hasNext(); ) {
             tradingAlgorithm.receiveTick(tickIterator.next());
         }
 

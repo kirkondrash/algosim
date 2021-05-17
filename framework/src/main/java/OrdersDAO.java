@@ -20,7 +20,7 @@ public class OrdersDAO {
     private List<Order> tickOrderList;
     private static CurrencyRates currencyRates;
     private Connection con;
-    private PreparedStatement insertOrdersQuery, insertOrderTriggersQuery, openByTriggerQuery, closeByStopLossQuery, closeByMakeProfitQuery;
+    private PreparedStatement insertOrdersQuery, insertOrderTriggersQuery, openByTriggerQuery, closeByStopLossQuery, closeByTakeProfitQuery;
     private static Properties queries;
     private static final String algorithmId = System.getProperty("framework.algo_id");
 
@@ -36,7 +36,7 @@ public class OrdersDAO {
         insertOrderTriggersQuery = con.prepareStatement(queries.getProperty("ORDER_TRIGGER_INSERT_SQL"));
         openByTriggerQuery = con.prepareStatement(queries.getProperty("OPEN_BY_TRIGGER_SQL"));
         closeByStopLossQuery = con.prepareStatement(queries.getProperty("CLOSE_BY_STOP_LOSS_SQL"));
-        closeByMakeProfitQuery = con.prepareStatement(queries.getProperty("CLOSE_BY_MAKE_PROFIT_SQL"));
+        closeByTakeProfitQuery = con.prepareStatement(queries.getProperty("CLOSE_BY_TAKE_PROFIT_SQL"));
     }
 
     public void executeOrders(String pair) throws SQLException {
@@ -90,12 +90,12 @@ public class OrdersDAO {
         openByTriggerQuery.setBigDecimal(5,currencyRate.getPrev());
         openByTriggerQuery.execute();
 
-        closeByMakeProfitQuery.setBigDecimal(1,currencyRate.get());
-        closeByMakeProfitQuery.setString(2,algorithmId);
-        closeByMakeProfitQuery.setString(3,pair);
-        closeByMakeProfitQuery.setBigDecimal(4,currencyRate.get());
-        closeByMakeProfitQuery.setBigDecimal(5,currencyRate.getPrev());
-        closeByMakeProfitQuery.execute();
+        closeByTakeProfitQuery.setBigDecimal(1,currencyRate.get());
+        closeByTakeProfitQuery.setString(2,algorithmId);
+        closeByTakeProfitQuery.setString(3,pair);
+        closeByTakeProfitQuery.setBigDecimal(4,currencyRate.get());
+        closeByTakeProfitQuery.setBigDecimal(5,currencyRate.getPrev());
+        closeByTakeProfitQuery.execute();
     }
 
     public void put(Order order){
