@@ -86,7 +86,7 @@ public class ExecutionRunner {
             try ( BufferedReader pErrorReader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
                   BufferedReader pOutputReader = new BufferedReader(new InputStreamReader(p.getInputStream()))){
 
-                if (p.waitFor(180, TimeUnit.SECONDS)){
+                if (p.waitFor(360, TimeUnit.SECONDS)){
                     SrcStatus.StatusEnum resultingStatus = (p.exitValue()==0) ? SrcStatus.StatusEnum.SUCCESSFULLY_EXECUTED : SrcStatus.StatusEnum.EXECUTION_FAILED;
                     srcStatus.status(resultingStatus).errorTrace(pErrorReader.lines().collect(Collectors.joining(System.lineSeparator())))
                             .metrics(pOutputReader.lines().collect(Collectors.joining(System.lineSeparator())));
