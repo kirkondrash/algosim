@@ -70,6 +70,7 @@ services:
      environment:
        - API_CLIENT_USER=admin
        - API_CLIENT_PASSWORD=admin
+       - DIND=true
      depends_on:
        - repo
    database:
